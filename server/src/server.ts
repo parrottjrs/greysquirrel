@@ -3,7 +3,7 @@ import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import * as fs from "fs";
 import { v4 as uuid } from "uuid";
-import { Key } from "readline";
+import mysql from "mysql2";
 
 const app = express();
 const server = http.createServer(app);
@@ -57,6 +57,32 @@ wss.on("connection", (connection) => {
       }
     });
   });
+});
+
+app.post("/api/signIn", (req, res) => {
+  const username = req.body.data.username;
+  const password = req.body.data.password;
+
+  const sqlConnection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "myDB",
+  });
+  sqlConnection.query(
+    // `SELECT * from users WHERE user_name = "${username}"`,
+    `SELECT * from users WHERE user_name = "${username}"`,
+    (err, results, fields) => {
+      try {
+        const user = JSON.parse(JSON.stringify(results));
+        if (user[0].password !== password) {
+          return console.log("Authentication unsuccessful");
+        }
+        res.send("authentication successful");
+      } catch (e) {
+        res.status(500).json("error caught");
+      }
+    }
+  );
 });
 
 server.listen(PORT, () => {

@@ -1,60 +1,19 @@
-import "./index.css";
-import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import useWebSocket from "react-use-websocket";
-import "react-quill/dist/quill.snow.css";
+import React from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Editor from "./pages/Editor";
+import Signup from "./pages/Signup";
+import Documents from "./pages/Documents";
 
 export default function App() {
-  const WS_URL = "ws://localhost:8000";
-  const client = useWebSocket(WS_URL);
-
-  useWebSocket(WS_URL, {
-    onMessage: (message) => {
-      setText(message.data);
-      fetch("/api/createfile", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: message.data }),
-      })
-        .then(() => {
-          console.log("ok");
-        })
-        .catch((err) => console.log(err));
-    },
-    onOpen: () => {
-      const fetchText = async () => {
-        const response = await fetch("/api");
-        const json = await response.json();
-        return json;
-      };
-      fetchText()
-        .then((json) => {
-          setText(json.data);
-        })
-        .catch((err) => console.log(err));
-    },
-    shouldReconnect: (closeEvent) => true,
-    share: true,
-    filter: () => false,
-  });
-
-  const [text, setText] = useState("");
-
-  const handleChange = (text: string) => {
-    client.sendMessage(text);
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <ReactQuill
-          className="quill"
-          theme="snow"
-          value={text}
-          onChange={handleChange}
-          preserveWhitespace={true}
-        />
-      </header>
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/:username/documents" element={<Documents />} />
+        <Route path="/editor" element={<Editor />} />
+      </Routes>
+    </HashRouter>
   );
 }
