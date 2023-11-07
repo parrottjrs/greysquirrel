@@ -20,9 +20,9 @@ app.use(express.urlencoded());
 app.get("/api", (req, res) => {
   try {
     const data = fs.readFileSync("./files/test.txt", "utf-8");
-    res.send({ data });
+    return res.send({ data });
   } catch (e) {
-    res.status(404).json("File not found");
+    return res.status(404).json({ message: "File not found" });
   }
 });
 
@@ -33,9 +33,9 @@ app.get("/api", (req, res) => {
 app.post("/api/createfile", (req, res) => {
   try {
     fs.writeFileSync(`./files/test.txt`, req.body.text);
-    res.status(200).json({ message: "ok" });
+    return res.status(200).json({ message: "ok" });
   } catch (e) {
-    res.status(500).json("Error caught");
+    return res.status(500).json({ message: "Error caught" });
   }
 });
 // app.use(express.static(absolutePath));
@@ -61,29 +61,33 @@ wss.on("connection", (connection) => {
 });
 
 app.post("/api/signIn", (req, res) => {
-  const data = req.body.data;
-  const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    database: "myDB",
-  });
-  pool.query(
-    `SELECT * from users WHERE user_name = "${data.username}"`,
-    (err, results, fields) => {
-      try {
-        const user = JSON.parse(JSON.stringify(results));
-        if (user[0].password !== data.password) {
-          res.send("unsuccessful");
+  try {
+    const { username, password } = req.body.data;
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    pool.query(
+      `SELECT * from users WHERE user_name = "${username}"`,
+      (err, results, fields) => {
+        try {
+          const user = JSON.parse(JSON.stringify(results));
+          if (user[0].password !== password) {
+            return res.status(400).send("unsuccessful");
+          }
+          return res.send("successful");
+        } catch (err) {
+          return res.status(500).send("unsuccessful");
         }
-        res.send("successful");
-      } catch (e) {
-        res.status(500).json("error caught");
       }
-    }
-  );
+    );
+  } catch (err) {
+    return res.status(500).json("error caught");
+  }
 });
 
-app.post("/api/signUp", (req, res) => {
+app.put("/api/signUp", (req, res) => {
   try {
     const { username, email, firstName, lastName, password } = req.body.data;
     const sqlPool = mysql.createPool({
@@ -106,23 +110,20 @@ app.post("/api/signUp", (req, res) => {
           return Object.values(username).toString();
         });
         if (usernames.includes(username)) {
-          res.send("unsuccessful");
-          return;
+          return res.send("unsuccessful");
         }
         sqlPool.query(query2, (err, result, field) => {
           if (err) {
             throw err;
           }
-          res.send("success");
+          return res.send("success");
         });
-        // res.send("doesn't exist");
-        return;
       } catch (err) {
-        res.status(500).json("error caught");
+        return res.status(500).json("error caught");
       }
     });
   } catch (err) {
-    res.status(500).json("error caught");
+    return res.status(500).json("error caught");
   }
 });
 

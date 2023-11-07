@@ -2,8 +2,21 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
+type FormValues = {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  passCheck: string;
+};
+
 export default function Signup() {
   const [checked, setChecked] = useState(false);
+  const [passWarning, setPassWarning] = useState(false);
+  const [nameWarning, setNameWarning] = useState(false);
+  const [passMatch, setPassMatch] = useState(false);
+
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -16,29 +29,30 @@ export default function Signup() {
     },
   });
 
-  const checkPassword = (pass: string) => {
-    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    return re.test(pass);
+  const checkPassword = (password: string) => {
+    var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return restrictions.test(password);
   };
 
   const handleChange = () => {
     setChecked(!checked);
   };
 
-  const fetchSignup = async (data) => {
+  const fetchSignup = async (data: FormValues) => {
+    const username = data.username;
     try {
       const response = await fetch("/api/signUp", {
-        method: "POST",
+        method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: data }),
       });
       const text = await response.text();
       switch (text) {
         case "unsuccessful":
-          alert("You must choose a different username!");
+          setNameWarning(true);
           break;
         case "success":
-          navigate(`/${data.username}/documents`);
+          navigate(`/${username}/documents`);
           break;
         default:
           console.error("something went wrong");
@@ -50,17 +64,20 @@ export default function Signup() {
 
   return (
     <div>
-      <h1>{"Sign Up"}</h1>
+      <h1>Sign Up</h1>
       <form
         onSubmit={handleSubmit((data) => {
           if (!checkPassword(data.password)) {
-            alert(
-              "password must contain at least one of each:\n- Uppercase letter\n- Lowercase letter\n- Digit (0-9)\n- Special character (! @ # $ %, etc.)"
-            );
+            setPassWarning(true);
+            if (data.password !== data.passCheck) {
+              setPassMatch(true);
+              return;
+            }
             return;
           }
+          setPassWarning(false);
           if (data.password !== data.passCheck) {
-            alert("passwords must match!");
+            setPassMatch(true);
             return;
           }
           fetchSignup(data);
@@ -76,6 +93,9 @@ export default function Signup() {
             required={true}
           />
         </div>
+        {nameWarning && (
+          <p className="text-red-600">You must choose a different username.</p>
+        )}
         <div>
           <label htmlFor="email">{"email: "}</label>
           <input
@@ -94,6 +114,7 @@ export default function Signup() {
             autoComplete="off"
           />
         </div>
+
         <div>
           <label htmlFor="lastName">{"Last name: "}</label>
           <input
@@ -123,9 +144,10 @@ export default function Signup() {
             required={true}
           />
         </div>
-        <p>
+        {passMatch && <p className="text-red-600">Passwords must match.</p>}
+        <p className={!passWarning ? "" : "text-red-600"}>
           Password must be at least 8 characters and have at least one uppercase
-          letter, one lowercase letter, one digit, and one special character
+          letter, one lowercase letter, one digit, and one special character.
         </p>
         <div>
           <label htmlFor="showPass">{"Show password "}</label>

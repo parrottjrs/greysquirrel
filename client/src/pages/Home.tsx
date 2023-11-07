@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
+type FormValues = {
+  username: string;
+  password: string;
+};
+
 export default function Home() {
+  const [change, setChange] = useState(false);
+
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -12,7 +19,7 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  const fetchUser = async (data) => {
+  const fetchUser = async (data: FormValues) => {
     const username = data.username;
     try {
       const response = await fetch("/api/signIn", {
@@ -21,12 +28,13 @@ export default function Home() {
         body: JSON.stringify({ data: data }),
       });
       const text = await response.text();
+      console.log(text);
       switch (text) {
         case "successful":
           navigate(`/${username}/documents`);
           break;
         case "unsuccessful":
-          alert("Something went wrong. Please try again.");
+          setChange(true);
           break;
         default:
           console.error("an unexpected error has occured.");
@@ -64,6 +72,15 @@ export default function Home() {
             required={true}
           />
         </div>
+        {!change ? (
+          <div />
+        ) : (
+          <div>
+            <p className="text-red-600">
+              Please re-enter your username and password.
+            </p>
+          </div>
+        )}
         <input type="submit" value="sign in" />
       </form>
       <label htmlFor="signup">{"New to ://greysquirrel?"}</label>
