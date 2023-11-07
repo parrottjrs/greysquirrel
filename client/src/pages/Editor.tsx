@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";

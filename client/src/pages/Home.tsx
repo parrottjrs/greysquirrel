@@ -12,7 +12,7 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  const fetchUser = async (data: object) => {
+  const fetchUser = async (data) => {
     const username = data.username;
     try {
       const response = await fetch("/api/signIn", {
@@ -21,9 +21,15 @@ export default function Home() {
         body: JSON.stringify({ data: data }),
       });
       const text = await response.text();
-      if (text === "authentication successful") {
-        console.log(text);
-        navigate(`/${username}/documents`);
+      switch (text) {
+        case "successful":
+          navigate(`/${username}/documents`);
+          break;
+        case "unsuccessful":
+          alert("Something went wrong. Please try again.");
+          break;
+        default:
+          console.error("an unexpected error has occured.");
       }
     } catch (error) {
       console.error(error);
@@ -35,7 +41,6 @@ export default function Home() {
       <h1>://greysquirrel</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          console.log(data);
           fetchUser(data);
         })}
       >
@@ -61,6 +66,10 @@ export default function Home() {
         </div>
         <input type="submit" value="sign in" />
       </form>
+      <label htmlFor="signup">{"New to ://greysquirrel?"}</label>
+      <a id="signup" href="/#signup">
+        Sign up here!
+      </a>
     </div>
   );
 }

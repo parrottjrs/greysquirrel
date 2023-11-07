@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 8000;
 // const path = require("path");
 // const relativePath = "../client/build";
 // const absolutePath = path.resolve(relativePath);
+
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -60,29 +61,69 @@ wss.on("connection", (connection) => {
 });
 
 app.post("/api/signIn", (req, res) => {
-  const username = req.body.data.username;
-  const password = req.body.data.password;
-
-  const sqlConnection = mysql.createConnection({
+  const data = req.body.data;
+  const pool = mysql.createPool({
     host: "localhost",
     user: "root",
     database: "myDB",
   });
-  sqlConnection.query(
-    // `SELECT * from users WHERE user_name = "${username}"`,
-    `SELECT * from users WHERE user_name = "${username}"`,
+  pool.query(
+    `SELECT * from users WHERE user_name = "${data.username}"`,
     (err, results, fields) => {
       try {
         const user = JSON.parse(JSON.stringify(results));
-        if (user[0].password !== password) {
-          return console.log("Authentication unsuccessful");
+        if (user[0].password !== data.password) {
+          res.send("unsuccessful");
         }
-        res.send("authentication successful");
+        res.send("successful");
       } catch (e) {
         res.status(500).json("error caught");
       }
     }
   );
+});
+
+app.post("/api/signUp", (req, res) => {
+  try {
+    const { username, email, firstName, lastName, password } = req.body.data;
+    const sqlPool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+
+    const query1 = `SELECT user_name from users`;
+    const query2 = `INSERT INTO users (
+      user_name, email, first_name, last_name, password
+    ) VALUES (
+      "${username}", "${email}", "${firstName}", "${lastName}", "${password}" 
+    )`;
+
+    sqlPool.query(query1, (err, results, fields) => {
+      try {
+        const queryResults = JSON.parse(JSON.stringify(results));
+        const usernames = queryResults.map((username: object) => {
+          return Object.values(username).toString();
+        });
+        if (usernames.includes(username)) {
+          res.send("unsuccessful");
+          return;
+        }
+        sqlPool.query(query2, (err, result, field) => {
+          if (err) {
+            throw err;
+          }
+          res.send("success");
+        });
+        // res.send("doesn't exist");
+        return;
+      } catch (err) {
+        res.status(500).json("error caught");
+      }
+    });
+  } catch (err) {
+    res.status(500).json("error caught");
+  }
 });
 
 server.listen(PORT, () => {
