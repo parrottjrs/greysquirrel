@@ -3,7 +3,8 @@ import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import * as fs from "fs";
 import { v4 as uuid } from "uuid";
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
+import { randomBytes, pbkdf2Sync } from "crypto";
 
 const app = express();
 const server = http.createServer(app);
@@ -46,10 +47,8 @@ wss.on("connection", (connection) => {
   connection.on("error", console.error);
 
   const userId = uuid();
-  console.log("Recieved a new connection.");
 
   clients[userId] = connection;
-  console.log(`${userId} connected.`);
 
   connection.on("message", (message, isBinary) => {
     wss.clients.forEach((client) => {
@@ -60,7 +59,18 @@ wss.on("connection", (connection) => {
   });
 });
 
-app.post("/api/signIn", (req, res) => {
+const getPassword = async (pool: any, username: string) => {
+  const query = `SELECT password, salt from users WHERE user_name = "${username}"`;
+  const [result, _] = await pool.query(query);
+  const user = JSON.parse(JSON.stringify(result));
+  return { pass: user[0].password, salt: user[0].salt };
+};
+
+const authenticate = (password1: string, password2: string) => {
+  return password1 === password2;
+};
+
+app.post("/api/signIn", async (req, res) => {
   try {
     const { username, password } = req.body.data;
     const pool = mysql.createPool({
@@ -68,60 +78,70 @@ app.post("/api/signIn", (req, res) => {
       user: "root",
       database: "myDB",
     });
-    pool.query(
-      `SELECT * from users WHERE user_name = "${username}"`,
-      (err, results, fields) => {
-        try {
-          const user = JSON.parse(JSON.stringify(results));
-          if (user[0].password !== password) {
-            return res.status(400).send("unsuccessful");
-          }
-          return res.send("successful");
-        } catch (err) {
-          return res.status(500).send("unsuccessful");
-        }
-      }
+    const { pass, salt } = await getPassword(pool, username);
+    const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
+      "base64"
     );
+    const authenticated = authenticate(hash, pass);
+
+    if (!authenticated) {
+      return res.status(400).json({ message: "unsuccessful" });
+    }
+    return res.status(202).json({ message: "successful" });
   } catch (err) {
-    return res.status(500).json("error caught");
+    return res.status(500).json({ message: "error caught" });
   }
 });
 
-app.put("/api/signUp", (req, res) => {
+const checkPassword = (password: string) => {
+  var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  return restrictions.test(password);
+};
+
+const getUsernames = async (pool: any) => {
+  const query = `SELECT user_name from users`;
+  const [result, _] = await pool.query(query);
+  const usernames = JSON.parse(JSON.stringify(result));
+
+  return usernames.map((username: object) => {
+    return Object.values(username).toString();
+  });
+};
+
+const createUser = async (
+  pool: any,
+  username: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string
+) => {
+  const salt = randomBytes(64).toString("base64");
+  const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
+    "base64"
+  );
+  const query = `INSERT INTO users (
+  user_name, email, first_name, last_name, password, salt
+) VALUES (
+  "${username}", "${email}", "${firstName}", "${lastName}", "${hash}", "${salt}" 
+)`;
+  await pool.query(query);
+};
+
+app.put("/api/signUp", async (req, res) => {
   try {
     const { username, email, firstName, lastName, password } = req.body.data;
-    const sqlPool = mysql.createPool({
+    const pool = mysql.createPool({
       host: "localhost",
       user: "root",
       database: "myDB",
     });
-
-    const query1 = `SELECT user_name from users`;
-    const query2 = `INSERT INTO users (
-      user_name, email, first_name, last_name, password
-    ) VALUES (
-      "${username}", "${email}", "${firstName}", "${lastName}", "${password}" 
-    )`;
-
-    sqlPool.query(query1, (err, results, fields) => {
-      try {
-        const queryResults = JSON.parse(JSON.stringify(results));
-        const usernames = queryResults.map((username: object) => {
-          return Object.values(username).toString();
-        });
-        if (usernames.includes(username)) {
-          return res.send("unsuccessful");
-        }
-        sqlPool.query(query2, (err, result, field) => {
-          if (err) {
-            throw err;
-          }
-          return res.send("success");
-        });
-      } catch (err) {
-        return res.status(500).json("error caught");
-      }
-    });
+    const usernames = await getUsernames(pool);
+    if (usernames.includes(username) || !checkPassword(password)) {
+      return res.status(400).json({ message: "unsuccessful" });
+    }
+    createUser(pool, username, email, firstName, lastName, password);
+    return res.status(201).json({ message: "success" });
   } catch (err) {
     return res.status(500).json("error caught");
   }

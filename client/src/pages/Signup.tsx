@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-type FormValues = {
+type Form = {
   username: string;
   email: string;
   firstName: string;
@@ -16,7 +16,6 @@ export default function Signup() {
   const [passWarning, setPassWarning] = useState(false);
   const [nameWarning, setNameWarning] = useState(false);
   const [passMatch, setPassMatch] = useState(false);
-
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -30,7 +29,8 @@ export default function Signup() {
   });
 
   const checkPassword = (password: string) => {
-    var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    const restrictions =
+      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     return restrictions.test(password);
   };
 
@@ -38,7 +38,7 @@ export default function Signup() {
     setChecked(!checked);
   };
 
-  const fetchSignup = async (data: FormValues) => {
+  const signup = async (data: Form) => {
     const username = data.username;
     try {
       const response = await fetch("/api/signUp", {
@@ -46,8 +46,9 @@ export default function Signup() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: data }),
       });
-      const text = await response.text();
-      switch (text) {
+      const json = await response.json();
+      const message = json.message;
+      switch (message) {
         case "unsuccessful":
           setNameWarning(true);
           break;
@@ -80,7 +81,7 @@ export default function Signup() {
             setPassMatch(true);
             return;
           }
-          fetchSignup(data);
+          signup(data);
         })}
       >
         <div>

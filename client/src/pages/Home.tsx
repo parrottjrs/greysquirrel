@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-type FormValues = {
+type Form = {
   username: string;
   password: string;
 };
@@ -19,7 +19,7 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  const fetchUser = async (data: FormValues) => {
+  const fetchUser = async (data: Form) => {
     const username = data.username;
     try {
       const response = await fetch("/api/signIn", {
@@ -27,9 +27,10 @@ export default function Home() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: data }),
       });
-      const text = await response.text();
-      console.log(text);
-      switch (text) {
+
+      const json = await response.json();
+      const message = json.message;
+      switch (message) {
         case "successful":
           navigate(`/${username}/documents`);
           break;
