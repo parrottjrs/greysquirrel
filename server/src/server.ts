@@ -10,7 +10,8 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8000;
-
+const ITERATIONS = 10000;
+const KEYLEN = 64;
 // const path = require("path");
 // const relativePath = "../client/build";
 // const absolutePath = path.resolve(relativePath);
@@ -79,9 +80,13 @@ app.post("/api/signIn", async (req, res) => {
       database: "myDB",
     });
     const { pass, salt } = await getPassword(pool, username);
-    const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
-      "base64"
-    );
+    const hash = pbkdf2Sync(
+      password,
+      salt,
+      ITERATIONS,
+      KEYLEN,
+      "sha512"
+    ).toString("base64");
     const authenticated = authenticate(hash, pass);
 
     if (!authenticated) {
@@ -117,9 +122,13 @@ const createUser = async (
   password: string
 ) => {
   const salt = randomBytes(64).toString("base64");
-  const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
-    "base64"
-  );
+  const hash = pbkdf2Sync(
+    password,
+    salt,
+    ITERATIONS,
+    KEYLEN,
+    "sha512"
+  ).toString("base64");
   const query = `INSERT INTO users (
   user_name, email, first_name, last_name, password, salt
 ) VALUES (
