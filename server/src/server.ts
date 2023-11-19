@@ -5,6 +5,7 @@ import * as fs from "fs";
 import { v4 as uuid } from "uuid";
 import mysql from "mysql2/promise";
 import { randomBytes, pbkdf2Sync } from "crypto";
+import { sign, verify, decode } from "jsonwebtoken";
 
 const app = express();
 const server = http.createServer(app);
@@ -12,10 +13,52 @@ const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8000;
 const ITERATIONS = 10000;
 const KEYLEN = 64;
+const TEN_MINUTES = 600000;
+const ONE_DAY = 8.64e7;
+const PUBLIC_ACCESS_KEY = fs.readFileSync("../public-access.pem", "utf8");
+const PUBLIC_REFRESH_KEY = fs.readFileSync("../public-refresh.pem", "utf8");
+
+const accessToken = async (username: string) => {
+  const accessKey = fs.readFileSync("../private-access.pem", "utf8");
+  const expiration = Math.floor(Date.now()) + TEN_MINUTES;
+  const header = {
+    alg: "RS256",
+    typ: "JWT",
+  };
+  const payload = {
+    username: username,
+    iat: Date.now(),
+    exp: expiration,
+  };
+  const accessToken = sign(payload, accessKey, { header });
+  return accessToken;
+};
+
+const refreshToken = async (username: string) => {
+  const refreshKey = fs.readFileSync("../private-refresh.pem", "utf8");
+
+  const expiration = Math.floor(Date.now()) + ONE_DAY;
+  const header = {
+    alg: "RS256",
+    typ: "JWT",
+  };
+  const payload = {
+    username: username,
+    iat: Date.now(),
+    exp: expiration,
+  };
+  const refreshToken = sign(payload, refreshKey, { header });
+  return refreshToken;
+};
+
+const isExpired = (token: any) => {
+  const decoded: any = decode(token);
+  const expiration = decoded.exp;
+  return expiration < Math.floor(Date.now());
+};
 // const path = require("path");
 // const relativePath = "../client/build";
 // const absolutePath = path.resolve(relativePath);
-
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -149,7 +192,14 @@ app.put("/api/signUp", async (req, res) => {
     if (usernames.includes(username) || !checkPassword(password)) {
       return res.status(400).json({ message: "unsuccessful" });
     }
-    createUser(pool, username, email, firstName, lastName, password);
+    await createUser(pool, username, email, firstName, lastName, password);
+    const access = await accessToken(username);
+    const refresh = await refreshToken(username);
+    res.cookie("accessToken", access, {
+      maxAge: TEN_MINUTES,
+      httpOnly: true,
+    });
+    res.cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true });
     return res.status(201).json({ message: "success" });
   } catch (err) {
     return res.status(500).json("error caught");
