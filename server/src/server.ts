@@ -4,8 +4,16 @@ import WebSocket, { WebSocketServer } from "ws";
 import * as fs from "fs";
 import { v4 as uuid } from "uuid";
 import mysql from "mysql2/promise";
-import { randomBytes, pbkdf2Sync } from "crypto";
 import { sign, verify, decode } from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+import { AccessToken, RefreshToken } from "./Token";
+import {
+  authenticate,
+  createUser,
+  getPassword,
+  getUsernames,
+  strongPassword,
+} from "./utils";
 
 const app = express();
 const server = http.createServer(app);
@@ -15,52 +23,12 @@ const ITERATIONS = 10000;
 const KEYLEN = 64;
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
-const PUBLIC_ACCESS_KEY = fs.readFileSync("../public-access.pem", "utf8");
-const PUBLIC_REFRESH_KEY = fs.readFileSync("../public-refresh.pem", "utf8");
 
-const accessToken = async (username: string) => {
-  const accessKey = fs.readFileSync("../private-access.pem", "utf8");
-  const expiration = Math.floor(Date.now()) + TEN_MINUTES;
-  const header = {
-    alg: "RS256",
-    typ: "JWT",
-  };
-  const payload = {
-    username: username,
-    iat: Date.now(),
-    exp: expiration,
-  };
-  const accessToken = sign(payload, accessKey, { header });
-  return accessToken;
-};
-
-const refreshToken = async (username: string) => {
-  const refreshKey = fs.readFileSync("../private-refresh.pem", "utf8");
-
-  const expiration = Math.floor(Date.now()) + ONE_DAY;
-  const header = {
-    alg: "RS256",
-    typ: "JWT",
-  };
-  const payload = {
-    username: username,
-    iat: Date.now(),
-    exp: expiration,
-  };
-  const refreshToken = sign(payload, refreshKey, { header });
-  return refreshToken;
-};
-
-const isExpired = (token: any) => {
-  const decoded: any = decode(token);
-  const expiration = decoded.exp;
-  return expiration < Math.floor(Date.now());
-};
 // const path = require("path");
 // const relativePath = "../client/build";
 // const absolutePath = path.resolve(relativePath);
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(cookieParser());
 
 app.get("/api", (req, res) => {
   try {
@@ -103,35 +71,17 @@ wss.on("connection", (connection) => {
   });
 });
 
-const getPassword = async (pool: any, username: string) => {
-  const query = `SELECT password, salt from users WHERE user_name = "${username}"`;
-  const [result, _] = await pool.query(query);
-  const user = JSON.parse(JSON.stringify(result));
-  return { pass: user[0].password, salt: user[0].salt };
-};
-
-const authenticate = (password1: string, password2: string) => {
-  return password1 === password2;
-};
-
 app.post("/api/signIn", async (req, res) => {
   try {
     const { username, password } = req.body.data;
+    const { accessToken, refreshToken } = req.cookies;
     const pool = mysql.createPool({
       host: "localhost",
       user: "root",
       database: "myDB",
     });
-    const { pass, salt } = await getPassword(pool, username);
-    const hash = pbkdf2Sync(
-      password,
-      salt,
-      ITERATIONS,
-      KEYLEN,
-      "sha512"
-    ).toString("base64");
-    const authenticated = authenticate(hash, pass);
-
+    const token = decode(refreshToken);
+    const authenticated = await authenticate(pool, username, password);
     if (!authenticated) {
       return res.status(400).json({ message: "unsuccessful" });
     }
@@ -140,45 +90,6 @@ app.post("/api/signIn", async (req, res) => {
     return res.status(500).json({ message: "error caught" });
   }
 });
-
-const checkPassword = (password: string) => {
-  var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-  return restrictions.test(password);
-};
-
-const getUsernames = async (pool: any) => {
-  const query = `SELECT user_name from users`;
-  const [result, _] = await pool.query(query);
-  const usernames = JSON.parse(JSON.stringify(result));
-
-  return usernames.map((username: object) => {
-    return Object.values(username).toString();
-  });
-};
-
-const createUser = async (
-  pool: any,
-  username: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  password: string
-) => {
-  const salt = randomBytes(64).toString("base64");
-  const hash = pbkdf2Sync(
-    password,
-    salt,
-    ITERATIONS,
-    KEYLEN,
-    "sha512"
-  ).toString("base64");
-  const query = `INSERT INTO users (
-  user_name, email, first_name, last_name, password, salt
-) VALUES (
-  "${username}", "${email}", "${firstName}", "${lastName}", "${hash}", "${salt}" 
-)`;
-  await pool.query(query);
-};
 
 app.put("/api/signUp", async (req, res) => {
   try {
@@ -189,12 +100,12 @@ app.put("/api/signUp", async (req, res) => {
       database: "myDB",
     });
     const usernames = await getUsernames(pool);
-    if (usernames.includes(username) || !checkPassword(password)) {
+    if (usernames.includes(username) || !strongPassword(password)) {
       return res.status(400).json({ message: "unsuccessful" });
     }
     await createUser(pool, username, email, firstName, lastName, password);
-    const access = await accessToken(username);
-    const refresh = await refreshToken(username);
+    const access = AccessToken.create(username);
+    const refresh = RefreshToken.create(username);
     res.cookie("accessToken", access, {
       maxAge: TEN_MINUTES,
       httpOnly: true,

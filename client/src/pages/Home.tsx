@@ -78,7 +78,7 @@ export default function Home() {
         ) : (
           <div>
             <p className="text-red-600">
-              Please re-enter your username and password.
+              Authentication failed. Please try again.
             </p>
           </div>
         )}
