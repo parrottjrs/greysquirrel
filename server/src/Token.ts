@@ -31,7 +31,7 @@ class Token {
   }
 
   verify(token: any) {
-    return verify(token, this.publicKey);
+    return JSON.parse(JSON.stringify(verify(token, this.publicKey)));
   }
 }
 

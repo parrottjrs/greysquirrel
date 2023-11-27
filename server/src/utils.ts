@@ -1,3 +1,5 @@
+import { NextFunction, Request, Response } from "express";
+import { AccessToken, RefreshToken } from "./Token";
 import { pbkdf2Sync, randomBytes } from "crypto";
 
 export const getHash = (password: string) => {
@@ -30,10 +32,10 @@ export const getUsernames = async (pool: any) => {
   });
 };
 
-export const authenticate = async (
-  pool: any,
+export const authenticateUser = async (
   username: string,
-  password: string
+  password: string,
+  pool: any
 ) => {
   const { truePass, salt } = await getPassword(pool, username);
   const attemptedPass = pbkdf2Sync(
@@ -64,4 +66,39 @@ export const createUser = async (
   "${username}", "${email}", "${firstName}", "${lastName}", "${hash}", "${salt}" 
 )`;
   await pool.query(query);
+};
+
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { accessToken, refreshToken } = req.cookies;
+
+    if (!refreshToken) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Refresh token missing" });
+    }
+    try {
+      if (!accessToken) {
+        const verified = RefreshToken.verify(refreshToken);
+        const { username } = req.body.data;
+        if (verified.username !== username) {
+          return res.status(401).json({
+            message: "Unauthorized: Invalid username in refresh token",
+          });
+        }
+        const newToken = AccessToken.create(username);
+        res.cookie("accessToken", newToken, {
+          maxAge: 600000,
+          httpOnly: true,
+        });
+        next();
+      }
+    } catch (verificationError) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Invalid refresh token" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };

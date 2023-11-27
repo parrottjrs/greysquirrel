@@ -4,11 +4,10 @@ import WebSocket, { WebSocketServer } from "ws";
 import * as fs from "fs";
 import { v4 as uuid } from "uuid";
 import mysql from "mysql2/promise";
-import { sign, verify, decode } from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import { AccessToken, RefreshToken } from "./Token";
 import {
-  authenticate,
+  authenticateUser,
   createUser,
   getPassword,
   getUsernames,
@@ -19,8 +18,6 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8000;
-const ITERATIONS = 10000;
-const KEYLEN = 64;
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
 
@@ -29,6 +26,61 @@ const ONE_DAY = 8.64e7;
 // const absolutePath = path.resolve(relativePath);
 app.use(express.json());
 app.use(cookieParser());
+
+app.put("/api/signUp", async (req, res) => {
+  try {
+    const { username, email, firstName, lastName, password } = req.body.data;
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    const usernames = await getUsernames(pool);
+    if (usernames.includes(username) || !strongPassword(password)) {
+      return res.status(400).json({
+        message: "Bad request: Password does not meet site requirements",
+      });
+    }
+    await createUser(pool, username, email, firstName, lastName, password);
+    const access = AccessToken.create(username);
+    const refresh = RefreshToken.create(username);
+    res.cookie("accessToken", access, {
+      maxAge: TEN_MINUTES,
+      httpOnly: true,
+    });
+    res.cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true });
+    return res.status(201).json({ message: "Created" });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/api/signIn", async (req, res) => {
+  try {
+    const { username, password } = req.body.data;
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    const authenticated = await authenticateUser(username, password, pool);
+    if (!authenticated) {
+      return res.status(401).json({
+        message: "Unauthorized: Invalid username and/or password",
+      });
+    }
+    const access = AccessToken.create(username);
+    const refresh = RefreshToken.create(username);
+    res.cookie("accessToken", access, {
+      maxAge: TEN_MINUTES,
+      httpOnly: true,
+    });
+    res.cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true });
+    return res.status(202).json({ message: "Access granted" });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 app.get("/api", (req, res) => {
   try {
@@ -46,9 +98,9 @@ app.get("/api", (req, res) => {
 app.post("/api/createfile", (req, res) => {
   try {
     fs.writeFileSync(`./files/test.txt`, req.body.text);
-    return res.status(200).json({ message: "ok" });
+    return res.status(200).json({ message: "Created" });
   } catch (e) {
-    return res.status(500).json({ message: "Error caught" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 // app.use(express.static(absolutePath));
@@ -69,52 +121,6 @@ wss.on("connection", (connection) => {
       }
     });
   });
-});
-
-app.post("/api/signIn", async (req, res) => {
-  try {
-    const { username, password } = req.body.data;
-    const { accessToken, refreshToken } = req.cookies;
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-    const token = decode(refreshToken);
-    const authenticated = await authenticate(pool, username, password);
-    if (!authenticated) {
-      return res.status(400).json({ message: "unsuccessful" });
-    }
-    return res.status(202).json({ message: "successful" });
-  } catch (err) {
-    return res.status(500).json({ message: "error caught" });
-  }
-});
-
-app.put("/api/signUp", async (req, res) => {
-  try {
-    const { username, email, firstName, lastName, password } = req.body.data;
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-    const usernames = await getUsernames(pool);
-    if (usernames.includes(username) || !strongPassword(password)) {
-      return res.status(400).json({ message: "unsuccessful" });
-    }
-    await createUser(pool, username, email, firstName, lastName, password);
-    const access = AccessToken.create(username);
-    const refresh = RefreshToken.create(username);
-    res.cookie("accessToken", access, {
-      maxAge: TEN_MINUTES,
-      httpOnly: true,
-    });
-    res.cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true });
-    return res.status(201).json({ message: "success" });
-  } catch (err) {
-    return res.status(500).json("error caught");
-  }
 });
 
 server.listen(PORT, () => {
