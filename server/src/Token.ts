@@ -31,6 +31,9 @@ class Token {
   }
 
   verify(token: any) {
+    if (!token) {
+      return false;
+    }
     return JSON.parse(JSON.stringify(verify(token, this.publicKey)));
   }
 }

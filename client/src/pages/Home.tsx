@@ -20,7 +20,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   const fetchUser = async (data: Form) => {
-    const username = data.username;
+    const username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signIn", {
         method: "POST",
@@ -31,10 +31,10 @@ export default function Home() {
       const json = await response.json();
       const message = json.message;
       switch (message) {
-        case "successful":
+        case "Access granted":
           navigate(`/${username}/documents`);
           break;
-        case "unsuccessful":
+        case "Unauthorized: Invalid username and/or password":
           setChange(true);
           break;
         default:

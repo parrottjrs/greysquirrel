@@ -39,7 +39,7 @@ export default function Signup() {
   };
 
   const signup = async (data: Form) => {
-    const username = data.username;
+    const username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signUp", {
         method: "PUT",
@@ -49,10 +49,10 @@ export default function Signup() {
       const json = await response.json();
       const message = json.message;
       switch (message) {
-        case "unsuccessful":
+        case "Bad request: Password does not meet site requirements":
           setNameWarning(true);
           break;
-        case "success":
+        case "User created":
           navigate(`/${username}/documents`);
           break;
         default:

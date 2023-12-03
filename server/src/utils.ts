@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AccessToken, RefreshToken } from "./Token";
+import { AccessToken } from "./Token";
 import { pbkdf2Sync, randomBytes } from "crypto";
 
 export const getHash = (password: string) => {
@@ -14,6 +14,9 @@ export const getPassword = async (pool: any, username: string) => {
   const query = `SELECT password, salt from users WHERE user_name = "${username}"`;
   const [result, _] = await pool.query(query);
   const user = JSON.parse(JSON.stringify(result));
+  if (!user[0]) {
+    return { truePass: "", salt: "" };
+  }
   return { truePass: user[0].password, salt: user[0].salt };
 };
 
@@ -68,37 +71,21 @@ export const createUser = async (
   await pool.query(query);
 };
 
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { accessToken, refreshToken } = req.cookies;
+export interface AuthRequest extends Request {
+  username?: string;
+}
 
-    if (!refreshToken) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: Refresh token missing" });
-    }
-    try {
-      if (!accessToken) {
-        const verified = RefreshToken.verify(refreshToken);
-        const { username } = req.body.data;
-        if (verified.username !== username) {
-          return res.status(401).json({
-            message: "Unauthorized: Invalid username in refresh token",
-          });
-        }
-        const newToken = AccessToken.create(username);
-        res.cookie("accessToken", newToken, {
-          maxAge: 600000,
-          httpOnly: true,
-        });
-        next();
-      }
-    } catch (verificationError) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: Invalid refresh token" });
-    }
+export const authenticateToken = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { accessToken } = req.cookies;
+    const verified = AccessToken.verify(accessToken);
+    req.username = verified.username;
+    next();
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(403).json({ message: "Unauthorized: Missing or invalid token" });
   }
 };
