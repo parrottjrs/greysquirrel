@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { sign, verify, decode } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 class Token {
   privateKey: string;

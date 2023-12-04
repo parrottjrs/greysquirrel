@@ -95,7 +95,24 @@ app.post("/api/signIn", async (req, res) => {
   }
 });
 
-app.get("/api", (req, res) => {
+app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    console.log(req.username);
+    if (req.username === undefined) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized", username: "Token bearer undefined" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Authorized", username: req.username });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/api", (_, res) => {
   try {
     const data = fs.readFileSync("./files/test.txt", "utf-8");
     return res.send({ data });
@@ -107,7 +124,7 @@ app.get("/api", (req, res) => {
 // app.get("/", (req, res) => {
 //   res.sendFile(`${absolutePath}/index.html`);
 // });
-app.post("/api/refresh", (req, res) => {
+app.post("/api/refresh", async (req, res) => {
   const { refreshToken } = req.cookies;
   const { username } = req.body;
 
@@ -125,7 +142,7 @@ app.post("/api/refresh", (req, res) => {
       })
       .cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true })
       .status(200)
-      .json({ message: "Authorized" });
+      .json({ message: "Authorized", username: username });
   } catch (err) {
     console.error("Refresh token error", err);
     return res.status(500).json({ message: "Internal server error" });

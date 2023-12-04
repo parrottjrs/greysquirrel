@@ -56,10 +56,10 @@ export default function Signup() {
           navigate(`/${username}/documents`);
           break;
         default:
-          console.error("something went wrong");
+          console.error("An unexpected error has occurred");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

@@ -40,8 +40,8 @@ export default function Home() {
         default:
           console.error("an unexpected error has occured.");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
