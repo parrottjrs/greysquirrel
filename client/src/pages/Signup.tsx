@@ -39,7 +39,7 @@ export default function Signup() {
   };
 
   const signup = async (data: Form) => {
-    const username = data.username.toLowerCase();
+    data.username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signUp", {
         method: "PUT",
@@ -53,7 +53,7 @@ export default function Signup() {
           setNameWarning(true);
           break;
         case "User created":
-          navigate(`/${username}/documents`);
+          navigate(`/documents`);
           break;
         default:
           console.error("An unexpected error has occurred");

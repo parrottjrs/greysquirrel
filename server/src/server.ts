@@ -97,7 +97,6 @@ app.post("/api/signIn", async (req, res) => {
 
 app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
   try {
-    console.log(req.username);
     if (req.username === undefined) {
       return res
         .status(403)
@@ -127,7 +126,6 @@ app.get("/api", (_, res) => {
 app.post("/api/refresh", async (req, res) => {
   const { refreshToken } = req.cookies;
   const { username } = req.body;
-
   try {
     const verified = RefreshToken.verify(refreshToken);
     if (!refreshToken || !verified) {
@@ -147,6 +145,14 @@ app.post("/api/refresh", async (req, res) => {
     console.error("Refresh token error", err);
     return res.status(500).json({ message: "Internal server error" });
   }
+});
+
+app.get("/api/logout", async (req, res) => {
+  return res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .status(200)
+    .json({ message: "Logout successful" });
 });
 
 app.post("/api/createfile", (req, res) => {
