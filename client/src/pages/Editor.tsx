@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";
-import { useNavigate } from "react-router-dom";
+import LogoutButton from "../components/LogoutButton";
 
 export default function Editor() {
   const WS_URL = "ws://localhost:8000";
   const client = useWebSocket(WS_URL);
-
-  const navigate = useNavigate();
+  const [text, setText] = useState("");
 
   useWebSocket(WS_URL, {
     onMessage: (message) => {
@@ -40,24 +39,13 @@ export default function Editor() {
     filter: () => false,
   });
 
-  const [text, setText] = useState("");
-
   const handleChange = (text: string) => {
     client.sendMessage(text);
   };
 
-  const logout = async () => {
-    try {
-      await fetch("/api/logout");
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <div className="App">
-      <button onClick={() => logout()}>Sign out</button>
+      <LogoutButton />
       <header className="App-header">
         <ReactQuill
           className="quill"

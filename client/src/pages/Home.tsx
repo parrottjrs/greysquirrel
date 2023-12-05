@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import FormInput from "../components/FormInput";
 
 type Form = {
   username: string;
@@ -53,26 +54,19 @@ export default function Home() {
           fetchUser(data);
         })}
       >
-        <div>
-          <label htmlFor="username">{"username"}</label>
-          <input
-            id="username"
-            type="text"
-            {...register("username")}
-            autoComplete="off"
-            required={true}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">{"password"}</label>
-          <input
-            id="password"
-            type="password"
-            {...register("password")}
-            autoComplete="off"
-            required={true}
-          />
-        </div>
+        <FormInput
+          id="username"
+          type="text"
+          register={register("username")}
+          required={true}
+        />
+        <FormInput
+          id={"password"}
+          type={"password"}
+          register={register("password")}
+          required={true}
+        />
+
         {!change ? (
           <div />
         ) : (
@@ -84,10 +78,12 @@ export default function Home() {
         )}
         <input type="submit" value="sign in" />
       </form>
-      <label htmlFor="signup">{"New to ://greysquirrel?"}</label>
-      <a id="signup" href="/#signup">
-        Sign up here!
-      </a>
+      <label htmlFor="signup">{"New to ://greysquirrel?"} </label>
+      <button>
+        <a id="signup" href="/#signup">
+          Sign up here!
+        </a>
+      </button>
     </div>
   );
 }

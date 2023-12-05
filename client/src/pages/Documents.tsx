@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "../components/LogoutButton";
 
 export default function Documents() {
   const [authorization, setAuthorization] = useState(false);
@@ -18,6 +19,7 @@ export default function Documents() {
       console.error(err);
     }
   };
+
   const fetchDocuments = async () => {
     try {
       const response = await fetch("/api/documents");
@@ -42,22 +44,16 @@ export default function Documents() {
       console.error(err);
     }
   };
-  const logout = async () => {
-    try {
-      await fetch("/api/logout");
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   fetchDocuments();
   return (
     authorization && (
       <div>
-        <button onClick={() => logout()}>Sign out</button>
+        <LogoutButton />
         <h1>Documents</h1>
-        <a href="#/editor">Create Document</a>
+        <button>
+          <a href="#/editor">Create Document</a>
+        </button>
       </div>
     )
   );
