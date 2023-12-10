@@ -29,16 +29,6 @@ export default function Signup() {
     },
   });
 
-  const checkPassword = (password: string) => {
-    const restrictions =
-      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    return restrictions.test(password);
-  };
-
-  const handleChange = () => {
-    setChecked(!checked);
-  };
-
   const signup = async (data: Form) => {
     data.username = data.username.toLowerCase();
     try {
@@ -58,9 +48,40 @@ export default function Signup() {
           break;
         default:
           console.error("An unexpected error has occurred");
+          break;
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const checkPassword = (password: string) => {
+    const restrictions =
+      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return restrictions.test(password);
+  };
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+
+  const handlePasswordValidation = (data: Form) => {
+    switch (checkPassword(data.password)) {
+      case false:
+        setPassWarning(true);
+        data.password !== data.passCheck
+          ? setPassMatch(true)
+          : setPassMatch(false);
+        break;
+      case true:
+        setPassWarning(false);
+        if (data.password !== data.passCheck) {
+          return setPassMatch(true);
+        }
+        signup(data);
+        break;
+      default:
+        return console.error("Something went wrong");
     }
   };
 
@@ -69,20 +90,7 @@ export default function Signup() {
       <h1>Sign Up</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          if (!checkPassword(data.password)) {
-            setPassWarning(true);
-            if (data.password !== data.passCheck) {
-              setPassMatch(true);
-              return;
-            }
-            return;
-          }
-          setPassWarning(false);
-          if (data.password !== data.passCheck) {
-            setPassMatch(true);
-            return;
-          }
-          signup(data);
+          handlePasswordValidation(data);
         })}
       >
         <FormInput

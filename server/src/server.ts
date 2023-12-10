@@ -10,7 +10,10 @@ import {
   authenticateToken,
   authenticateUser,
   AuthRequest,
+  createDocument,
   createUser,
+  getDocument,
+  getId,
   getUsernames,
   strongPassword,
 } from "./utils";
@@ -49,8 +52,9 @@ app.put("/api/signUp", async (req, res) => {
       });
     }
     await createUser(pool, username, email, firstName, lastName, password);
-    const access = AccessToken.create(username);
-    const refresh = RefreshToken.create(username);
+    const id = await getId(pool, username);
+    const access = AccessToken.create(id);
+    const refresh = RefreshToken.create(id);
     return res
       .cookie("accessToken", access, {
         maxAge: TEN_MINUTES,
@@ -79,8 +83,9 @@ app.post("/api/signIn", async (req, res) => {
         message: "Unauthorized: Invalid username and/or password",
       });
     }
-    const access = AccessToken.create(username);
-    const refresh = RefreshToken.create(username);
+    const id = await getId(pool, username);
+    const access = AccessToken.create(id);
+    const refresh = RefreshToken.create(id);
     return res
       .cookie("accessToken", access, {
         maxAge: TEN_MINUTES,
@@ -95,21 +100,23 @@ app.post("/api/signIn", async (req, res) => {
   }
 });
 
-app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    if (req.username === undefined) {
+app.get(
+  "/api/authenticate",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
       return res
-        .status(403)
-        .json({ message: "Unauthorized", username: "Token bearer undefined" });
+        .status(200)
+        .json({ message: "Authorized", userId: req.userId });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
-    return res
-      .status(200)
-      .json({ message: "Authorized", username: req.username });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
   }
-});
+);
 
 app.get("/api", (_, res) => {
   try {
@@ -123,16 +130,16 @@ app.get("/api", (_, res) => {
 // app.get("/", (req, res) => {
 //   res.sendFile(`${absolutePath}/index.html`);
 // });
+
 app.post("/api/refresh", async (req, res) => {
-  const { refreshToken } = req.cookies;
-  const { username } = req.body;
   try {
+    const { refreshToken } = req.cookies;
     const verified = RefreshToken.verify(refreshToken);
     if (!refreshToken || !verified) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const access = AccessToken.create(username);
-    const refresh = RefreshToken.create(username);
+    const access = AccessToken.create(verified.userId);
+    const refresh = RefreshToken.create(verified.userId);
     return res
       .cookie("accessToken", access, {
         maxAge: TEN_MINUTES,
@@ -140,7 +147,7 @@ app.post("/api/refresh", async (req, res) => {
       })
       .cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true })
       .status(200)
-      .json({ message: "Authorized", username: username });
+      .json({ message: "Authorized", userId: verified.userId });
   } catch (err) {
     console.error("Refresh token error", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -148,20 +155,36 @@ app.post("/api/refresh", async (req, res) => {
 });
 
 app.get("/api/logout", async (req, res) => {
-  return res
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
-    .status(200)
-    .json({ message: "Logout successful" });
+  try {
+    return res
+      .clearCookie("accessToken")
+      .clearCookie("refreshToken")
+      .status(200)
+      .json({ message: "Logout successful" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-app.post("/api/createfile", (req, res) => {
+app.post("/api/create", async (req, res) => {
   try {
-    fs.writeFileSync(`./files/test.txt`, req.body.text);
-    return res.status(200).json({ message: "Created" });
+    const { docId, userId } = req.body;
+    const connection = await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+
+    if (!docId) {
+      const id = await createDocument(connection, userId);
+      return res.status(201).json({ message: "created", docId: id });
+    }
+    const doc = await getDocument(connection, docId);
+    return res.status(200).json({ message: "exists", document: doc });
   } catch (err) {
-    console.error("Error creating file", err);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 // app.use(express.static(absolutePath));
@@ -182,6 +205,21 @@ wss.on("connection", (connection) => {
       }
     });
   });
+});
+
+app.get("/api/test", async (req, res) => {
+  try {
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    const name = "jordan";
+    const userId = await getId(pool, name);
+    res.status(200).json({ userId: userId });
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 server.listen(PORT, () => {

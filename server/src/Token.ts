@@ -15,14 +15,14 @@ class Token {
     this.expiration = expirationMs;
   }
 
-  create(username: string) {
+  create(userId: number) {
     const expiration = Math.floor(Date.now()) + this.expiration;
     const header = {
       alg: "RS256",
       typ: "JWT",
     };
     const payload = {
-      username: username,
+      userId: userId,
       iat: Date.now(),
       exp: expiration,
     };

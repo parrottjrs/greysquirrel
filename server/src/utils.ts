@@ -1,3 +1,4 @@
+import mysql from "mysql2/promise";
 import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "./Token";
 import { pbkdf2Sync, randomBytes } from "crypto";
@@ -18,6 +19,13 @@ export const getPassword = async (pool: any, username: string) => {
     return { truePass: "", salt: "" };
   }
   return { truePass: user[0].password, salt: user[0].salt };
+};
+
+export const getId = async (pool: any, username: string) => {
+  const query = `SELECT user_id from users WHERE user_name = "${username}"`;
+  const [result, _] = await pool.query(query);
+  const id = JSON.parse(JSON.stringify(result));
+  return id[0].user_id;
 };
 
 export const strongPassword = (password: string) => {
@@ -72,7 +80,7 @@ export const createUser = async (
 };
 
 export interface AuthRequest extends Request {
-  username?: string;
+  userId?: number;
 }
 
 export const authenticateToken = (
@@ -83,9 +91,37 @@ export const authenticateToken = (
   try {
     const { accessToken } = req.cookies;
     const verified = AccessToken.verify(accessToken);
-    req.username = verified.username;
+    req.userId = verified.userId;
     next();
   } catch (err) {
     res.status(403).json({ message: "Unauthorized: Missing or invalid token" });
   }
+};
+
+const connection = async () => {
+  return mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "myDB",
+  });
+};
+
+export const createDocument = async (con: any, userId: number) => {
+  const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const query1 = `
+  INSERT INTO documents (user_id, created, last_edit) 
+  VALUES ("${userId}", "${date}", "${date}");
+  `;
+  const query2 = `SELECT LAST_INSERT_ID() as docId`;
+  con.query(query1);
+  const [result] = await con.query(query2);
+  const id = JSON.parse(JSON.stringify(result));
+  return id[0].docId;
+};
+
+export const getDocument = async (con: any, docId: number) => {
+  const query = `SELECT title, content FROM documents WHERE doc_id = "${docId}"`;
+  const [result, _] = await con.query(query);
+  const document = await JSON.parse(JSON.stringify(result));
+  return { title: document[0].title, content: document[0].content };
 };
