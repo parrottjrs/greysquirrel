@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/documents" element={<Documents />} />
-        <Route path="/editor" element={<Editor />} />
+        <Route path="/editor:id" element={<Editor />} />
         <Route path="/expired" element={<SessionExpired />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>

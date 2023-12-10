@@ -1,7 +1,6 @@
-import mysql from "mysql2/promise";
 import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "./Token";
-import { pbkdf2Sync, randomBytes } from "crypto";
+import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
 
 export const getHash = (password: string) => {
   const salt = randomBytes(64).toString("base64");
@@ -98,30 +97,33 @@ export const authenticateToken = (
   }
 };
 
-const connection = async () => {
-  return mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "myDB",
-  });
-};
-
 export const createDocument = async (con: any, userId: number) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const uuid = randomUUID();
   const query1 = `
-  INSERT INTO documents (user_id, created, last_edit) 
-  VALUES ("${userId}", "${date}", "${date}");
+  INSERT INTO documents (user_id, created, last_edit, uuid) 
+  VALUES ("${userId}", "${date}", "${date}", "${uuid}");
   `;
-  const query2 = `SELECT LAST_INSERT_ID() as docId`;
+  const query2 = `SELECT uuid FROM documents WHERE doc_id = LAST_INSERT_ID()`;
   con.query(query1);
-  const [result] = await con.query(query2);
+  const [result, _] = await con.query(query2);
   const id = JSON.parse(JSON.stringify(result));
-  return id[0].docId;
+  return id[0].uuid;
 };
 
-export const getDocument = async (con: any, docId: number) => {
-  const query = `SELECT title, content FROM documents WHERE doc_id = "${docId}"`;
+export const getDocument = async (con: any, uuid: number) => {
+  const query = `SELECT uuid, title, content FROM documents WHERE uuid = "${uuid}"`;
   const [result, _] = await con.query(query);
   const document = await JSON.parse(JSON.stringify(result));
-  return { title: document[0].title, content: document[0].content };
+  return {
+    docId: document[0].uuid,
+    title: document[0].title,
+    content: document[0].content,
+  };
+};
+
+export const allDocuments = async (pool: any, userId: number) => {
+  const query = `SELECT uuid, title, content FROM documents WHERE user_id = "${userId}"`;
+  const [result, _] = await pool.query(query);
+  return result;
 };

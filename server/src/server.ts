@@ -7,6 +7,7 @@ import mysql from "mysql2/promise";
 import cookieParser from "cookie-parser";
 import { AccessToken, RefreshToken } from "./Token";
 import {
+  allDocuments,
   authenticateToken,
   authenticateUser,
   AuthRequest,
@@ -108,9 +109,7 @@ app.get(
       if (req.userId === undefined) {
         return res.status(403).json({ message: "Unauthorized" });
       }
-      return res
-        .status(200)
-        .json({ message: "Authorized", userId: req.userId });
+      return res.status(200).json({ message: "Authorized" });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
@@ -118,12 +117,26 @@ app.get(
   }
 );
 
-app.get("/api", (_, res) => {
+app.get("/api/content", (req, res) => {
   try {
-    const data = fs.readFileSync("./files/test.txt", "utf-8");
-    return res.send({ data });
+    const { accessToken } = req.cookies;
+    const verified = AccessToken.verify(accessToken);
+    if (!verified) {
+      return res.status(403).json("Unauthorized");
+    }
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    const uuid = req.body;
+    const doc = getDocument(pool, uuid);
+    if (!doc) {
+      return res.status(404).json("File not found");
+    }
+    return res.status(200).json({ message: "ok", document: doc });
   } catch (err) {
-    return res.status(404).json({ message: "File not found" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -147,7 +160,7 @@ app.post("/api/refresh", async (req, res) => {
       })
       .cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true })
       .status(200)
-      .json({ message: "Authorized", userId: verified.userId });
+      .json({ message: "Authorized" });
   } catch (err) {
     console.error("Refresh token error", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -169,25 +182,43 @@ app.get("/api/logout", async (req, res) => {
 
 app.post("/api/create", async (req, res) => {
   try {
-    const { docId, userId } = req.body;
+    const { uuid, userId } = req.body;
     const connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
       database: "myDB",
     });
 
-    if (!docId) {
-      const id = await createDocument(connection, userId);
-      return res.status(201).json({ message: "created", docId: id });
+    if (!uuid) {
+      const uuid = await createDocument(connection, userId);
+      return res.status(201).json({ message: "created", docId: uuid });
     }
-    const doc = await getDocument(connection, docId);
+    const doc = await getDocument(connection, uuid);
     return res.status(200).json({ message: "exists", document: doc });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 // app.use(express.static(absolutePath));
+
+app.get("/api/documents", async (req, res) => {
+  try {
+    const { accessToken } = req.cookies;
+    const { userId } = AccessToken.verify(accessToken);
+    const pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      database: "myDB",
+    });
+    let documents = await allDocuments(pool, userId);
+    res.status(200).send({ message: "ok", docs: documents });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 const clients: any = {};
 
@@ -205,21 +236,6 @@ wss.on("connection", (connection) => {
       }
     });
   });
-});
-
-app.get("/api/test", async (req, res) => {
-  try {
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-    const name = "jordan";
-    const userId = await getId(pool, name);
-    res.status(200).json({ userId: userId });
-  } catch (err) {
-    console.error(err);
-  }
 });
 
 server.listen(PORT, () => {

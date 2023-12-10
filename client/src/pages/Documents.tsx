@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
+import DocumentsGrid from "../components/DocumentsGrid";
 
 export default function Documents() {
   const [authorization, setAuthorization] = useState(false);
   const navigate = useNavigate();
 
-  const refresh = async (userId: number) => {
+  const refresh = async () => {
     try {
       const response = await fetch("/api/refresh", {
         method: "POST",
@@ -18,14 +19,13 @@ export default function Documents() {
     }
   };
 
-  const handleFetchDocuments = async (json: any) => {
-    const { message, userId } = json;
+  const handleAuthenticate = async (message: any) => {
     switch (message) {
       case "Authorized":
         setAuthorization(true);
         break;
       case "Unauthorized":
-        const auth = await refresh(userId);
+        const auth = await refresh();
         if (auth.message === "Unauthorized") {
           setAuthorization(false);
           navigate("/expired");
@@ -38,23 +38,24 @@ export default function Documents() {
     }
   };
 
-  const fetchDocuments = async () => {
+  const authenticate = async () => {
     try {
       const response = await fetch("/api/authenticate");
       const json = await response.json();
-      handleFetchDocuments(json);
+      handleAuthenticate(json.message);
     } catch (err) {
       console.error(err);
     }
   };
 
-  fetchDocuments();
+  authenticate();
 
   return (
     authorization && (
       <div>
         <LogoutButton />
         <h1>Documents</h1>
+        <DocumentsGrid />
         <button>
           <a href="#/editor">Create Document</a>
         </button>
