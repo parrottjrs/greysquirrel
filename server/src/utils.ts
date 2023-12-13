@@ -11,7 +11,10 @@ export const getHash = (password: string) => {
 };
 
 export const getPassword = async (pool: any, username: string) => {
-  const query = `SELECT password, salt from users WHERE user_name = "${username}"`;
+  const query = `
+  SELECT password, salt FROM users
+  WHERE user_name = "${username}"
+  `;
   const [result, _] = await pool.query(query);
   const user = JSON.parse(JSON.stringify(result));
   if (!user[0]) {
@@ -21,7 +24,10 @@ export const getPassword = async (pool: any, username: string) => {
 };
 
 export const getId = async (pool: any, username: string) => {
-  const query = `SELECT user_id from users WHERE user_name = "${username}"`;
+  const query = `
+  SELECT user_id FROM users 
+  WHERE user_name = "${username}"
+  `;
   const [result, _] = await pool.query(query);
   const id = JSON.parse(JSON.stringify(result));
   return id[0].user_id;
@@ -70,9 +76,11 @@ export const createUser = async (
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
   );
-  const query = `INSERT INTO users (
-  user_name, email, first_name, last_name, password, salt
-) VALUES (
+  const query = `
+  INSERT INTO users (
+    user_name, email, first_name, last_name, password, salt
+    ) 
+  VALUES (
   "${username}", "${email}", "${firstName}", "${lastName}", "${hash}", "${salt}" 
 )`;
   await pool.query(query);
@@ -80,6 +88,7 @@ export const createUser = async (
 
 export interface AuthRequest extends Request {
   userId?: number;
+  message?: string;
 }
 
 export const authenticateToken = (
@@ -99,31 +108,36 @@ export const authenticateToken = (
 
 export const createDocument = async (con: any, userId: number) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-  const uuid = randomUUID();
   const query1 = `
-  INSERT INTO documents (user_id, created, last_edit, uuid) 
-  VALUES ("${userId}", "${date}", "${date}", "${uuid}");
+  INSERT INTO documents (user_id, created, last_edit) 
+  VALUES ("${userId}", "${date}", "${date}")
   `;
-  const query2 = `SELECT uuid FROM documents WHERE doc_id = LAST_INSERT_ID()`;
+  const query2 = `SELECT LAST_INSERT_ID() as docId`;
   con.query(query1);
   const [result, _] = await con.query(query2);
   const id = JSON.parse(JSON.stringify(result));
-  return id[0].uuid;
+  return id[0].docId;
 };
 
-export const getDocument = async (con: any, uuid: number) => {
-  const query = `SELECT uuid, title, content FROM documents WHERE uuid = "${uuid}"`;
+export const getDocument = async (con: any, docId: number, userId: number) => {
+  const query = `
+  SELECT doc_id, user_id, title, content FROM documents 
+  WHERE doc_id = "${docId}"
+  `;
   const [result, _] = await con.query(query);
   const document = await JSON.parse(JSON.stringify(result));
+  if (document[0].user_id !== userId) {
+    return { message: "Unauthorized" };
+  }
   return {
-    docId: document[0].uuid,
+    docId: document[0].doc_id,
     title: document[0].title,
     content: document[0].content,
   };
 };
 
 export const allDocuments = async (pool: any, userId: number) => {
-  const query = `SELECT uuid, title, content FROM documents WHERE user_id = "${userId}"`;
+  const query = `SELECT doc_id, title, content FROM documents WHERE user_id = "${userId}"`;
   const [result, _] = await pool.query(query);
   return result;
 };

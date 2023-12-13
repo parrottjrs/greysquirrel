@@ -32,15 +32,16 @@ const ONE_DAY = 8.64e7;
 app.use(express.json());
 app.use(cookieParser());
 
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  database: "myDB",
+});
+
 app.put("/api/signUp", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
     const username = req.body.data.username.toLowerCase();
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
     const usernames = await getUsernames(pool);
     if (usernames.includes(username)) {
       return res.status(400).json({
@@ -73,11 +74,6 @@ app.put("/api/signUp", async (req, res) => {
 app.post("/api/signIn", async (req, res) => {
   try {
     const { username, password } = req.body.data;
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
     const authenticated = await authenticateUser(username, password, pool);
     if (!authenticated) {
       return res.status(401).json({
@@ -117,20 +113,13 @@ app.get(
   }
 );
 
-app.get("/api/content", (req, res) => {
+app.get("/api/content", authenticateToken, (req: AuthRequest, res) => {
   try {
-    const { accessToken } = req.cookies;
-    const verified = AccessToken.verify(accessToken);
-    if (!verified) {
+    if (req.userId === undefined) {
       return res.status(403).json("Unauthorized");
     }
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-    const uuid = req.body;
-    const doc = getDocument(pool, uuid);
+    const docId = req.body;
+    const doc = getDocument(pool, docId, req.userId);
     if (!doc) {
       return res.status(404).json("File not found");
     }
@@ -180,40 +169,46 @@ app.get("/api/logout", async (req, res) => {
   }
 });
 
-app.post("/api/create", async (req, res) => {
+app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "myDB",
+  });
   try {
-    const { uuid, userId } = req.body;
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-
-    if (!uuid) {
-      const uuid = await createDocument(connection, userId);
-      return res.status(201).json({ message: "created", docId: uuid });
+    if (req.userId === undefined) {
+      return res.status(403).json("Unauthorized");
     }
-    const doc = await getDocument(connection, uuid);
+
+    const { docId } = req.body;
+
+    if (!docId) {
+      const id = await createDocument(connection, req.userId);
+      connection.end();
+      return res.status(201).json({ message: "created", docId: id });
+    }
+    const doc = await getDocument(connection, docId, req.userId);
+    connection.end();
+    if (doc.message === "Unauthorized") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
     return res.status(200).json({ message: "exists", document: doc });
   } catch (err) {
     console.error(err);
+    connection.end();
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
 // app.use(express.static(absolutePath));
 
-app.get("/api/documents", async (req, res) => {
+app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const { accessToken } = req.cookies;
-    const { userId } = AccessToken.verify(accessToken);
-    const pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      database: "myDB",
-    });
-    let documents = await allDocuments(pool, userId);
-    res.status(200).send({ message: "ok", docs: documents });
+    if (req.userId === undefined) {
+      return res.status(403).json("Unauthorized");
+    }
+    let documents = await allDocuments(pool, req.userId);
+    res.status(200).send({ message: "Authorized", docs: documents });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

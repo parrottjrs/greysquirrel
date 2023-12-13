@@ -7,45 +7,62 @@ import { useParams } from "react-router-dom";
 
 export default function Editor() {
   const params = useParams();
-  const docId = params.id;
-
+  const docId = params.docId;
+  console.log(docId);
   const WS_URL = "ws://localhost:8000";
   const client = useWebSocket(WS_URL);
   const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
   const timeoutDelayMs = 10000;
 
   const fetchContent = async () => {
-    const response = await fetch("/api/content", {
-      method: "GET",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ uuid: docId }),
-    });
-    const json = await response.json();
-    return json;
+    try {
+      const response = await fetch("/api/create", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: docId }),
+      });
+      const json = await response.json();
+      const doc = json.document;
+      const { title, content } = doc;
+      title ? setTitle(title) : setTitle("");
+      content ? setText(content) : setText("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // const fetchSave = async () => {
-  //   try {
-  //     const response = await fetch("/api/save", {
-  //       method: "POST",
-  //       headers: { "content-type": "application/json" },
-  //       body: JSON.stringify({ text: text }),
-  //     });
-  //     const json = response.json();
-  //     console.log(json.message);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const fetchSave = async () => {
+    try {
+      const response = await fetch("/api/save", {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: docId, title: title, content: text }),
+      });
+      const json = response.json();
+      console.log(json);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  // let timer: any = undefined;
+  let timer: any = undefined;
 
-  // const handleChange = () => {
-  //   setText(text);
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  // useEffect(() => {
   //   clearTimeout(timer);
   //   timer = setTimeout(fetchSave, timeoutDelayMs);
-  // };
+  // }, [text]);
 
+  const handleChange = () => {
+    setText(text);
+  };
+  const handleTitle = () => {
+    setTitle(title);
+  };
   // useWebSocket(WS_URL, {
   //   onMessage: (message) => {
   //     setText(message.data);
@@ -75,14 +92,10 @@ export default function Editor() {
   //   client.sendMessage(text);
   // };
 
-  const handleChange = () => {
-    setText(text);
-  };
-
   return (
     <div className="App">
       <LogoutButton />
-      <header className="App-header">
+      <div>
         <ReactQuill
           className="quill"
           theme="snow"
@@ -90,7 +103,7 @@ export default function Editor() {
           onChange={handleChange}
           preserveWhitespace={true}
         />
-      </header>
+      </div>
     </div>
   );
 }

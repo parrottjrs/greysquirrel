@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 interface Document extends Object {
-  uuid?: string;
+  doc_id?: number;
   title?: string;
   content?: string;
 }
@@ -23,17 +23,11 @@ export default function DocumentsGrid() {
   }, []);
 
   return documents.map((document: Document) => {
-    const { title, uuid } = document;
+    const { title, doc_id } = document;
     return (
-      <div key={uuid}>
-        <a href={`#/editor:${uuid}`}>{!title ? "hello world" : title}</a>
+      <div key={doc_id}>
+        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
       </div>
     );
   });
-
-  // documents.then((documents) => {
-  //   documents.forEach((document: Document) => {
-  //     return <p>{document.title}</p>;
-  //   });
-  // });
 }
