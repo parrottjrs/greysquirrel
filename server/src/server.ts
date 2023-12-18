@@ -16,6 +16,7 @@ import {
   getDocument,
   getId,
   getUsernames,
+  saveDocument,
   strongPassword,
 } from "./utils";
 
@@ -67,7 +68,7 @@ app.put("/api/signUp", async (req, res) => {
       .json({ message: "User created" });
   } catch (err) {
     console.error("Refresh token error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", err });
   }
 });
 
@@ -93,7 +94,7 @@ app.post("/api/signIn", async (req, res) => {
       .json({ message: "Access granted" });
   } catch (err) {
     console.error("Authorization error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", err });
   }
 });
 
@@ -108,7 +109,7 @@ app.get(
       return res.status(200).json({ message: "Authorized" });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error", err });
     }
   }
 );
@@ -125,7 +126,7 @@ app.get("/api/content", authenticateToken, (req: AuthRequest, res) => {
     }
     return res.status(200).json({ message: "ok", document: doc });
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", err });
   }
 });
 
@@ -152,7 +153,7 @@ app.post("/api/refresh", async (req, res) => {
       .json({ message: "Authorized" });
   } catch (err) {
     console.error("Refresh token error", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", err });
   }
 });
 
@@ -177,11 +178,9 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
   });
   try {
     if (req.userId === undefined) {
-      return res.status(403).json("Unauthorized");
+      return res.status(403).json({ message: "Unauthorized" });
     }
-
     const { docId } = req.body;
-
     if (!docId) {
       const id = await createDocument(connection, req.userId);
       connection.end();
@@ -196,7 +195,22 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
   } catch (err) {
     console.error(err);
     connection.end();
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", err });
+  }
+});
+
+app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
+  console.log(req.body);
+  try {
+    if (req.userId === undefined) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const { doc } = req.body;
+    const saved = await saveDocument(pool, doc);
+    return res.status(200).json({ message: saved });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error", err });
   }
 });
 
@@ -211,7 +225,7 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     res.status(200).send({ message: "Authorized", docs: documents });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", err });
   }
 });
 

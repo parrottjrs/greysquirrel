@@ -86,6 +86,13 @@ export const createUser = async (
   await pool.query(query);
 };
 
+type Document = {
+  docId: number;
+  lastEdit: Date;
+  title: string;
+  content: string;
+};
+
 export interface AuthRequest extends Request {
   userId?: number;
   message?: string;
@@ -140,4 +147,17 @@ export const allDocuments = async (pool: any, userId: number) => {
   const query = `SELECT doc_id, title, content FROM documents WHERE user_id = "${userId}"`;
   const [result, _] = await pool.query(query);
   return result;
+};
+
+export const saveDocument = async (pool: any, doc: Document) => {
+  const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const { docId, title, content } = doc;
+  console.log(content);
+  const query = `
+  UPDATE documents
+  SET last_edit = "${date}", title = "${title}", content = "${content}"
+  WHERE doc_id = "${docId}"
+  `;
+  const [result, _] = await pool.query(query);
+  return "saved!";
 };

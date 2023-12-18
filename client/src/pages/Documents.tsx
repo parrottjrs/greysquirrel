@@ -48,6 +48,20 @@ export default function Documents() {
     }
   };
 
+  const fetchCreate = async () => {
+    const response = await fetch("/api/create", {
+      method: "POST",
+      headers: { "content-type": "application /json" },
+    });
+    const json = await response.json();
+    return json.docId;
+  };
+
+  const handleClick = async () => {
+    const id = await fetchCreate();
+    navigate(`/editor/${id}`);
+  };
+
   authenticate();
 
   return (
@@ -56,9 +70,7 @@ export default function Documents() {
         <LogoutButton />
         <h1>Documents</h1>
         <DocumentsGrid />
-        <button>
-          <a href="#/editor">Create Document</a>
-        </button>
+        <button onClick={handleClick}>Create Document</button>
       </div>
     )
   );
