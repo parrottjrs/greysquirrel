@@ -13,7 +13,6 @@ export default function Editor() {
   const client = useWebSocket(WS_URL);
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
-
   const timeoutDelayMs = 10000;
 
   const fetchSave = async () => {

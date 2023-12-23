@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { STYLES } from "../utils/consts";
 
 interface FormInputProps {
   id: string;
@@ -31,9 +32,12 @@ export default function FormInput({
     }
   };
   return (
-    <div>
-      <label htmlFor={id}>{label(id)}: </label>
+    <div className="mt-10">
+      <label className={STYLES.LABEL} htmlFor={id}>
+        {label(id)}:{" "}
+      </label>
       <input
+        className={STYLES.FORM_INPUT}
         id={id}
         type={type}
         {...register}

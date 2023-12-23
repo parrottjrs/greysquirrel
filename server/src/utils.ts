@@ -115,12 +115,13 @@ export const authenticateToken = (
 
 export const createDocument = async (con: any, userId: number) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const values = [userId, date, date];
   const query1 = `
   INSERT INTO documents (user_id, created, last_edit) 
-  VALUES ("${userId}", "${date}", "${date}")
+  VALUES (?, ?, ?)
   `;
   const query2 = `SELECT LAST_INSERT_ID() as docId`;
-  con.query(query1);
+  con.query(query1, values);
   const [result, _] = await con.query(query2);
   const id = JSON.parse(JSON.stringify(result));
   return id[0].docId;
@@ -128,10 +129,11 @@ export const createDocument = async (con: any, userId: number) => {
 
 export const getDocument = async (con: any, docId: number, userId: number) => {
   const query = `
-  SELECT doc_id, user_id, title, content FROM documents 
-  WHERE doc_id = "${docId}"
+  SELECT doc_id, user_id, title, content 
+  FROM documents 
+  WHERE doc_id = ?
   `;
-  const [result, _] = await con.query(query);
+  const [result, _] = await con.query(query, docId);
   const document = await JSON.parse(JSON.stringify(result));
   if (document[0].user_id !== userId) {
     return { message: "Unauthorized" };
@@ -144,20 +146,49 @@ export const getDocument = async (con: any, docId: number, userId: number) => {
 };
 
 export const allDocuments = async (pool: any, userId: number) => {
-  const query = `SELECT doc_id, title, content FROM documents WHERE user_id = "${userId}"`;
-  const [result, _] = await pool.query(query);
+  const query = `
+  SELECT doc_id, title, content 
+  FROM documents 
+  WHERE user_id = ?`;
+  const [result, _] = await pool.query(query, userId);
   return result;
 };
 
 export const saveDocument = async (pool: any, doc: Document) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-  const { docId, title, content } = doc;
-  console.log(content);
+  const values = [date, doc.title, doc.content, doc.docId];
   const query = `
   UPDATE documents
-  SET last_edit = "${date}", title = "${title}", content = "${content}"
-  WHERE doc_id = "${docId}"
+  SET last_edit = ?, title = ?, content = ?
+  WHERE doc_id = ?
   `;
-  const [result, _] = await pool.query(query);
-  return "saved!";
+
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Document saved successfully" }
+    : {
+        success: false,
+        message: "Document not found or unauthorized",
+        error: result.message,
+      };
+};
+
+export const deleteDocument = async (
+  pool: any,
+  docId: number,
+  userId: number
+) => {
+  const query = `
+  DELETE FROM documents 
+  WHERE doc_id = ? AND user_id = ?
+  `;
+  const values = [docId, userId];
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Document deleted successfully" }
+    : {
+        success: false,
+        message: "Document not found or unauthorized",
+        error: result.message,
+      };
 };

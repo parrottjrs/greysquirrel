@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Documents from "./pages/Documents";
 import NotFound from "./pages/404";
 import SessionExpired from "./pages/SessionExpired";
+import Signin from "./pages/Home";
 
 export default function App() {
   return (

@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
+import { STYLES } from "../utils/consts";
+import { AlertCircle } from "lucide-react";
 
 type Form = {
   username: string;
   password: string;
 };
 
-export default function Home() {
+export default function Signin() {
   const [change, setChange] = useState(false);
 
   const { register, handleSubmit } = useForm({
@@ -47,43 +49,56 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>://greysquirrel</h1>
-      <form
-        onSubmit={handleSubmit((data) => {
-          fetchUser(data);
-        })}
-      >
-        <FormInput
-          id="username"
-          type="text"
-          register={register("username")}
-          required={true}
-        />
-        <FormInput
-          id={"password"}
-          type={"password"}
-          register={register("password")}
-          required={true}
-        />
+    <div className={STYLES.CENTER}>
+      <h1 className={STYLES.WELCOME_HEADER}>Welcome Back!</h1>
 
-        {!change ? (
+      <p className={STYLES.INSTRUCTIONS}>
+        Enter your credentials to access your account
+      </p>
+      <div>
+        <form
+          className={STYLES.FLEX_COL_CENTER}
+          onSubmit={handleSubmit((data) => {
+            fetchUser(data);
+          })}
+        >
+          <FormInput
+            id="Username"
+            type="text"
+            register={register("username")}
+            required={true}
+          />
+          <FormInput
+            id={"Password"}
+            type={"password"}
+            register={register("password")}
+            required={true}
+          />
+
+          {change && (
+            <div className="flex w-full">
+              <AlertCircle className={STYLES.ALERT_CIRCLE} />
+              <p className={STYLES.ALERT_TEXT}>
+                Authentication failed. Please try again.
+              </p>
+            </div>
+          )}
           <div />
-        ) : (
-          <div>
-            <p className="text-red-600">
-              Authentication failed. Please try again.
-            </p>
-          </div>
-        )}
-        <input type="submit" value="sign in" />
-      </form>
-      <label htmlFor="signup">{"New to ://greysquirrel?"} </label>
-      <button>
-        <a id="signup" href="/#signup">
+
+          <input className={STYLES.LOGIN_BUTTON} type="submit" value="Log In" />
+        </form>
+        <div className={STYLES.SIGN_IN_DIVIDER} />
+      </div>
+
+      <div>
+        {" "}
+        <label className={STYLES.LABEL} htmlFor="signup">
+          {"Don't have an account?"}{" "}
+        </label>
+        <a className={STYLES.VIOLET_TEXT} id="signup" href="/#signup">
           Sign up here!
         </a>
-      </button>
+      </div>
     </div>
   );
 }

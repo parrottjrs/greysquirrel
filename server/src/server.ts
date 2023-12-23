@@ -13,6 +13,7 @@ import {
   AuthRequest,
   createDocument,
   createUser,
+  deleteDocument,
   getDocument,
   getId,
   getUsernames,
@@ -229,6 +230,23 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+app.delete(
+  "/api/documents",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res.status(403).json("Unauthorized");
+      }
+      const { docId } = req.body;
+      await deleteDocument(pool, docId, req.userId);
+      res.status(200).send({ message: "Deleted" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal servor error", err });
+    }
+  }
+);
 const clients: any = {};
 
 wss.on("connection", (connection) => {

@@ -4,6 +4,12 @@ export const corePlugins = {
   preflight: false,
 };
 export const theme = {
+  colors: {
+    nero: "#1D1D1D",
+    vividViolet: "#A4319E",
+    aeroBlue: "#C2E9D2",
+    roman: "#DF5E5E",
+  },
   extend: {},
 };
 export const plugins = [];
