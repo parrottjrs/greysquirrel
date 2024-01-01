@@ -12,7 +12,7 @@ type Form = {
 
 export default function Signin() {
   const [change, setChange] = useState(false);
-
+  const [password, setPassword] = useState("");
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -76,7 +76,7 @@ export default function Signin() {
           />
 
           {change && (
-            <div className="flex w-full">
+            <div className={STYLES.ALERT_DIV}>
               <AlertCircle className={STYLES.ALERT_CIRCLE} />
               <p className={STYLES.ALERT_TEXT}>
                 Authentication failed. Please try again.
@@ -85,7 +85,13 @@ export default function Signin() {
           )}
           <div />
 
-          <input className={STYLES.LOGIN_BUTTON} type="submit" value="Log In" />
+          <input
+            className={
+              !change ? STYLES.LOGIN_BUTTON : STYLES.LOGIN_BUTTON_ALERT
+            }
+            type="submit"
+            value="Log In"
+          />
         </form>
         <div className={STYLES.SIGN_IN_DIVIDER} />
       </div>

@@ -18,15 +18,38 @@ export default function DocumentsGrid() {
     }
   };
 
+  const fetchDelete = async (id: any) => {
+    try {
+      const response = await fetch("api/documents", {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: id }),
+      });
+      const json = await response.json();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchDocuments();
   }, []);
+
+  const handleDelete = (id: any) => {
+    fetchDelete(id);
+    setDocuments((currentDocuments) => {
+      return currentDocuments.filter(
+        (document: Document) => document.doc_id !== id
+      );
+    });
+  };
 
   return documents.map((document: Document) => {
     const { title, doc_id } = document;
     return (
       <div key={doc_id}>
         <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
+        <button onClick={() => handleDelete(doc_id)}>Delete</button>
       </div>
     );
   });

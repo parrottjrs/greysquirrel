@@ -76,6 +76,7 @@ app.put("/api/signUp", async (req, res) => {
 app.post("/api/signIn", async (req, res) => {
   try {
     const { username, password } = req.body.data;
+    console.log(username, password);
     const authenticated = await authenticateUser(username, password, pool);
     if (!authenticated) {
       return res.status(401).json({
@@ -207,8 +208,11 @@ app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
     const { doc } = req.body;
-    const saved = await saveDocument(pool, doc);
-    return res.status(200).json({ message: saved });
+    const { success, message } = await saveDocument(pool, doc);
+    if (!success) {
+      return res.status(403).json({ message: message });
+    }
+    return res.status(200).json({ message: message });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error", err });
@@ -239,8 +243,15 @@ app.delete(
         return res.status(403).json("Unauthorized");
       }
       const { docId } = req.body;
-      await deleteDocument(pool, docId, req.userId);
-      res.status(200).send({ message: "Deleted" });
+      const { success, message } = await deleteDocument(
+        pool,
+        docId,
+        req.userId
+      );
+      if (!success) {
+        return res.status(403).json({ message: message });
+      }
+      return res.status(200).send({ message: message });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal servor error", err });
