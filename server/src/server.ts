@@ -27,6 +27,7 @@ const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8000;
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
+const THIRTY_DAYS = 2.592e9;
 
 // const path = require("path");
 // const relativePath = "../client/build";
@@ -75,23 +76,27 @@ app.put("/api/signUp", async (req, res) => {
 
 app.post("/api/signIn", async (req, res) => {
   try {
-    const { username, password } = req.body.data;
-    console.log(username, password);
+    const { username, password, remember } = req.body.data;
     const authenticated = await authenticateUser(username, password, pool);
     if (!authenticated) {
       return res.status(401).json({
         message: "Unauthorized: Invalid username and/or password",
       });
     }
+    const refreshMaxAge = !remember ? ONE_DAY : THIRTY_DAYS;
     const id = await getId(pool, username);
     const access = AccessToken.create(id);
     const refresh = RefreshToken.create(id);
+    console.log(refreshMaxAge);
     return res
       .cookie("accessToken", access, {
         maxAge: TEN_MINUTES,
         httpOnly: true,
       })
-      .cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true })
+      .cookie("refreshToken", refresh, {
+        maxAge: refreshMaxAge,
+        httpOnly: true,
+      })
       .status(200)
       .json({ message: "Access granted" });
   } catch (err) {
@@ -150,7 +155,6 @@ app.post("/api/refresh", async (req, res) => {
         maxAge: TEN_MINUTES,
         httpOnly: true,
       })
-      .cookie("refreshToken", refresh, { maxAge: ONE_DAY, httpOnly: true })
       .status(200)
       .json({ message: "Authorized" });
   } catch (err) {
@@ -202,7 +206,6 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
 });
 
 app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
-  console.log(req.body);
   try {
     if (req.userId === undefined) {
       return res.status(403).json({ message: "Unauthorized" });

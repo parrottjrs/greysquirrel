@@ -20,4 +20,8 @@ export const STYLES = {
 
   //   ICONS
   ALERT_CIRCLE: "h-4 w-4 text-roman",
+  EYE: "flex ml-[22.5rem] -mt-[1.9rem]",
+
+  // EDITOR
+  MOUSEOUT_DIV: "w-screen h-screen",
 };

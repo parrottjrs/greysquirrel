@@ -25,7 +25,6 @@ export default function DocumentsGrid() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: id }),
       });
-      const json = await response.json();
     } catch (err) {
       console.error(err);
     }

@@ -3,20 +3,25 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { STYLES } from "../utils/consts";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, EyeOff } from "lucide-react";
+import Eye from "../components/Eye";
 
 type Form = {
   username: string;
   password: string;
+  remember: boolean;
 };
 
 export default function Signin() {
   const [change, setChange] = useState(false);
-  const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
+  const [checked, setChecked] = useState(false);
+
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
       password: "",
+      remember: checked,
     },
   });
 
@@ -47,6 +52,12 @@ export default function Signin() {
       console.error(err);
     }
   };
+  const handleShow = () => {
+    return setShow(!show);
+  };
+  const handleChecked = () => {
+    return setChecked(!checked);
+  };
 
   return (
     <div className={STYLES.CENTER}>
@@ -68,12 +79,14 @@ export default function Signin() {
             register={register("username")}
             required={true}
           />
+
           <FormInput
             id={"Password"}
-            type={"password"}
+            type={!show ? "password" : "text"}
             register={register("password")}
             required={true}
           />
+          <Eye onClick={handleShow} show={show} />
 
           {change && (
             <div className={STYLES.ALERT_DIV}>
@@ -84,7 +97,16 @@ export default function Signin() {
             </div>
           )}
           <div />
-
+          <label className={STYLES.LABEL} htmlFor="remember">
+            Remember me for 30 days
+          </label>
+          <input
+            id="remember"
+            type="checkbox"
+            checked={checked}
+            {...register("remember")}
+            onChange={handleChecked}
+          />
           <input
             className={
               !change ? STYLES.LOGIN_BUTTON : STYLES.LOGIN_BUTTON_ALERT

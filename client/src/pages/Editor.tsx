@@ -3,7 +3,8 @@ import ReactQuill from "react-quill";
 import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";
 import LogoutButton from "../components/LogoutButton";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { STYLES } from "../utils/consts";
 
 export default function Editor() {
   const params = useParams();
@@ -14,6 +15,49 @@ export default function Editor() {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const timeoutDelayMs = 10000;
+  const [authorization, setAuthorization] = useState(false);
+  const navigate = useNavigate();
+
+  const refresh = async () => {
+    try {
+      const response = await fetch("/api/refresh", {
+        method: "POST",
+      });
+      const json = await response.json();
+      return json;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleAuthenticate = async (message: any) => {
+    switch (message) {
+      case "Authorized":
+        setAuthorization(true);
+        break;
+      case "Unauthorized":
+        const auth = await refresh();
+        if (auth.message === "Unauthorized") {
+          setAuthorization(false);
+          navigate("/expired");
+        }
+        setAuthorization(true);
+        break;
+      default:
+        console.error("An unexpected error has occurred");
+        break;
+    }
+  };
+
+  const authenticate = async () => {
+    try {
+      const response = await fetch("/api/authenticate");
+      const json = await response.json();
+      handleAuthenticate(json.message);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchSave = async () => {
     try {
@@ -25,6 +69,8 @@ export default function Editor() {
         }),
       });
       const json = response.json();
+      console.log("saved!");
+      return json;
     } catch (err) {
       console.error(err);
     }
@@ -91,24 +137,27 @@ export default function Editor() {
   // const handleChange = (text: string) => {
   //   client.sendMessage(text);
   // };
+  authenticate();
 
   return (
-    <div className="App">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => handleTitle(e.target.value)}
-      />
-      <div>
-        <ReactQuill
-          className="quill"
-          theme="snow"
-          value={text}
-          onChange={handleChange}
-          preserveWhitespace={true}
+    authorization && (
+      <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => handleTitle(e.target.value)}
         />
+        <div>
+          <ReactQuill
+            className="quill"
+            theme="snow"
+            value={text}
+            onChange={handleChange}
+            preserveWhitespace={true}
+          />
+        </div>
+        <LogoutButton />
       </div>
-      <LogoutButton />
-    </div>
+    )
   );
 }

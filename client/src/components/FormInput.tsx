@@ -25,8 +25,6 @@ export default function FormInput({
         return "last name";
       case "passCheck":
         return "verify your password";
-      case "showPass":
-        return "Show password";
       default:
         return id;
     }

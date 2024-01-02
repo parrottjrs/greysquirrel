@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
+import Eye from "../components/Eye";
+import { STYLES } from "../utils/consts";
 
 type Form = {
   username: string;
@@ -86,9 +88,10 @@ export default function Signup() {
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
+    <div className={STYLES.CENTER}>
+      <h1 className={STYLES.WELCOME_HEADER}>Sign Up</h1>
       <form
+        className={STYLES.FLEX_COL_CENTER}
         onSubmit={handleSubmit((data) => {
           handlePasswordValidation(data);
         })}
@@ -119,23 +122,25 @@ export default function Signup() {
           register={register("password")}
           required={true}
         />
+        <Eye onClick={handleChange} checked={checked} />
         <FormInput
           id={"passCheck"}
           type={!checked ? "password" : "text"}
           register={register("passCheck")}
           required={true}
         />
-        {passMatch && <p className="text-red-600">Passwords must match.</p>}
-        <p className={!passWarning ? "" : "text-red-600"}>
-          Password must be at least 8 characters and have at least one uppercase
-          letter, one lowercase letter, one digit, and one special character.
-        </p>
-        <FormInput
-          id={"showPass"}
-          type={"checkbox"}
-          onChange={() => handleChange()}
-        />
-        <input type="submit" value="submit" />
+        <div className={STYLES.ALERT_DIV}>
+          {passMatch && (
+            <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
+          )}
+          <p className={!passWarning ? "" : STYLES.ALERT_TEXT}>
+            Password must be at least 8 characters and have at least one
+            uppercase letter, one lowercase letter, one digit, and one special
+            character.
+          </p>
+        </div>
+
+        <input className={STYLES.LOGIN_BUTTON} type="submit" value="submit" />
       </form>
     </div>
   );
