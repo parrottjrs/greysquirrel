@@ -43,7 +43,7 @@ const pool = mysql.createPool({
   database: "myDB",
 });
 
-app.put("/api/signUp", async (req, res) => {
+app.post("/api/signUp", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
     const username = req.body.data.username.toLowerCase();

@@ -35,7 +35,7 @@ export default function Signup() {
     data.username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signUp", {
-        method: "PUT",
+        method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: data }),
       });
