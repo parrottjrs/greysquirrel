@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { STYLES } from "../utils/consts";
-import { AlertCircle, EyeOff } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import Eye from "../components/Eye";
 
 type Form = {
@@ -97,16 +97,7 @@ export default function Signin() {
             </div>
           )}
           <div />
-          <label className={STYLES.LABEL} htmlFor="remember">
-            Remember me for 30 days
-          </label>
-          <input
-            id="remember"
-            type="checkbox"
-            checked={checked}
-            {...register("remember")}
-            onChange={handleChecked}
-          />
+
           <input
             className={
               !change ? STYLES.LOGIN_BUTTON : STYLES.LOGIN_BUTTON_ALERT
@@ -114,12 +105,18 @@ export default function Signin() {
             type="submit"
             value="Log In"
           />
+          <label htmlFor="remember">Remember me for 30 days</label>
+          <input
+            id="remember"
+            type="checkbox"
+            checked={checked}
+            {...register("remember")}
+            onChange={handleChecked}
+          />
         </form>
         <div className={STYLES.SIGN_IN_DIVIDER} />
       </div>
-
       <div>
-        {" "}
         <label className={STYLES.LABEL} htmlFor="signup">
           {"Don't have an account?"}{" "}
         </label>

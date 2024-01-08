@@ -1,3 +1,4 @@
+import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "./Token";
 import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
@@ -30,7 +31,7 @@ export const getId = async (pool: any, username: string) => {
   `;
   const [result, _] = await pool.query(query);
   const id = JSON.parse(JSON.stringify(result));
-  return id[0].user_id;
+  return result.length > 0 ? id[0].user_id : false;
 };
 
 export const strongPassword = (password: string) => {
@@ -96,6 +97,8 @@ type Document = {
 export interface AuthRequest extends Request {
   userId?: number;
   message?: string;
+  docId?: number;
+  recipient?: string;
 }
 
 export const authenticateToken = (
@@ -109,7 +112,10 @@ export const authenticateToken = (
     req.userId = verified.userId;
     next();
   } catch (err) {
-    res.status(403).json({ message: "Unauthorized: Missing or invalid token" });
+    console.error("Token error:", err);
+    return res
+      .status(403)
+      .json({ message: "Unauthorized: Missing or invalid token" });
   }
 };
 
@@ -189,6 +195,42 @@ export const deleteDocument = async (
     : {
         success: false,
         message: "Document not found or unauthorized",
+        error: result.message,
+      };
+};
+
+const checkOwnership = async (pool: any, docId: number, userId: number) => {
+  const values = [docId, userId];
+  const query = `
+  SELECT *
+  FROM documents
+  WHERE doc_id = ?
+  AND user_id = ?`;
+  const [result, _] = await pool.query(query, values);
+  const success = result.length > 0 ? true : false;
+  return success;
+};
+
+export const invite = async (
+  pool: any,
+  docId: number,
+  senderId: number,
+  recipientId: number
+) => {
+  const auth = await checkOwnership(pool, docId, senderId);
+  if (!auth) {
+    return { success: false, message: "Document not found or unauthorized" };
+  }
+  const values = [docId, senderId, recipientId];
+  const query = `
+  INSERT INTO invites (doc_id, sender_id, recipient_id)
+  VALUES (?, ?, ?)`;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Invite sent" }
+    : {
+        success: false,
+        message: "Invite failed",
         error: result.message,
       };
 };

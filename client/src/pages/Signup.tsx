@@ -15,7 +15,7 @@ type Form = {
 };
 
 export default function Signup() {
-  const [checked, setChecked] = useState(false);
+  const [show, setShow] = useState(false);
   const [passWarning, setPassWarning] = useState(false);
   const [nameWarning, setNameWarning] = useState(false);
   const [passMatch, setPassMatch] = useState(false);
@@ -64,7 +64,7 @@ export default function Signup() {
   };
 
   const handleChange = () => {
-    setChecked(!checked);
+    setShow(!show);
   };
 
   const handlePasswordValidation = (data: Form) => {
@@ -118,14 +118,14 @@ export default function Signup() {
         />
         <FormInput
           id={"password"}
-          type={!checked ? "password" : "text"}
+          type={!show ? "password" : "text"}
           register={register("password")}
           required={true}
         />
-        <Eye onClick={handleChange} checked={checked} />
+        <Eye onClick={handleChange} show={show} />
         <FormInput
           id={"passCheck"}
-          type={!checked ? "password" : "text"}
+          type={!show ? "password" : "text"}
           register={register("passCheck")}
           required={true}
         />
@@ -139,7 +139,6 @@ export default function Signup() {
             character.
           </p>
         </div>
-
         <input className={STYLES.LOGIN_BUTTON} type="submit" value="submit" />
       </form>
     </div>

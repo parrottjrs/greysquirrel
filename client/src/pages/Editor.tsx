@@ -16,6 +16,7 @@ export default function Editor() {
   const [title, setTitle] = useState("");
   const timeoutDelayMs = 10000;
   const [authorization, setAuthorization] = useState(false);
+  const [recipient, setRecipient] = useState("");
   const navigate = useNavigate();
 
   const refresh = async () => {
@@ -69,7 +70,6 @@ export default function Editor() {
         }),
       });
       const json = response.json();
-      console.log("saved!");
       return json;
     } catch (err) {
       console.error(err);
@@ -93,6 +93,13 @@ export default function Editor() {
   };
 
   useEffect(() => {
+    authenticate();
+    // let configureAuth = async()=>{
+    //   const auth = await authenticate();
+    // if(auth){
+    //   setAuthorization(true)
+    // }
+    // }
     fetchContent(docId);
   }, []);
 
@@ -107,6 +114,27 @@ export default function Editor() {
 
   const handleTitle = (title: string) => {
     setTitle(title);
+  };
+
+  const fetchInvite = async () => {
+    try {
+      const response = await fetch("/api/invite", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: docId, recipient: recipient }),
+      });
+      const json = await response.json();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleInvite = () => {
+    fetchInvite();
+  };
+
+  const handleRecipient = (recipient: string) => {
+    setRecipient(recipient);
   };
 
   // useWebSocket(WS_URL, {
@@ -137,7 +165,6 @@ export default function Editor() {
   // const handleChange = (text: string) => {
   //   client.sendMessage(text);
   // };
-  authenticate();
 
   return (
     authorization && (
@@ -157,6 +184,14 @@ export default function Editor() {
           />
         </div>
         <LogoutButton />
+        <div>
+          <input
+            type="text"
+            value={recipient}
+            onChange={(e) => handleRecipient(e.target.value)}
+          />
+          <button onClick={handleInvite}>Invite</button>
+        </div>
       </div>
     )
   );
