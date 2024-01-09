@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import DocumentsGrid from "../components/DocumentsGrid";
+import { Invites } from "../components/Invites";
 
 export default function Documents() {
   const [authorization, setAuthorization] = useState(false);
+
   const navigate = useNavigate();
 
   const refresh = async () => {
@@ -62,11 +64,14 @@ export default function Documents() {
     navigate(`/editor/${id}`);
   };
 
-  authenticate();
+  useEffect(() => {
+    authenticate();
+  }, []);
 
   return (
     authorization && (
       <div>
+        <Invites />
         <LogoutButton />
         <h1>Documents</h1>
         <DocumentsGrid />

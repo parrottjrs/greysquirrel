@@ -1,8 +1,6 @@
 import express from "express";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
-import * as fs from "fs";
-import { v4 as uuid } from "uuid";
 import mysql from "mysql2/promise";
 import cookieParser from "cookie-parser";
 import { AccessToken, RefreshToken } from "./Token";
@@ -14,14 +12,15 @@ import {
   createDocument,
   createUser,
   deleteDocument,
+  deleteInvite,
   getDocument,
   getId,
+  getInvites,
   getUsernames,
-  invite,
   saveDocument,
+  sendInvite,
   strongPassword,
 } from "./utils";
-import { error } from "console";
 
 const app = express();
 const server = http.createServer(app);
@@ -278,7 +277,7 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
     if (!recipientId) {
       return res.status(404).json({ message: "Recipient does not exist" });
     }
-    const { success, message } = await invite(
+    const { success, message } = await sendInvite(
       pool,
       docId,
       req.userId,
@@ -294,6 +293,67 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+app.get("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    if (req.userId === undefined) {
+      return res.status(403).json({ message: "Authorization error" });
+    }
+    const { success, invites } = await getInvites(pool, req.userId);
+    if (!success) {
+      return res.status(404).json({ message: "No invites" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Fetch successful", invites: invites });
+  } catch (err) {
+    console.error("Cannot get invite:", err);
+    return res.status(500).json({ message: "internal server error" });
+  }
+});
+
+app.delete("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    if (req.userId === undefined) {
+      return res.status(403).json({ message: "Authorization error" });
+    }
+    const { inviteId } = req.body;
+    const { success } = await deleteInvite(pool, req.userId, inviteId);
+    if (!success) {
+      return res.status(404).json({ message: "Failed to delete invite" });
+    }
+    return res.status(200).json({ message: "Invite successfully deleted" });
+  } catch (err) {
+    console.error("Cannot delete invite:", err);
+    return res.status(500).json({ message: "Internal servor error" });
+  }
+});
+
+// app.post(
+//   "/api/accept-invite",
+//   authenticateToken,
+//   async (req: AuthRequest, res) => {
+//     try {
+//       if (req.userId === undefined) {
+//         return res.status(403).json({ message: "Authorization error" });
+//       }
+//       const { inviteId, docId } = req.body;
+//       const { success } = await acceptInvite(pool, inviteId, docId);
+//       if (!success) {
+//         return res.status(404).json({ message: "Failed to delete invite" });
+//       }
+//       return res.status(200).json({ message: "Invite accepted" });
+//     } catch (err) {
+//       console.error("Cannot accept invite:", err);
+//       return res.status(500).json({ message: "Internal servor error" });
+//     }
+//   }
+// );
+
+app.post(
+  "/api/accept-invite",
+  authenticateToken,
+  async (req: AuthRequest, res) => {}
+);
 // const clients: any = {};
 
 // wss.on("connection", (connection) => {

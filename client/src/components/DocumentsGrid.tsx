@@ -15,6 +15,7 @@ export default function DocumentsGrid() {
       json === null ? setDocuments([]) : setDocuments(json.docs);
     } catch (err) {
       console.error(err);
+      return false;
     }
   };
 

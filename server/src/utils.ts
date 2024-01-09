@@ -14,9 +14,9 @@ export const getHash = (password: string) => {
 export const getPassword = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users
-  WHERE user_name = "${username}"
+  WHERE user_name = ?
   `;
-  const [result, _] = await pool.query(query);
+  const [result, _] = await pool.query(query, [username]);
   const user = JSON.parse(JSON.stringify(result));
   if (!user[0]) {
     return { truePass: "", salt: "" };
@@ -27,9 +27,9 @@ export const getPassword = async (pool: any, username: string) => {
 export const getId = async (pool: any, username: string) => {
   const query = `
   SELECT user_id FROM users 
-  WHERE user_name = "${username}"
+  WHERE user_name = ?
   `;
-  const [result, _] = await pool.query(query);
+  const [result, _] = await pool.query(query, [username]);
   const id = JSON.parse(JSON.stringify(result));
   return result.length > 0 ? id[0].user_id : false;
 };
@@ -39,8 +39,20 @@ export const strongPassword = (password: string) => {
   return restrictions.test(password);
 };
 
+const getUsername = async (pool: any, userId: number) => {
+  const query = `
+  SELECT user_name
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  const userName = JSON.parse(JSON.stringify(result));
+  return userName[0].user_name;
+  // return userName[0].user_name;
+};
+
 export const getUsernames = async (pool: any) => {
-  const query = `SELECT user_name from users`;
+  const query = `SELECT user_name FROM users`;
   const [result, _] = await pool.query(query);
   const usernames = JSON.parse(JSON.stringify(result));
 
@@ -77,14 +89,15 @@ export const createUser = async (
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
   );
+  const values = [username, email, firstName, lastName, hash, salt];
   const query = `
   INSERT INTO users (
     user_name, email, first_name, last_name, password, salt
     ) 
   VALUES (
-  "${username}", "${email}", "${firstName}", "${lastName}", "${hash}", "${salt}" 
+  ?,?,?,?,?,?
 )`;
-  await pool.query(query);
+  await pool.query(query, values);
 };
 
 type Document = {
@@ -99,6 +112,7 @@ export interface AuthRequest extends Request {
   message?: string;
   docId?: number;
   recipient?: string;
+  inviteId?: number;
 }
 
 export const authenticateToken = (
@@ -139,7 +153,7 @@ export const getDocument = async (con: any, docId: number, userId: number) => {
   FROM documents 
   WHERE doc_id = ?
   `;
-  const [result, _] = await con.query(query, docId);
+  const [result, _] = await con.query(query, [docId]);
   const document = await JSON.parse(JSON.stringify(result));
   if (document[0].user_id !== userId) {
     return { message: "Unauthorized" };
@@ -156,7 +170,7 @@ export const allDocuments = async (pool: any, userId: number) => {
   SELECT doc_id, title, content 
   FROM documents 
   WHERE user_id = ?`;
-  const [result, _] = await pool.query(query, userId);
+  const [result, _] = await pool.query(query, [userId]);
   return result;
 };
 
@@ -199,7 +213,7 @@ export const deleteDocument = async (
       };
 };
 
-const checkOwnership = async (pool: any, docId: number, userId: number) => {
+const docOwnership = async (pool: any, docId: number, userId: number) => {
   const values = [docId, userId];
   const query = `
   SELECT *
@@ -211,14 +225,14 @@ const checkOwnership = async (pool: any, docId: number, userId: number) => {
   return success;
 };
 
-export const invite = async (
+export const sendInvite = async (
   pool: any,
   docId: number,
   senderId: number,
   recipientId: number
 ) => {
-  const auth = await checkOwnership(pool, docId, senderId);
-  if (!auth) {
+  const ownsDoc = await docOwnership(pool, docId, senderId);
+  if (!ownsDoc) {
     return { success: false, message: "Document not found or unauthorized" };
   }
   const values = [docId, senderId, recipientId];
@@ -232,5 +246,50 @@ export const invite = async (
         success: false,
         message: "Invite failed",
         error: result.message,
+      };
+};
+
+export const getInvites = async (pool: any, userId: number) => {
+  const query = `
+  SELECT * 
+  FROM invites
+  WHERE recipient_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  if (result.length === 0) {
+    return { success: false, message: "No invites" };
+  }
+  const newResults = await Promise.all(
+    result.map(async (element: any) => {
+      const { invite_id, doc_id, sender_id, recipient_id } = element;
+      const senderName = await getUsername(pool, sender_id);
+      return {
+        inviteId: invite_id,
+        docId: doc_id,
+        senderName: senderName,
+        recipientId: recipient_id,
+      };
+    })
+  );
+  return { success: true, invites: newResults };
+};
+
+export const deleteInvite = async (
+  pool: any,
+  userId: number,
+  inviteId: number
+) => {
+  const values = [inviteId, userId];
+  const query = `
+  DELETE FROM invites
+  WHERE invite_id = ?
+  AND recipient_id = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Invite successfully deleted" }
+    : {
+        success: false,
+        message: "Failed to delete invite: unauthorized or does not exist",
       };
 };
