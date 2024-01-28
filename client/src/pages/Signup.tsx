@@ -5,7 +5,7 @@ import FormInput from "../components/FormInput";
 import Eye from "../components/Eye";
 import { STYLES } from "../utils/consts";
 
-type Form = {
+type FormData = {
   username: string;
   email: string;
   firstName: string;
@@ -31,7 +31,7 @@ export default function Signup() {
     },
   });
 
-  const signup = async (data: Form) => {
+  const signup = async (data: FormData) => {
     data.username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signUp", {
@@ -67,7 +67,7 @@ export default function Signup() {
     setShow(!show);
   };
 
-  const handlePasswordValidation = (data: Form) => {
+  const handlePasswordValidation = (data: FormData) => {
     switch (checkPassword(data.password)) {
       case false:
         setPassWarning(true);
@@ -87,14 +87,16 @@ export default function Signup() {
     }
   };
 
+  const onSubmit = (data: FormData) => {
+    handlePasswordValidation(data);
+  };
+
   return (
     <div className={STYLES.CENTER}>
       <h1 className={STYLES.WELCOME_HEADER}>Sign Up</h1>
       <form
         className={STYLES.FLEX_COL_CENTER}
-        onSubmit={handleSubmit((data) => {
-          handlePasswordValidation(data);
-        })}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <FormInput
           id={"username"}

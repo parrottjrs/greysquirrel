@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
@@ -6,7 +6,7 @@ import { STYLES } from "../utils/consts";
 import { AlertCircle } from "lucide-react";
 import Eye from "../components/Eye";
 
-type Form = {
+type FormData = {
   username: string;
   password: string;
   remember: boolean;
@@ -27,7 +27,19 @@ export default function Signin() {
 
   const navigate = useNavigate();
 
-  const fetchUser = async (data: Form) => {
+  const checkForTokens = async () => {
+    try {
+      const response = await fetch("/api/authenticate");
+      const json = await response.json();
+      if (json.message === "Authorized") {
+        navigate(`/documents`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchUser = async (data: FormData) => {
     data.username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signIn", {
@@ -59,6 +71,14 @@ export default function Signin() {
     return setChecked(!checked);
   };
 
+  const onSubmit = (data: FormData) => {
+    fetchUser(data);
+  };
+
+  useEffect(() => {
+    checkForTokens();
+  }, []);
+
   return (
     <div className={STYLES.CENTER}>
       <h1 className={STYLES.WELCOME_HEADER}>Welcome Back!</h1>
@@ -69,9 +89,7 @@ export default function Signin() {
       <div>
         <form
           className={STYLES.FLEX_COL_CENTER}
-          onSubmit={handleSubmit((data) => {
-            fetchUser(data);
-          })}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
             id="Username"

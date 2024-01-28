@@ -57,6 +57,7 @@ export const Invites = () => {
   let currentInvites: any = [];
   const [count, setCount] = useState(0);
   const [invites, setInvites] = useState(currentInvites);
+  const [notification, setNotification] = useState(false);
 
   const fetchInvites = async () => {
     try {
@@ -70,15 +71,17 @@ export const Invites = () => {
     }
   };
 
-  fetchInvites()
-    .then((invites) => {
-      if (invites) {
-        currentInvites.push(...invites);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching invites:", error);
-    });
+  useState(() => {
+    fetchInvites()
+      .then((invites) => {
+        if (invites) {
+          currentInvites.push(...invites);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching invites:", error);
+      });
+  });
 
   return (
     <div>

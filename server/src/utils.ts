@@ -219,7 +219,8 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
   SELECT *
   FROM documents
   WHERE doc_id = ?
-  AND user_id = ?`;
+  AND user_id = ?
+  `;
   const [result, _] = await pool.query(query, values);
   const success = result.length > 0 ? true : false;
   return success;
