@@ -98,39 +98,83 @@ export default function Signup() {
         className={STYLES.FLEX_COL_CENTER}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <FormInput
-          id={"username"}
-          type={"username"}
-          register={register("username")}
-          required={true}
-        />
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"username"}>
+            Username:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"username"}
+            type="text"
+            {...register("username")}
+            autoComplete="off"
+            required={true}
+          />
+        </div>
         {nameWarning && (
           <p className="text-red-600">You must choose a different username.</p>
         )}
-        <FormInput id={"email"} type={"email"} register={register("email")} />
-        <FormInput
-          id={"firstName"}
-          type={"firstName"}
-          register={register("firstName")}
-        />
-        <FormInput
-          id={"lastName"}
-          type={"lastName"}
-          register={register("lastName")}
-        />
-        <FormInput
-          id={"password"}
-          type={!show ? "password" : "text"}
-          register={register("password")}
-          required={true}
-        />
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"email"}>
+            Email:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"email"}
+            type="text"
+            {...register("email")}
+            autoComplete="off"
+          />
+        </div>
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"firstName"}>
+            First Name:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"firstName"}
+            {...register("firstName")}
+            autoComplete="off"
+          />
+        </div>
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"lastName"}>
+            Last Name:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"lastName"}
+            {...register("lastName")}
+            autoComplete="off"
+          />
+        </div>
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"password"}>
+            Password:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"password"}
+            type={!show ? "password" : "text"}
+            {...register("password")}
+            autoComplete="off"
+            required={true}
+          />
+        </div>
         <Eye onClick={handleChange} show={show} />
-        <FormInput
-          id={"passCheck"}
-          type={!show ? "password" : "text"}
-          register={register("passCheck")}
-          required={true}
-        />
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"passCheck"}>
+            Re-type your password:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"passCheck"}
+            type={!show ? "password" : "text"}
+            {...register("passCheck")}
+            autoComplete="off"
+            required={true}
+          />
+        </div>
         <div className={STYLES.ALERT_DIV}>
           {passMatch && (
             <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>

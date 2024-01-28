@@ -2,7 +2,7 @@ import { Bell, BellDot } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-const InviteItem = ({ invite }: any) => {
+const InviteItem = ({ invite }: any, currentInvites: any) => {
   const { inviteId, docId, senderName } = invite;
 
   const deleteInvite = async () => {
@@ -13,6 +13,7 @@ const InviteItem = ({ invite }: any) => {
         body: JSON.stringify({ inviteId: inviteId }),
       });
       const json = await response.json();
+
       return json;
     } catch (err) {
       console.error(err);
@@ -57,7 +58,6 @@ export const Invites = () => {
   let currentInvites: any = [];
   const [count, setCount] = useState(0);
   const [invites, setInvites] = useState(currentInvites);
-  const [notification, setNotification] = useState(false);
 
   const fetchInvites = async () => {
     try {
@@ -71,7 +71,7 @@ export const Invites = () => {
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     fetchInvites()
       .then((invites) => {
         if (invites) {
@@ -81,7 +81,7 @@ export const Invites = () => {
       .catch((error) => {
         console.error("Error fetching invites:", error);
       });
-  });
+  }, [invites]);
 
   return (
     <div>

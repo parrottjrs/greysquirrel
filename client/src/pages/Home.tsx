@@ -72,6 +72,7 @@ export default function Signin() {
   };
 
   const onSubmit = (data: FormData) => {
+    console.log("data:", data);
     fetchUser(data);
   };
 
@@ -90,20 +91,35 @@ export default function Signin() {
         <form
           className={STYLES.FLEX_COL_CENTER}
           onSubmit={handleSubmit(onSubmit)}
+          tabIndex={0}
         >
-          <FormInput
-            id="Username"
-            type="text"
-            register={register("username")}
-            required={true}
-          />
+          <div className="mt-10">
+            <label className={STYLES.LABEL} htmlFor={"username"}>
+              Username:
+            </label>
+            <input
+              className={STYLES.FORM_INPUT}
+              id={"username"}
+              type="text"
+              {...register("username")}
+              autoComplete="off"
+              required={true}
+            />
+          </div>
+          <div className="mt-10">
+            <label className={STYLES.LABEL} htmlFor={"password"}>
+              Password:
+            </label>
+            <input
+              className={STYLES.FORM_INPUT}
+              id={"password"}
+              type={!show ? "password" : "text"}
+              {...register("password")}
+              autoComplete="off"
+              required={true}
+            />
+          </div>
 
-          <FormInput
-            id={"Password"}
-            type={!show ? "password" : "text"}
-            register={register("password")}
-            required={true}
-          />
           <Eye onClick={handleShow} show={show} />
 
           {change && (
