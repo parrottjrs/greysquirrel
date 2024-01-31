@@ -274,7 +274,7 @@ export const sendInvite = async (
     };
   }
 
-  //Make sure invitation hasn't already been sent
+  //Make sure invitation hasn't already been sent - avoid duplicate information
   const findDuplicateQuery = `
   SELECT * 
   FROM invites
@@ -314,11 +314,11 @@ export const deleteInvite = async (
   userId: number,
   inviteId: number
 ) => {
-  const values = [inviteId, userId];
+  const values = [inviteId, userId, userId];
   const query = `
   DELETE FROM invites
   WHERE invite_id = ?
-  AND recipient_id = ?
+  AND (recipient_id = ? OR sender_id = ?) 
   `;
   const [result, _] = await pool.query(query, values);
   return result.affectedRows > 0

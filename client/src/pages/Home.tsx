@@ -26,18 +26,6 @@ export default function Signin() {
 
   const navigate = useNavigate();
 
-  const checkForTokens = async () => {
-    try {
-      const response = await fetch("/api/authenticate");
-      const json = await response.json();
-      if (json.message === "Authorized") {
-        navigate(`/documents`);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const fetchUser = async (data: FormData) => {
     data.username = data.username.toLowerCase();
     try {
@@ -71,13 +59,8 @@ export default function Signin() {
   };
 
   const onSubmit = (data: FormData) => {
-    console.log("data:", data);
     fetchUser(data);
   };
-
-  useEffect(() => {
-    checkForTokens();
-  }, []);
 
   return (
     <div className={STYLES.CENTER}>

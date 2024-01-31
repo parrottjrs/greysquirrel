@@ -33,9 +33,10 @@ export default function Invites() {
         body: JSON.stringify({ inviteId: id }),
       });
       if (response.ok) {
-        const updatedInvites = currentInvites.filter(
+        const updatedInvites = invites.filter(
           (invite) => invite.inviteId !== id
         );
+        console.log(updatedInvites);
         setInvites(updatedInvites);
         setCount(count - 1);
       }
@@ -73,9 +74,9 @@ export default function Invites() {
 
   useEffect(() => {
     fetchInvites()
-      .then((invites) => {
+      .then((invites: any) => {
         if (invites) {
-          currentInvites.push(...invites);
+          setInvites(invites);
         }
       })
       .catch((error) => {
