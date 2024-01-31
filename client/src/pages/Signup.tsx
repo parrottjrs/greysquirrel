@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInput";
 import Eye from "../components/Eye";
 import { STYLES } from "../utils/consts";
 

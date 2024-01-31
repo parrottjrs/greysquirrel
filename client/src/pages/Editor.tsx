@@ -94,12 +94,7 @@ export default function Editor() {
 
   useEffect(() => {
     authenticate();
-    // let configureAuth = async()=>{
-    //   const auth = await authenticate();
-    // if(auth){
-    //   setAuthorization(true)
-    // }
-    // }
+
     fetchContent(docId);
   }, []);
 
@@ -189,6 +184,7 @@ export default function Editor() {
             type="text"
             value={recipient}
             onChange={(e) => handleRecipient(e.target.value)}
+            autoComplete="false"
           />
           <button onClick={handleInvite}>Invite</button>
         </div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInput";
 import { STYLES } from "../utils/consts";
 import { AlertCircle } from "lucide-react";
 import Eye from "../components/Eye";

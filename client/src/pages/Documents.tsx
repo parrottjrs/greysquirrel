@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import DocumentsGrid from "../components/DocumentsGrid";
-import { Invites } from "../components/Invites";
+import Invites from "../components/Invites";
 
 export default function Documents() {
   const [authorization, setAuthorization] = useState(false);

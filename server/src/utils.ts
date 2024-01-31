@@ -3,6 +3,25 @@ import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "./Token";
 import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
 
+//Custom types
+
+type Document = {
+  docId: number;
+  lastEdit: Date;
+  title: string;
+  content: string;
+};
+
+export interface AuthRequest extends Request {
+  userId?: number;
+  message?: string;
+  docId?: number;
+  recipient?: string;
+  inviteId?: number;
+}
+
+//User creation/Authentication handling & queries
+
 export const getHash = (password: string) => {
   const salt = randomBytes(64).toString("base64");
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
@@ -100,21 +119,6 @@ export const createUser = async (
   await pool.query(query, values);
 };
 
-type Document = {
-  docId: number;
-  lastEdit: Date;
-  title: string;
-  content: string;
-};
-
-export interface AuthRequest extends Request {
-  userId?: number;
-  message?: string;
-  docId?: number;
-  recipient?: string;
-  inviteId?: number;
-}
-
 export const authenticateToken = (
   req: AuthRequest,
   res: Response,
@@ -132,6 +136,8 @@ export const authenticateToken = (
       .json({ message: "Unauthorized: Missing or invalid token" });
   }
 };
+
+//Document queries
 
 export const createDocument = async (con: any, userId: number) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -226,29 +232,7 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
   return success;
 };
 
-export const sendInvite = async (
-  pool: any,
-  docId: number,
-  senderId: number,
-  recipientId: number
-) => {
-  const ownsDoc = await docOwnership(pool, docId, senderId);
-  if (!ownsDoc) {
-    return { success: false, message: "Document not found or unauthorized" };
-  }
-  const values = [docId, senderId, recipientId];
-  const query = `
-  INSERT INTO invites (doc_id, sender_id, recipient_id)
-  VALUES (?, ?, ?)`;
-  const [result, _] = await pool.query(query, values);
-  return result.affectedRows > 0
-    ? { success: true, message: "Invite sent" }
-    : {
-        success: false,
-        message: "Invite failed",
-        error: result.message,
-      };
-};
+//Invitation queries
 
 export const getInvites = async (pool: any, userId: number) => {
   const query = `
@@ -273,6 +257,56 @@ export const getInvites = async (pool: any, userId: number) => {
     })
   );
   return { success: true, invites: newResults };
+};
+
+export const sendInvite = async (
+  pool: any,
+  docId: number,
+  senderId: number,
+  recipientId: number
+) => {
+  //Make sure user owns document
+  const ownsDoc = await docOwnership(pool, docId, senderId);
+  if (!ownsDoc) {
+    return {
+      success: false,
+      message: "Document not found or unauthorized",
+    };
+  }
+
+  //Make sure invitation hasn't already been sent
+  const findDuplicateQuery = `
+  SELECT * 
+  FROM invites
+  WHERE doc_id = ?
+  AND recipient_id = ?
+  `;
+  const findDuplicateValues = [docId, recipientId];
+  const [findDuplicateResult, _] = await pool.query(
+    findDuplicateQuery,
+    findDuplicateValues
+  );
+
+  if (findDuplicateResult.length === 0) {
+    //add invite to database
+    const createDocQuery = `
+    INSERT INTO invites (doc_id, sender_id, recipient_id)
+    VALUES (?, ?, ?)
+    `;
+    const createDocValues = [docId, senderId, recipientId];
+    const [createResult, _] = await pool.query(createDocQuery, createDocValues);
+    return createResult.affectedRows > 0
+      ? { success: true, message: "Invite sent" }
+      : {
+          success: false,
+          message: "Invite failed",
+          error: createResult.message,
+        };
+  }
+  return {
+    success: false,
+    message: "A similar invite exists",
+  };
 };
 
 export const deleteInvite = async (
