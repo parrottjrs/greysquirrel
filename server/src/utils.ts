@@ -252,6 +252,7 @@ export const getInvites = async (pool: any, userId: number) => {
         inviteId: invite_id,
         docId: doc_id,
         senderName: senderName,
+        senderId: sender_id,
         recipientId: recipient_id,
       };
     })
@@ -327,4 +328,80 @@ export const deleteInvite = async (
         success: false,
         message: "Failed to delete invite: unauthorized or does not exist",
       };
+};
+
+const getSharedDoc = async (pool: any, docId: number) => {
+  const values = [docId];
+  const query = `
+  SELECT *
+  FROM shared_docs
+  WHERE doc_id = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  const sharedDoc = await JSON.parse(JSON.stringify(result));
+  return result.length > 0
+    ? { success: true, authorizedUsers: sharedDoc[0].authorized_users }
+    : { success: false };
+};
+
+const ownsInvite = async (pool: any, inviteId: number, recipientId: number) => {
+  const inviteOwnershipValues = [inviteId, recipientId];
+  const inviteOwnershipQuery = `
+  SELECT *
+  FROM invites
+  WHERE invite_id = ? 
+  AND recipient_id = ?
+  `;
+  const [result, _] = await pool.query(
+    inviteOwnershipQuery,
+    inviteOwnershipValues
+  );
+  return result.length > 0;
+};
+
+export const acceptInvite = async (
+  pool: any,
+  inviteId: number,
+  docId: number,
+  senderId: number,
+  recipientId: number
+) => {
+  const authorized = await ownsInvite(pool, inviteId, recipientId);
+  if (!authorized) {
+    return { success: false };
+  }
+  const sharedDoc = await getSharedDoc(pool, docId);
+  if (!sharedDoc.success) {
+    const recipientArray = [recipientId];
+    const recipientArrayString = JSON.stringify(recipientArray);
+    const createSharedDocValues = [docId, senderId, recipientArrayString];
+    const createSharedDoc = `
+    INSERT INTO shared_docs (doc_id, owner_id, authorized_users)
+    VALUES (?, ?, ?)
+    `;
+    const [result, _] = await pool.query(
+      createSharedDoc,
+      createSharedDocValues
+    );
+    return result.affectedRows > 0
+      ? { success: true, message: "Invite accepted" }
+      : { success: false, message: "Invite acceptance unsuccessful" };
+  }
+  const authorizedUsers = JSON.parse(sharedDoc.authorizedUsers);
+  authorizedUsers.push(recipientId);
+  const newUsersArray = authorizedUsers;
+  const newUsersArrayString = JSON.stringify(newUsersArray);
+  const updateSharedDocValues = [newUsersArrayString, docId];
+  const updateSharedDocQuery = `
+  UPDATE shared_docs
+  SET authorized_users = ?
+  WHERE doc_id = ?
+  `;
+  const [result, _] = await pool.query(
+    updateSharedDocQuery,
+    updateSharedDocValues
+  );
+  return result.affectedRows > 0
+    ? { success: true, message: "Invite accepted" }
+    : { success: false, message: "Invite acceptance unsuccessful " };
 };

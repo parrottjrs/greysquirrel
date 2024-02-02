@@ -5,6 +5,7 @@ import mysql from "mysql2/promise";
 import cookieParser from "cookie-parser";
 import { AccessToken, RefreshToken } from "./Token";
 import {
+  acceptInvite,
   allDocuments,
   authenticateToken,
   authenticateUser,
@@ -300,11 +301,9 @@ app.get("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
     }
     const { success, invites } = await getInvites(pool, req.userId);
     if (!success) {
-      return res.status(404).json({ message: "No invites" });
+      return res.status(404).json({ success: success, message: "No invites" });
     }
-    return res
-      .status(200)
-      .json({ message: "Fetch successful", invites: invites });
+    return res.status(200).json({ success: success, invites: invites });
   } catch (err) {
     console.error("Cannot get invite:", err);
     return res.status(500).json({ message: "internal server error" });
@@ -328,31 +327,46 @@ app.delete("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-// app.post(
-//   "/api/accept-invite",
-//   authenticateToken,
-//   async (req: AuthRequest, res) => {
-//     try {
-//       if (req.userId === undefined) {
-//         return res.status(403).json({ message: "Authorization error" });
-//       }
-//       const { inviteId, docId } = req.body;
-//       const { success } = await acceptInvite(pool, inviteId, docId);
-//       if (!success) {
-//         return res.status(404).json({ message: "Failed to delete invite" });
-//       }
-//       return res.status(200).json({ message: "Invite accepted" });
-//     } catch (err) {
-//       console.error("Cannot accept invite:", err);
-//       return res.status(500).json({ message: "Internal servor error" });
-//     }
-//   }
-// );
-
 app.post(
   "/api/accept-invite",
   authenticateToken,
-  async (req: AuthRequest, res) => {}
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res.status(403).json({ message: "Authorization error" });
+      }
+      const {
+        inviteId: inviteId,
+        docId: docId,
+        senderId: senderId,
+        recipientId,
+      } = req.body;
+      console.log(req.body);
+      if (req.userId !== recipientId) {
+        console.log({ user: req.userId, recipient: recipientId });
+        return res.status(403).json({ message: "Authorization error" });
+      }
+      const { success } = await acceptInvite(
+        pool,
+        inviteId,
+        docId,
+        senderId,
+        recipientId
+      );
+      if (!success) {
+        return res
+          .status(404)
+          .json({ success: success, message: "Failed to accept invite" });
+      }
+      deleteInvite(pool, recipientId, inviteId);
+      return res
+        .status(200)
+        .json({ success: success, message: "Invite accepted" });
+    } catch (err) {
+      console.error("Cannot accept invite", err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 );
 // const clients: any = {};
 

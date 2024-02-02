@@ -5,7 +5,9 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 type Invite = {
   inviteId: number;
   docId: number;
+  senderId: number;
   senderName: string;
+  recipientId: number;
 };
 
 export default function Invites() {
@@ -48,12 +50,22 @@ export default function Invites() {
     }
   };
 
-  const acceptInvite = async (inviteId: number, docId: number) => {
+  const acceptInvite = async (
+    inviteId: number,
+    docId: number,
+    senderId: number,
+    recipientId: number
+  ) => {
     try {
       const response = await fetch("/api/accept-invite", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ inviteId: inviteId, docId: docId }),
+        body: JSON.stringify({
+          inviteId: inviteId,
+          docId: docId,
+          senderId: senderId,
+          recipientId: recipientId,
+        }),
       });
       const json = await response.json();
       return json;
@@ -63,8 +75,13 @@ export default function Invites() {
     }
   };
 
-  const handleAccept = (inviteId: number, docId: number) => {
-    acceptInvite(inviteId, docId);
+  const handleAccept = (
+    inviteId: number,
+    docId: number,
+    senderId: number,
+    recipientId: number
+  ) => {
+    acceptInvite(inviteId, docId, senderId, recipientId);
     deleteInvite(inviteId);
   };
 
@@ -83,7 +100,7 @@ export default function Invites() {
         console.error("Error fetching invites:", error);
       });
   }, []);
-
+  console.log;
   return (
     <div>
       <DropdownMenu.Root>
@@ -95,7 +112,9 @@ export default function Invites() {
             {count > 0 ? (
               <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">
                 {invites.map((invite: Invite) => {
-                  const { inviteId, docId, senderName } = invite;
+                  const { inviteId, docId, senderName, senderId, recipientId } =
+                    invite;
+
                   return (
                     <DropdownMenu.Item key={invite.inviteId}>
                       <div>
@@ -103,7 +122,11 @@ export default function Invites() {
                           {senderName} has invited you to work on a document
                           with them!
                         </p>
-                        <button onClick={() => handleAccept(inviteId, docId)}>
+                        <button
+                          onClick={() =>
+                            handleAccept(inviteId, docId, senderId, recipientId)
+                          }
+                        >
                           accept
                         </button>
                         <button onClick={() => handleDelete(inviteId)}>
