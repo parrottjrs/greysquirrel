@@ -199,17 +199,29 @@ export const saveDocument = async (pool: any, doc: Document) => {
       };
 };
 
+const deleteSharedDoc = async (pool: any, docId: number, ownerId: number) => {
+  const deleteSharedQuery = `
+  DELETE FROM shared_docs
+  WHERE doc_id = ? AND owner_id = ?
+  `;
+  const deleteSharedValues = [docId, ownerId];
+  const [result, _] = await pool.query(deleteSharedQuery, deleteSharedValues);
+  return result.affectedRows > 0;
+};
+
 export const deleteDocument = async (
   pool: any,
   docId: number,
   userId: number
 ) => {
-  const query = `
+  const deleteDocQuery = `
   DELETE FROM documents 
   WHERE doc_id = ? AND user_id = ?
   `;
-  const values = [docId, userId];
-  const [result, _] = await pool.query(query, values);
+  const deleteDocValues = [docId, userId];
+  const [result, _] = await pool.query(deleteDocQuery, deleteDocValues);
+  await deleteSharedDoc(pool, docId, userId);
+  await deleteInviteByDocId(pool, docId, userId);
   return result.affectedRows > 0
     ? { success: true, message: "Document deleted successfully" }
     : {
@@ -310,7 +322,7 @@ export const sendInvite = async (
   };
 };
 
-export const deleteInvite = async (
+export const deleteInviteByInviteId = async (
   pool: any,
   userId: number,
   inviteId: number
@@ -328,6 +340,21 @@ export const deleteInvite = async (
         success: false,
         message: "Failed to delete invite: unauthorized or does not exist",
       };
+};
+
+export const deleteInviteByDocId = async (
+  pool: any,
+  senderId: number,
+  docId: number
+) => {
+  const values = [docId, senderId];
+  const query = `
+  DELETE FROM invites
+  WHERE invite_id = ?
+  AND sender_id = ? 
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0;
 };
 
 const getSharedDoc = async (pool: any, docId: number) => {
@@ -370,38 +397,14 @@ export const acceptInvite = async (
   if (!authorized) {
     return { success: false };
   }
-  const sharedDoc = await getSharedDoc(pool, docId);
-  if (!sharedDoc.success) {
-    const recipientArray = [recipientId];
-    const recipientArrayString = JSON.stringify(recipientArray);
-    const createSharedDocValues = [docId, senderId, recipientArrayString];
-    const createSharedDoc = `
-    INSERT INTO shared_docs (doc_id, owner_id, authorized_users)
+
+  const createSharedDocValues = [docId, senderId, recipientId];
+  const createSharedDoc = `
+    INSERT INTO shared_docs (doc_id, owner_id, authorized_user)
     VALUES (?, ?, ?)
     `;
-    const [result, _] = await pool.query(
-      createSharedDoc,
-      createSharedDocValues
-    );
-    return result.affectedRows > 0
-      ? { success: true, message: "Invite accepted" }
-      : { success: false, message: "Invite acceptance unsuccessful" };
-  }
-  const authorizedUsers = JSON.parse(sharedDoc.authorizedUsers);
-  authorizedUsers.push(recipientId);
-  const newUsersArray = authorizedUsers;
-  const newUsersArrayString = JSON.stringify(newUsersArray);
-  const updateSharedDocValues = [newUsersArrayString, docId];
-  const updateSharedDocQuery = `
-  UPDATE shared_docs
-  SET authorized_users = ?
-  WHERE doc_id = ?
-  `;
-  const [result, _] = await pool.query(
-    updateSharedDocQuery,
-    updateSharedDocValues
-  );
+  const [result, _] = await pool.query(createSharedDoc, createSharedDocValues);
   return result.affectedRows > 0
     ? { success: true, message: "Invite accepted" }
-    : { success: false, message: "Invite acceptance unsuccessful " };
+    : { success: false, message: "Invite acceptance unsuccessful" };
 };

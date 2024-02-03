@@ -13,7 +13,7 @@ import {
   createDocument,
   createUser,
   deleteDocument,
-  deleteInvite,
+  deleteInviteByInviteId,
   getDocument,
   getId,
   getInvites,
@@ -236,6 +236,7 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
     let documents = await allDocuments(pool, req.userId);
+
     return res.status(200).send({ message: "Authorized", docs: documents });
   } catch (err) {
     console.error("Error accessing user documents:", err);
@@ -316,7 +317,11 @@ app.delete("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
       return res.status(403).json({ message: "Authorization error" });
     }
     const { inviteId } = req.body;
-    const { success } = await deleteInvite(pool, req.userId, inviteId);
+    const { success } = await deleteInviteByInviteId(
+      pool,
+      req.userId,
+      inviteId
+    );
     if (!success) {
       return res.status(404).json({ message: "Failed to delete invite" });
     }
@@ -358,7 +363,7 @@ app.post(
           .status(404)
           .json({ success: success, message: "Failed to accept invite" });
       }
-      deleteInvite(pool, recipientId, inviteId);
+      deleteInviteByInviteId(pool, recipientId, inviteId);
       return res
         .status(200)
         .json({ success: success, message: "Invite accepted" });
