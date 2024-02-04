@@ -114,7 +114,6 @@ export default function Invites() {
                 {invites.map((invite: Invite) => {
                   const { inviteId, docId, senderName, senderId, recipientId } =
                     invite;
-
                   return (
                     <DropdownMenu.Item key={invite.inviteId}>
                       <div>

@@ -14,6 +14,7 @@ import {
   createUser,
   deleteDocument,
   deleteInviteByInviteId,
+  getAllSharedDocs,
   getDocument,
   getId,
   getInvites,
@@ -368,6 +369,23 @@ app.post(
     } catch (err) {
       console.error("Cannot accept invite", err);
       return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+app.get(
+  "/api/shared-docs",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res.status(403).json({ message: "Authorization error" });
+      }
+      const sharedDocs = await getAllSharedDocs(pool, req.userId);
+      return res.status(200).json({ result: sharedDocs });
+    } catch (err) {
+      console.error("error retrieving shared documents", err);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 );

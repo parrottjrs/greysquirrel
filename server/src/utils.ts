@@ -367,17 +367,6 @@ export const deleteInviteByDocId = async (
   return result.affectedRows > 0;
 };
 
-const getSharedDoc = async (pool: any, docId: number, authorizedId: number) => {
-  const values = [docId, authorizedId];
-  const query = `
-  SELECT *
-  FROM shared_docs
-  WHERE doc_id = ? AND authorized_user = ?
-  `;
-  const [result, _] = await pool.query(query, values);
-  return result.length > 0;
-};
-
 const ownsInvite = async (pool: any, inviteId: number, recipientId: number) => {
   const inviteOwnershipValues = [inviteId, recipientId];
   const inviteOwnershipQuery = `
@@ -414,4 +403,56 @@ export const acceptInvite = async (
   return result.affectedRows > 0
     ? { success: true, message: "Invite accepted" }
     : { success: false, message: "Invite acceptance unsuccessful" };
+};
+
+//Shared doc handling
+
+const getSharedDoc = async (pool: any, docId: number, authorizedId: number) => {
+  const values = [docId, authorizedId];
+  const query = `
+  SELECT *
+  FROM shared_docs
+  WHERE doc_id = ? AND authorized_user = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.length > 0;
+};
+
+const checkSharedAccess = async (pool: any, userId: number) => {
+  const query = `
+  SELECT doc_id 
+  FROM shared_docs
+  WHERE authorized_user = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  return result.length > 0
+    ? { success: true, sharedIds: result }
+    : { success: false };
+};
+
+export const getAllSharedDocs = async (pool: any, userId: number) => {
+  const accessList = await checkSharedAccess(pool, userId);
+  if (!accessList.success) {
+    return { success: false, message: "no shared docs available" };
+  }
+  const { sharedIds } = accessList;
+
+  const test = await Promise.all(
+    sharedIds.map(async (id: any) => {
+      const query = `
+    SELECT *
+    FROM documents
+    WHERE doc_id = ?
+    `;
+      const [result, _] = await pool.query(query, [id.doc_id]);
+      return result[0];
+    })
+  );
+  return test.length > 0
+    ? {
+        success: true,
+        message: "Shared docs successfully retrieved",
+        sharedDocs: test,
+      }
+    : { success: false, message: "Retrieval of shared documents unsuccessful" };
 };
