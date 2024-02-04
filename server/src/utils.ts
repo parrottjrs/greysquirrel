@@ -289,7 +289,14 @@ export const sendInvite = async (
       message: "Document not found or unauthorized",
     };
   }
-
+  //Make sure user isn't already authorized
+  const alreadyAuthorized = await getSharedDoc(pool, docId, recipientId);
+  if (alreadyAuthorized) {
+    return {
+      success: false,
+      message: "Document has already been shared with user",
+    };
+  }
   //Make sure invitation hasn't already been sent - avoid duplicate information
   const findDuplicateQuery = `
   SELECT * 
@@ -360,18 +367,15 @@ export const deleteInviteByDocId = async (
   return result.affectedRows > 0;
 };
 
-const getSharedDoc = async (pool: any, docId: number) => {
-  const values = [docId];
+const getSharedDoc = async (pool: any, docId: number, authorizedId: number) => {
+  const values = [docId, authorizedId];
   const query = `
   SELECT *
   FROM shared_docs
-  WHERE doc_id = ?
+  WHERE doc_id = ? AND authorized_user = ?
   `;
   const [result, _] = await pool.query(query, values);
-  const sharedDoc = await JSON.parse(JSON.stringify(result));
-  return result.length > 0
-    ? { success: true, authorizedUsers: sharedDoc[0].authorized_users }
-    : { success: false };
+  return result.length > 0;
 };
 
 const ownsInvite = async (pool: any, inviteId: number, recipientId: number) => {

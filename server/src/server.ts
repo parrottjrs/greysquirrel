@@ -346,9 +346,7 @@ app.post(
         senderId: senderId,
         recipientId,
       } = req.body;
-      console.log(req.body);
       if (req.userId !== recipientId) {
-        console.log({ user: req.userId, recipient: recipientId });
         return res.status(403).json({ message: "Authorization error" });
       }
       const { success } = await acceptInvite(
