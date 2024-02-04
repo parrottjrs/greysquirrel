@@ -214,14 +214,17 @@ export const deleteDocument = async (
   docId: number,
   userId: number
 ) => {
+  await deleteSharedDoc(pool, docId, userId);
+
+  await deleteInviteByDocId(pool, docId, userId);
+
   const deleteDocQuery = `
   DELETE FROM documents 
   WHERE doc_id = ? AND user_id = ?
   `;
   const deleteDocValues = [docId, userId];
   const [result, _] = await pool.query(deleteDocQuery, deleteDocValues);
-  await deleteSharedDoc(pool, docId, userId);
-  await deleteInviteByDocId(pool, docId, userId);
+
   return result.affectedRows > 0
     ? { success: true, message: "Document deleted successfully" }
     : {
@@ -344,13 +347,13 @@ export const deleteInviteByInviteId = async (
 
 export const deleteInviteByDocId = async (
   pool: any,
-  senderId: number,
-  docId: number
+  docId: number,
+  senderId: number
 ) => {
   const values = [docId, senderId];
   const query = `
   DELETE FROM invites
-  WHERE invite_id = ?
+  WHERE doc_id = ?
   AND sender_id = ? 
   `;
   const [result, _] = await pool.query(query, values);
