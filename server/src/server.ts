@@ -236,9 +236,33 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     if (req.userId === undefined) {
       return res.status(403).json({ message: "Unauthorized" });
     }
-    let documents = await allDocuments(pool, req.userId);
+    const { success, message, docs } = await allDocuments(pool, req.userId);
+    if (!success) {
+      return res.status(404).json({ message: message });
+    }
+    return res.status(200).send({
+      message: message,
+      docs: docs,
+    });
+  } catch (err) {
+    console.error("Error accessing user documents:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
 
-    return res.status(200).send({ message: "Authorized", docs: documents });
+app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    if (req.userId === undefined) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const { success, message, docs } = await allDocuments(pool, req.userId);
+    if (!success) {
+      return res.status(404).json({ message: message });
+    }
+    return res.status(200).send({
+      message: message,
+      docs: docs,
+    });
   } catch (err) {
     console.error("Error accessing user documents:", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -301,11 +325,13 @@ app.get("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
     if (req.userId === undefined) {
       return res.status(403).json({ message: "Authorization error" });
     }
-    const { success, invites } = await getInvites(pool, req.userId);
+    const { success, message, invites } = await getInvites(pool, req.userId);
     if (!success) {
-      return res.status(404).json({ success: success, message: "No invites" });
+      return res.status(404).json({ success: success, message: message });
     }
-    return res.status(200).json({ success: success, invites: invites });
+    return res
+      .status(200)
+      .json({ success: success, message: message, invites: invites });
   } catch (err) {
     console.error("Cannot get invite:", err);
     return res.status(500).json({ message: "internal server error" });
@@ -381,8 +407,16 @@ app.get(
       if (req.userId === undefined) {
         return res.status(403).json({ message: "Authorization error" });
       }
-      const sharedDocs = await getAllSharedDocs(pool, req.userId);
-      return res.status(200).json({ result: sharedDocs });
+      const { success, message, sharedDocs } = await getAllSharedDocs(
+        pool,
+        req.userId
+      );
+      if (!success) {
+        return res.status(404).json({ success: success, message: message });
+      }
+      return res
+        .status(200)
+        .json({ success: success, message: message, sharedDocs: sharedDocs });
     } catch (err) {
       console.error("error retrieving shared documents", err);
       res.status(500).json({ message: "Internal server error" });

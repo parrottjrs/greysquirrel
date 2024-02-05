@@ -58,18 +58,6 @@ export const strongPassword = (password: string) => {
   return restrictions.test(password);
 };
 
-const getUsername = async (pool: any, userId: number) => {
-  const query = `
-  SELECT user_name
-  FROM users
-  WHERE user_id = ?
-  `;
-  const [result, _] = await pool.query(query, [userId]);
-  const userName = JSON.parse(JSON.stringify(result));
-  return userName[0].user_name;
-  // return userName[0].user_name;
-};
-
 export const getUsernames = async (pool: any) => {
   const query = `SELECT user_name FROM users`;
   const [result, _] = await pool.query(query);
@@ -177,7 +165,13 @@ export const allDocuments = async (pool: any, userId: number) => {
   FROM documents 
   WHERE user_id = ?`;
   const [result, _] = await pool.query(query, [userId]);
-  return result;
+  return result.length > 0
+    ? {
+        success: true,
+        message: "Documents successfully retrieved",
+        docs: result,
+      }
+    : { success: false, message: "User has no documents to retrieve" };
 };
 
 export const saveDocument = async (pool: any, doc: Document) => {
@@ -251,28 +245,20 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
 
 export const getInvites = async (pool: any, userId: number) => {
   const query = `
-  SELECT * 
-  FROM invites
+  SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, i.recipient_id 
+  FROM invites i
+  JOIN users u ON i.sender_id = u.user_id
   WHERE recipient_id = ?
   `;
   const [result, _] = await pool.query(query, [userId]);
   if (result.length === 0) {
     return { success: false, message: "No invites" };
   }
-  const newResults = await Promise.all(
-    result.map(async (element: any) => {
-      const { invite_id, doc_id, sender_id, recipient_id } = element;
-      const senderName = await getUsername(pool, sender_id);
-      return {
-        inviteId: invite_id,
-        docId: doc_id,
-        senderName: senderName,
-        senderId: sender_id,
-        recipientId: recipient_id,
-      };
-    })
-  );
-  return { success: true, invites: newResults };
+  return {
+    success: true,
+    message: "Invites successfully retrieved",
+    invites: result,
+  };
 };
 
 export const sendInvite = async (
@@ -437,22 +423,28 @@ export const getAllSharedDocs = async (pool: any, userId: number) => {
   }
   const { sharedIds } = accessList;
 
-  const test = await Promise.all(
+  const allSharedDocs = await Promise.all(
     sharedIds.map(async (id: any) => {
       const query = `
-    SELECT *
-    FROM documents
-    WHERE doc_id = ?
+    SELECT d.doc_id, d.title, d.content, u.user_name as owner_name
+        FROM documents d
+        JOIN users u ON d.user_id = u.user_id
+        WHERE d.doc_id = ?
     `;
       const [result, _] = await pool.query(query, [id.doc_id]);
-      return result[0];
+      return {
+        doc_id: result[0].doc_id,
+        title: result[0].title,
+        content: result[0].content,
+        owner_name: result[0].owner_name,
+      };
     })
   );
-  return test.length > 0
+  return allSharedDocs.length > 0
     ? {
         success: true,
-        message: "Shared docs successfully retrieved",
-        sharedDocs: test,
+        message: "Shared documents successfully retrieved",
+        sharedDocs: allSharedDocs,
       }
-    : { success: false, message: "Retrieval of shared documents unsuccessful" };
+    : { success: false, message: "User has no shared documents to retrieve" };
 };

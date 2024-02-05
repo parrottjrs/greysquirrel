@@ -44,13 +44,15 @@ export default function DocumentsGrid() {
     });
   };
 
-  return documents.map((document: Document) => {
-    const { title, doc_id } = document;
-    return (
-      <div key={doc_id}>
-        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
-        <button onClick={() => handleDelete(doc_id)}>Delete</button>
-      </div>
-    );
-  });
+  return documents.length > 0
+    ? documents.map((document: Document) => {
+        const { title, doc_id } = document;
+        return (
+          <div key={doc_id}>
+            <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
+            <button onClick={() => handleDelete(doc_id)}>Delete</button>
+          </div>
+        );
+      })
+    : null;
 }

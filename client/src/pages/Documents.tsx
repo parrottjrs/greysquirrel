@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import DocumentsGrid from "../components/DocumentsGrid";
 import Invites from "../components/Invites";
+import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
 
 export default function Documents() {
   const [authorization, setAuthorization] = useState(false);
@@ -75,6 +76,8 @@ export default function Documents() {
         <LogoutButton />
         <h1>Documents</h1>
         <DocumentsGrid />
+        <h2>Shared Documents</h2>
+        <SharedDocumentsGrid />
         <button onClick={handleClick}>Create Document</button>
       </div>
     )
