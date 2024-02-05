@@ -245,7 +245,7 @@ app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
         .json({ success: false, message: "Authorization error" });
     }
     const { doc } = req.body;
-    const { success, message } = await saveDocument(pool, doc);
+    const { success, message } = await saveDocument(pool, doc, req.userId);
     if (!success) {
       return res.status(403).json({ success: success, message: message });
     }
@@ -325,6 +325,11 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
         .status(404)
         .json({ success: false, message: "Recipient does not exist" });
     }
+    if (req.userId === recipientId) {
+      return res
+        .status(200)
+        .json({ success: false, message: "User owns document" });
+    }
     const { success, message } = await sendInvite(
       pool,
       docId,
@@ -400,13 +405,9 @@ app.post(
           .status(403)
           .json({ success: false, message: "Authorization error" });
       }
-      const {
-        inviteId: inviteId,
-        docId: docId,
-        senderId: senderId,
-        recipientId,
-      } = req.body;
+      const { inviteId, docId, senderId, recipientId } = req.body;
       if (req.userId !== recipientId) {
+        console.log("recipient:", recipientId, "user:", req.userId);
         return res
           .status(403)
           .json({ success: false, message: "Authorization error" });

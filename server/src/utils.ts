@@ -187,9 +187,19 @@ export const allDocuments = async (pool: any, userId: number) => {
     : { success: false, message: "User has no documents to retrieve" };
 };
 
-export const saveDocument = async (pool: any, doc: Document) => {
+export const saveDocument = async (
+  pool: any,
+  doc: Document,
+  userId: number
+) => {
+  const { title, content, docId } = doc;
+  const isOwner = await docOwnership(pool, docId, userId);
+  const isAuthorized = await getSharedDoc(pool, docId, userId);
+  if (!isOwner && !isAuthorized) {
+    return { success: false, message: "Authorization error" };
+  }
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-  const values = [date, doc.title, doc.content, doc.docId];
+  const values = [date, title, content, docId];
   const query = `
   UPDATE documents
   SET last_edit = ?, title = ?, content = ?
@@ -250,8 +260,7 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
   AND user_id = ?
   `;
   const [result, _] = await pool.query(query, values);
-  const success = result.length > 0 ? true : false;
-  return success;
+  return result.length > 0 ? true : false;
 };
 
 //Invitation queries
@@ -366,13 +375,13 @@ export const deleteInviteByDocId = async (
   return result.affectedRows > 0;
 };
 
-const ownsInvite = async (pool: any, inviteId: number, recipientId: number) => {
-  const inviteOwnershipValues = [inviteId, recipientId];
+const ownsInvite = async (pool: any, inviteId: number, userId: number) => {
+  const inviteOwnershipValues = [inviteId, userId, userId];
   const inviteOwnershipQuery = `
   SELECT *
   FROM invites
   WHERE invite_id = ? 
-  AND recipient_id = ?
+  AND (recipient_id = ? OR sender_id = ?)
   `;
   const [result, _] = await pool.query(
     inviteOwnershipQuery,
@@ -420,7 +429,7 @@ const getSharedDoc = async (pool: any, docId: number, authorizedId: number) => {
   return result.length > 0;
 };
 
-const checkSharedAccess = async (pool: any, userId: number) => {
+const sharedAccessList = async (pool: any, userId: number) => {
   const query = `
   SELECT doc_id 
   FROM shared_docs
@@ -433,7 +442,7 @@ const checkSharedAccess = async (pool: any, userId: number) => {
 };
 
 export const getAllSharedDocs = async (pool: any, userId: number) => {
-  const accessList = await checkSharedAccess(pool, userId);
+  const accessList = await sharedAccessList(pool, userId);
   if (!accessList.success) {
     return {
       success: false,
