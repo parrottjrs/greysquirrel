@@ -38,7 +38,6 @@ export default function Invites() {
         const updatedInvites = invites.filter(
           (invite) => invite.inviteId !== id
         );
-        console.log(updatedInvites);
         setInvites(updatedInvites);
         setCount(count - 1);
       }
@@ -100,7 +99,7 @@ export default function Invites() {
         console.error("Error fetching invites:", error);
       });
   }, []);
-  console.log;
+
   return (
     <div>
       <DropdownMenu.Root>

@@ -22,7 +22,7 @@ export interface AuthRequest extends Request {
 
 //User creation/Authentication handling & queries
 
-export const getHash = (password: string) => {
+const getHash = (password: string) => {
   const salt = randomBytes(64).toString("base64");
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
@@ -30,7 +30,7 @@ export const getHash = (password: string) => {
   return { salt, hash };
 };
 
-export const getPassword = async (pool: any, username: string) => {
+const getPassword = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users
   WHERE user_name = ?
@@ -55,6 +55,7 @@ export const getId = async (pool: any, username: string) => {
 
 export const strongPassword = (password: string) => {
   var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
   return restrictions.test(password);
 };
 
@@ -104,7 +105,10 @@ export const createUser = async (
   VALUES (
   ?,?,?,?,?,?
 )`;
-  await pool.query(query, values);
+  const [result, _] = await pool.query(query, values);
+  return result.length > 0
+    ? { success: true, message: "User created" }
+    : { success: false, message: "Failed to create user" };
 };
 
 export const authenticateToken = (
@@ -129,16 +133,18 @@ export const authenticateToken = (
 
 export const createDocument = async (con: any, userId: number) => {
   const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-  const values = [userId, date, date];
-  const query1 = `
+  const insertValues = [userId, date, date];
+  const insertQuery = `
   INSERT INTO documents (user_id, created, last_edit) 
   VALUES (?, ?, ?)
   `;
-  const query2 = `SELECT LAST_INSERT_ID() as docId`;
-  con.query(query1, values);
-  const [result, _] = await con.query(query2);
+  const getIdQuery = `SELECT LAST_INSERT_ID() as docId`;
+  con.query(insertQuery, insertValues);
+  const [result, _] = await con.query(getIdQuery);
   const id = JSON.parse(JSON.stringify(result));
-  return id[0].docId;
+  return result.length > 0
+    ? { success: true, message: "Document created", docId: id[0].docId }
+    : { success: false, message: "Cannot create document" };
 };
 
 export const getDocument = async (con: any, docId: number, userId: number) => {
@@ -148,14 +154,21 @@ export const getDocument = async (con: any, docId: number, userId: number) => {
   WHERE doc_id = ?
   `;
   const [result, _] = await con.query(query, [docId]);
+  if (result.length === 0) {
+    return { success: false, message: "File not found" };
+  }
   const document = await JSON.parse(JSON.stringify(result));
   if (document[0].user_id !== userId) {
-    return { message: "Unauthorized" };
+    return { success: false, message: "Authorization error" };
   }
   return {
-    docId: document[0].doc_id,
-    title: document[0].title,
-    content: document[0].content,
+    success: true,
+    message: "Document retrieved",
+    doc: {
+      docId: document[0].doc_id,
+      title: document[0].title,
+      content: document[0].content,
+    },
   };
 };
 
@@ -377,7 +390,7 @@ export const acceptInvite = async (
 ) => {
   const authorized = await ownsInvite(pool, inviteId, recipientId);
   if (!authorized) {
-    return { success: false };
+    return { success: false, message: "Authorization error" };
   }
 
   const createSharedDocValues = [docId, senderId, recipientId];
@@ -388,7 +401,10 @@ export const acceptInvite = async (
   const [result, _] = await pool.query(createSharedDoc, createSharedDocValues);
   return result.affectedRows > 0
     ? { success: true, message: "Invite accepted" }
-    : { success: false, message: "Invite acceptance unsuccessful" };
+    : {
+        success: false,
+        message: "Invite no longer exists. Invite cannot be accepted",
+      };
 };
 
 //Shared doc handling
@@ -419,7 +435,10 @@ const checkSharedAccess = async (pool: any, userId: number) => {
 export const getAllSharedDocs = async (pool: any, userId: number) => {
   const accessList = await checkSharedAccess(pool, userId);
   if (!accessList.success) {
-    return { success: false, message: "no shared docs available" };
+    return {
+      success: false,
+      message: "User has no shared documents to retrieve",
+    };
   }
   const { sharedIds } = accessList;
 
@@ -447,4 +466,27 @@ export const getAllSharedDocs = async (pool: any, userId: number) => {
         sharedDocs: allSharedDocs,
       }
     : { success: false, message: "User has no shared documents to retrieve" };
+};
+
+export const revokeSharedAccess = async (
+  pool: any,
+  docId: number,
+  ownerId: number,
+  authorizedUserId: number
+) => {
+  const values = [docId, ownerId, authorizedUserId];
+  const query = `
+  DELETE from shared_docs
+  WHERE doc_id = ?
+  AND owner_id = ?
+  AND authorized_user = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Access to shared document revoked" }
+    : {
+        success: false,
+        message:
+          "Failed to revoke access. Document is not currently being shared with user",
+      };
 };

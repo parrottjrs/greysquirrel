@@ -36,9 +36,9 @@ export default function Editor() {
       case "Authorized":
         setAuthorization(true);
         break;
-      case "Unauthorized":
+      case "Authorization error":
         const auth = await refresh();
-        if (auth.message === "Unauthorized") {
+        if (auth.message === "Authorization error") {
           setAuthorization(false);
           navigate("/expired");
         }
