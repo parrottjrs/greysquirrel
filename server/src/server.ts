@@ -482,7 +482,8 @@ app.delete(
           .status(403)
           .json({ success: false, message: "Authorization error" });
       }
-      const { docId, ownerId, authorizedUserId } = req.body;
+      const { docId, ownerId, authorizedUser } = req.body;
+      const authorizedUserId = await getId(pool, authorizedUser);
       if (req.userId !== ownerId && req.userId !== authorizedUserId) {
         return res
           .status(403)

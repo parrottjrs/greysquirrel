@@ -1,7 +1,6 @@
-import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "./Token";
-import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
+import { pbkdf2Sync, randomBytes } from "crypto";
 
 //Custom types
 
@@ -174,17 +173,60 @@ export const getDocument = async (con: any, docId: number, userId: number) => {
 
 export const allDocuments = async (pool: any, userId: number) => {
   const query = `
-  SELECT doc_id, title, content 
-  FROM documents 
-  WHERE user_id = ?`;
+    SELECT d.doc_id, d.title, d.content, s.authorized_user, u.user_name AS authorized_username
+    FROM documents d
+    LEFT JOIN shared_docs s ON d.doc_id = s.doc_id
+    LEFT JOIN users u ON s.authorized_user = u.user_id
+    WHERE d.user_id = ? 
+  `;
+
   const [result, _] = await pool.query(query, [userId]);
-  return result.length > 0
-    ? {
-        success: true,
-        message: "Documents successfully retrieved",
-        docs: result,
+
+  if (result.length === 0) {
+    return { success: false, message: "User has no documents to retrieve" };
+  }
+
+  const documents = await JSON.parse(JSON.stringify(result));
+
+  const groupedDocuments: {
+    [key: number]: {
+      docId: number;
+      title: string;
+      content: string;
+      authorizedUsers: string[];
+    };
+  } = {};
+
+  documents.forEach(
+    (doc: {
+      doc_id: number;
+      title: string;
+      content: string;
+      authorized_username: string;
+    }) => {
+      const docId = doc.doc_id;
+      if (!groupedDocuments[docId]) {
+        groupedDocuments[docId] = {
+          docId: docId,
+          title: doc.title,
+          content: doc.content,
+          authorizedUsers: [],
+        };
       }
-    : { success: false, message: "User has no documents to retrieve" };
+
+      if (doc.authorized_username) {
+        groupedDocuments[docId].authorizedUsers.push(doc.authorized_username);
+      }
+    }
+  );
+
+  const resultArray = Object.values(groupedDocuments);
+
+  return {
+    success: true,
+    message: "Documents successfully retrieved",
+    docs: resultArray,
+  };
 };
 
 export const saveDocument = async (
