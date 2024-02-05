@@ -62,15 +62,13 @@ export default function Editor() {
 
   const fetchSave = async () => {
     try {
-      const response = await fetch("/api/save", {
+      await fetch("/api/save", {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           doc: { docId: docId, title: title, content: text },
         }),
       });
-      const json = response.json();
-      return json;
     } catch (err) {
       console.error(err);
     }
@@ -113,12 +111,11 @@ export default function Editor() {
 
   const fetchInvite = async () => {
     try {
-      const response = await fetch("/api/invite", {
+      await fetch("/api/invite", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId, recipient: recipient }),
       });
-      const json = await response.json();
     } catch (err) {
       console.error(err);
     }

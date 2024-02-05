@@ -12,7 +12,7 @@ export default function DocumentsGrid() {
     try {
       const response = await fetch("/api/documents");
       const json = await response.json();
-      json === null ? setDocuments([]) : setDocuments(json.docs);
+      json.success === false ? setDocuments([]) : setDocuments(json.docs);
     } catch (err) {
       console.error(err);
       return false;
@@ -21,7 +21,7 @@ export default function DocumentsGrid() {
 
   const fetchDelete = async (id: any) => {
     try {
-      const response = await fetch("api/documents", {
+      await fetch("api/documents", {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: id }),

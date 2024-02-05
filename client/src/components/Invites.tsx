@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 type Invite = {
-  inviteId: number;
-  docId: number;
-  senderId: number;
-  senderName: string;
-  recipientId: number;
+  invite_id: number;
+  doc_id: number;
+  sender_id: number;
+  sender_name: string;
+  recipient_id: number;
 };
 
 export default function Invites() {
@@ -36,13 +36,11 @@ export default function Invites() {
       });
       if (response.ok) {
         const updatedInvites = invites.filter(
-          (invite) => invite.inviteId !== id
+          (invite) => invite.invite_id !== id
         );
         setInvites(updatedInvites);
         setCount(count - 1);
       }
-      const json = await response.json();
-      return json;
     } catch (err) {
       console.error(err);
       return false;
@@ -56,7 +54,7 @@ export default function Invites() {
     recipientId: number
   ) => {
     try {
-      const response = await fetch("/api/accept-invite", {
+      await fetch("/api/accept-invite", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -66,8 +64,6 @@ export default function Invites() {
           recipientId: recipientId,
         }),
       });
-      const json = await response.json();
-      return json;
     } catch (err) {
       console.error(err);
       return false;
@@ -111,23 +107,33 @@ export default function Invites() {
             {count > 0 ? (
               <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">
                 {invites.map((invite: Invite) => {
-                  const { inviteId, docId, senderName, senderId, recipientId } =
-                    invite;
+                  const {
+                    invite_id,
+                    doc_id,
+                    sender_name,
+                    sender_id,
+                    recipient_id,
+                  } = invite;
                   return (
-                    <DropdownMenu.Item key={invite.inviteId}>
+                    <DropdownMenu.Item key={invite_id}>
                       <div>
                         <p>
-                          {senderName} has invited you to work on a document
+                          {sender_name} has invited you to work on a document
                           with them!
                         </p>
                         <button
                           onClick={() =>
-                            handleAccept(inviteId, docId, senderId, recipientId)
+                            handleAccept(
+                              invite_id,
+                              doc_id,
+                              sender_id,
+                              recipient_id
+                            )
                           }
                         >
                           accept
                         </button>
-                        <button onClick={() => handleDelete(inviteId)}>
+                        <button onClick={() => handleDelete(invite_id)}>
                           decline
                         </button>
                       </div>

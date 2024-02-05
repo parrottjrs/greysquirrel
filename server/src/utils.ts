@@ -106,7 +106,7 @@ export const createUser = async (
   ?,?,?,?,?,?
 )`;
   const [result, _] = await pool.query(query, values);
-  return result.length > 0
+  return result.affectedRows > 0
     ? { success: true, message: "User created" }
     : { success: false, message: "Failed to create user" };
 };

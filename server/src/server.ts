@@ -132,7 +132,7 @@ app.get(
     try {
       if (req.userId === undefined) {
         return res
-          .status(403)
+          .status(200)
           .json({ success: false, message: "Authorization error" });
       }
       return res.status(200).json({ success: true, message: "Authorized" });
@@ -144,38 +144,6 @@ app.get(
     }
   }
 );
-
-app.get("/api/content", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    if (req.userId === undefined) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Authorization error" });
-    }
-    const docId = req.body;
-    const { success, message, doc } = await getDocument(
-      pool,
-      docId,
-      req.userId
-    );
-    if (!success) {
-      switch (message) {
-        case "Authorization error":
-          return res.status(401).json({ success: success, message: message });
-        case "File not found":
-          return res.status(404).json({ success: success, message: message });
-      }
-    }
-    return res
-      .status(200)
-      .json({ success: success, message: message, document: doc });
-  } catch (err) {
-    console.error("Error getting content:", err);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
-  }
-});
 
 // app.get("/", (req, res) => {
 //   res.sendFile(`${absolutePath}/index.html`);
@@ -273,7 +241,7 @@ app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
   try {
     if (req.userId === undefined) {
       return res
-        .status(403)
+        .status(401)
         .json({ success: false, message: "Authorization error" });
     }
     const { doc } = req.body;
@@ -301,7 +269,7 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     }
     const { success, message, docs } = await allDocuments(pool, req.userId);
     if (!success) {
-      return res.status(404).json({ success: success, message: message });
+      return res.status(200).json({ success: success, message: message });
     }
     return res.status(200).send({
       success: success,
@@ -384,7 +352,7 @@ app.get("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
     }
     const { success, message, invites } = await getInvites(pool, req.userId);
     if (!success) {
-      return res.status(404).json({ success: success, message: message });
+      return res.status(200).json({ success: success, message: message });
     }
     return res
       .status(200)
@@ -489,7 +457,7 @@ app.get(
         req.userId
       );
       if (!success) {
-        return res.status(404).json({ success: success, message: message });
+        return res.status(200).json({ success: success, message: message });
       }
       return res
         .status(200)

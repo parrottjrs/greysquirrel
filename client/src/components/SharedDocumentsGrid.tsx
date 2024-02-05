@@ -13,7 +13,7 @@ export default function SharedDocumentsGrid() {
     try {
       const response = await fetch("/api/shared-docs");
       const json = await response.json();
-      json === null
+      json.success === false
         ? setSharedDocuments([])
         : setSharedDocuments(json.sharedDocs);
     } catch (err) {

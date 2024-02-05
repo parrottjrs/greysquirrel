@@ -39,8 +39,7 @@ export default function Signup() {
         body: JSON.stringify({ data: data }),
       });
       const json = await response.json();
-      const message = json.message;
-      switch (message) {
+      switch (json.message) {
         case "Bad request: User already exists":
           setNameWarning(true);
           break;

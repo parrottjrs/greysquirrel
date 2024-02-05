@@ -14,13 +14,12 @@ type FormData = {
 export default function Signin() {
   const [change, setChange] = useState(false);
   const [show, setShow] = useState(false);
-  const [checked, setChecked] = useState(false);
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
       password: "",
-      remember: checked,
+      remember: false,
     },
   });
 
@@ -34,10 +33,8 @@ export default function Signin() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: data }),
       });
-
       const json = await response.json();
-      const message = json.message;
-      switch (message) {
+      switch (json.message) {
         case "Access granted":
           navigate(`/documents`);
           break;
@@ -53,9 +50,6 @@ export default function Signin() {
   };
   const handleShow = () => {
     return setShow(!show);
-  };
-  const handleChecked = () => {
-    return setChecked(!checked);
   };
 
   const onSubmit = (data: FormData) => {
@@ -122,13 +116,7 @@ export default function Signin() {
             value="Log In"
           />
           <label htmlFor="remember">Remember me for 30 days</label>
-          <input
-            id="remember"
-            type="checkbox"
-            checked={checked}
-            {...register("remember")}
-            onChange={handleChecked}
-          />
+          <input id="remember" type="checkbox" {...register("remember")} />
         </form>
         <div className={STYLES.SIGN_IN_DIVIDER} />
       </div>
