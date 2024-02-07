@@ -4,7 +4,7 @@ interface sharedDocument extends Object {
   doc_id?: number;
   title?: string;
   content?: string;
-  owner_name?: string;
+  owner: { owner_id?: number; owner_name?: string };
 }
 
 export default function SharedDocumentsGrid() {
@@ -22,29 +22,50 @@ export default function SharedDocumentsGrid() {
     }
   };
 
+  const fetchDelete = async (docId: number, ownerId: number) => {
+    try {
+      await fetch("api/shared-docs", {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: docId, ownerId: ownerId }),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchSharedDocuments();
   }, []);
 
-  //   const handleDelete = (id: any) => {
-  //     fetchDelete(id);
-  //     setDocuments((currentDocuments) => {
-  //       return currentDocuments.filter(
-  //         (document: Document) => document.doc_id !== id
-  //       );
-  //     });
-  //   };
+  const handleDelete = (docId: any, ownerId: any) => {
+    fetchDelete(docId, ownerId);
+    setSharedDocuments((currentDocuments) => {
+      return currentDocuments.filter(
+        (document: sharedDocument) => document.doc_id !== docId
+      );
+    });
+  };
 
-  return sharedDocuments.length > 0
-    ? sharedDocuments.map((document: sharedDocument) => {
-        const { title, doc_id, owner_name } = document;
+  return sharedDocuments.length > 0 ? (
+    <div>
+      <h2>Shared Documents</h2>
+      {sharedDocuments.map((document: sharedDocument) => {
+        const {
+          title,
+          doc_id,
+          owner: { owner_id, owner_name },
+        } = document;
         return (
           <div key={doc_id}>
             <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
             <p>Shared by: {owner_name}</p>
-            {/* <button onClick={() => handleDelete(doc_id)}>Delete</button> */}
+            <button onClick={() => handleDelete(doc_id, owner_id)}>
+              Delete
+            </button>
           </div>
         );
-      })
-    : null;
+      })}
+    </div>
+  ) : null;
 }

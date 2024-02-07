@@ -41,6 +41,9 @@ export default function Invites() {
         );
         setInvites(updatedInvites);
         setCount(count - 1);
+        if (count === 0) {
+          setViewingInvites(false);
+        }
       }
     } catch (err) {
       console.error(err);

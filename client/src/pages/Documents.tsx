@@ -76,7 +76,6 @@ export default function Documents() {
         <LogoutButton />
         <h1>Documents</h1>
         <DocumentsGrid />
-        <h2>Shared Documents</h2>
         <SharedDocumentsGrid />
         <button onClick={handleClick}>Create Document</button>
       </div>

@@ -471,6 +471,18 @@ const getSharedDoc = async (pool: any, docId: number, authorizedId: number) => {
   return result.length > 0;
 };
 
+const isAuthorized = async (pool: any, docId: number, userId: number) => {
+  const values = [docId, userId];
+  const query = `
+  SELECT *
+  FROM shared_docs
+  WHERE doc_id = ? 
+  AND authorized_user = ?
+  `;
+  const [response, _] = await pool.query(query, values);
+  return response.length > 0;
+};
+
 const sharedAccessList = async (pool: any, userId: number) => {
   const query = `
   SELECT doc_id 
@@ -496,7 +508,7 @@ export const getAllSharedDocs = async (pool: any, userId: number) => {
   const allSharedDocs = await Promise.all(
     sharedIds.map(async (id: any) => {
       const query = `
-    SELECT d.doc_id, d.title, d.content, u.user_name as owner_name
+    SELECT d.doc_id, d.title, d.content, u.user_name as owner_name, u.user_id as owner_id
         FROM documents d
         JOIN users u ON d.user_id = u.user_id
         WHERE d.doc_id = ?
@@ -506,7 +518,10 @@ export const getAllSharedDocs = async (pool: any, userId: number) => {
         doc_id: result[0].doc_id,
         title: result[0].title,
         content: result[0].content,
-        owner_name: result[0].owner_name,
+        owner: {
+          owner_id: result[0].owner_id,
+          owner_name: result[0].owner_name,
+        },
       };
     })
   );

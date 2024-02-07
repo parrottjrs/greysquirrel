@@ -384,7 +384,7 @@ app.delete("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
       inviteId
     );
     if (!success) {
-      return res.status(404).json({ success: success, message: message });
+      return res.status(200).json({ success: success, message: message });
     }
     return res.status(200).json({ succees: success, message: message });
   } catch (err) {
@@ -482,9 +482,15 @@ app.delete(
           .status(403)
           .json({ success: false, message: "Authorization error" });
       }
-      const { docId, ownerId, authorizedUser } = req.body;
-      const authorizedUserId = await getId(pool, authorizedUser);
-      if (req.userId !== ownerId && req.userId !== authorizedUserId) {
+      let userIdToRevoke;
+      const { docId, ownerId, authorizedUserName } = req.body;
+      if (authorizedUserName) {
+        userIdToRevoke = await getId(pool, authorizedUserName);
+      } else {
+        userIdToRevoke = req.userId;
+      }
+
+      if (req.userId !== ownerId && req.userId !== userIdToRevoke) {
         return res
           .status(403)
           .json({ success: "false", message: "Authorization error" });
@@ -493,7 +499,7 @@ app.delete(
         pool,
         docId,
         ownerId,
-        authorizedUserId
+        userIdToRevoke
       );
       if (!success) {
         return res.status(404).json({ success: success, message: message });

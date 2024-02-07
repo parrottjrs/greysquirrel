@@ -12,7 +12,6 @@ export default function DocumentsGrid() {
     try {
       const response = await fetch("/api/documents");
       const json = await response.json();
-      console.log(json.docs);
       json.success === false ? setDocuments([]) : setDocuments(json.docs);
     } catch (err) {
       console.error(err);
