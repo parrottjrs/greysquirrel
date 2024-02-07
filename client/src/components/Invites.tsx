@@ -14,6 +14,7 @@ export default function Invites() {
   let currentInvites: Array<Invite> = [];
   const [count, setCount] = useState(0);
   const [invites, setInvites] = useState(currentInvites);
+  const [viewingInvites, setViewingInvites] = useState(false);
 
   const fetchInvites = async () => {
     try {
@@ -70,14 +71,19 @@ export default function Invites() {
     }
   };
 
-  const handleAccept = (
+  const handleAccept = async (
     inviteId: number,
     docId: number,
     senderId: number,
     recipientId: number
   ) => {
-    acceptInvite(inviteId, docId, senderId, recipientId);
-    deleteInvite(inviteId);
+    await acceptInvite(inviteId, docId, senderId, recipientId);
+
+    setInvites((prevInvites) =>
+      prevInvites.filter((invite) => invite.invite_id !== inviteId)
+    );
+
+    await deleteInvite(inviteId);
   };
 
   const handleDelete = (inviteId: number) => {
@@ -98,14 +104,19 @@ export default function Invites() {
 
   return (
     <div>
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild>
+      <DropdownMenu.Root open={viewingInvites && count > 0 ? true : false}>
+        <DropdownMenu.Trigger asChild onClick={() => setViewingInvites(true)}>
           {count > 0 ? <BellDot /> : <Bell />}
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content>
+          <DropdownMenu.Content
+            onInteractOutside={() => setViewingInvites(false)}
+          >
             {count > 0 ? (
               <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">
+                <DropdownMenu.DropdownMenuLabel>
+                  Invites
+                </DropdownMenu.DropdownMenuLabel>
                 {invites.map((invite: Invite) => {
                   const {
                     invite_id,

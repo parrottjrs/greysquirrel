@@ -190,7 +190,7 @@ export const allDocuments = async (pool: any, userId: number) => {
 
   const groupedDocuments: {
     [key: number]: {
-      docId: number;
+      doc_id: number;
       title: string;
       content: string;
       authorizedUsers: string[];
@@ -204,10 +204,10 @@ export const allDocuments = async (pool: any, userId: number) => {
       content: string;
       authorized_username: string;
     }) => {
-      const docId = doc.doc_id;
-      if (!groupedDocuments[docId]) {
-        groupedDocuments[docId] = {
-          docId: docId,
+      const doc_id = doc.doc_id;
+      if (!groupedDocuments[doc_id]) {
+        groupedDocuments[doc_id] = {
+          doc_id: doc_id,
           title: doc.title,
           content: doc.content,
           authorizedUsers: [],
@@ -215,7 +215,7 @@ export const allDocuments = async (pool: any, userId: number) => {
       }
 
       if (doc.authorized_username) {
-        groupedDocuments[docId].authorizedUsers.push(doc.authorized_username);
+        groupedDocuments[doc_id].authorizedUsers.push(doc.authorized_username);
       }
     }
   );

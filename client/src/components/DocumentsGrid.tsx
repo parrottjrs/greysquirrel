@@ -12,6 +12,7 @@ export default function DocumentsGrid() {
     try {
       const response = await fetch("/api/documents");
       const json = await response.json();
+      console.log(json.docs);
       json.success === false ? setDocuments([]) : setDocuments(json.docs);
     } catch (err) {
       console.error(err);
@@ -44,15 +45,13 @@ export default function DocumentsGrid() {
     });
   };
 
-  return documents.length > 0
-    ? documents.map((document: Document) => {
-        const { title, doc_id } = document;
-        return (
-          <div key={doc_id}>
-            <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
-            <button onClick={() => handleDelete(doc_id)}>Delete</button>
-          </div>
-        );
-      })
-    : null;
+  return documents.map((document: Document) => {
+    const { title, doc_id } = document;
+    return (
+      <div key={doc_id}>
+        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
+        <button onClick={() => handleDelete(doc_id)}>Delete</button>
+      </div>
+    );
+  });
 }
