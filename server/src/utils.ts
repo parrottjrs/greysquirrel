@@ -146,19 +146,30 @@ export const createDocument = async (con: any, userId: number) => {
     : { success: false, message: "Cannot create document" };
 };
 
-export const getDocument = async (con: any, docId: number, userId: number) => {
+export const getDocument = async (pool: any, docId: number, userId: number) => {
   const query = `
   SELECT doc_id, user_id, title, content 
   FROM documents 
   WHERE doc_id = ?
   `;
-  const [result, _] = await con.query(query, [docId]);
+  const [result, _] = await pool.query(query, [docId]);
   if (result.length === 0) {
     return { success: false, message: "File not found" };
   }
   const document = await JSON.parse(JSON.stringify(result));
   if (document[0].user_id !== userId) {
-    return { success: false, message: "Authorization error" };
+    const IdToBeChecked = await isAuthorized(pool, docId, userId);
+    return IdToBeChecked
+      ? {
+          success: true,
+          message: "Document retrieved",
+          doc: {
+            docId: document[0].doc_id,
+            title: document[0].title,
+            content: document[0].content,
+          },
+        }
+      : { success: false, message: "Authorization error" };
   }
   return {
     success: true,

@@ -190,11 +190,6 @@ app.get("/api/logout", async (req, res) => {
 });
 
 app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "myDB",
-  });
   try {
     if (req.userId === undefined) {
       return res
@@ -203,8 +198,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
     }
     const { docId } = req.body;
     if (!docId) {
-      const newDocument = await createDocument(connection, req.userId);
-      connection.end();
+      const newDocument = await createDocument(pool, req.userId);
       if (!newDocument.success) {
         return res
           .status(400)
@@ -217,11 +211,10 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
       });
     }
     const { success, message, doc } = await getDocument(
-      connection,
+      pool,
       docId,
       req.userId
     );
-    connection.end();
     if (!success) {
       return res.status(403).json({ success: success, message: message });
     }
@@ -229,7 +222,6 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
       .status(200)
       .json({ success: success, message: message, document: doc });
   } catch (err) {
-    connection.end();
     console.error("Error creating document:", err);
     return res
       .status(500)
