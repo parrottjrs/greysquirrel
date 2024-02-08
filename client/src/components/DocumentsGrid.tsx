@@ -4,6 +4,7 @@ interface Document extends Object {
   doc_id?: number;
   title?: string;
   content?: string;
+  authorizedUsers: Array<string>;
 }
 
 export default function DocumentsGrid() {
@@ -31,12 +32,27 @@ export default function DocumentsGrid() {
     }
   };
 
+  const fetchRevoke = async (docId: number, authorizedUserName: string) => {
+    try {
+      await fetch("api/shared-docs", {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          docId: docId,
+          authorizedUserName: authorizedUserName,
+        }),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchDocuments();
   }, []);
 
-  const handleDelete = (id: any) => {
-    fetchDelete(id);
+  const handleDelete = async (id: any) => {
+    await fetchDelete(id);
     setDocuments((currentDocuments) => {
       return currentDocuments.filter(
         (document: Document) => document.doc_id !== id
@@ -44,11 +60,29 @@ export default function DocumentsGrid() {
     });
   };
 
+  const handleRevoke = async (docId: any, authorizedUserName: string) => {
+    await fetchRevoke(docId, authorizedUserName);
+  };
+
+  console.log(documents);
   return documents.map((document: Document) => {
-    const { title, doc_id } = document;
+    const { title, doc_id, authorizedUsers } = document;
     return (
       <div key={doc_id}>
-        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
+        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>{" "}
+        {authorizedUsers.length > 0
+          ? authorizedUsers.map((userName: string) => {
+              const index = authorizedUsers.indexOf(userName);
+              return (
+                <span
+                  key={index}
+                  onClick={() => handleRevoke(doc_id, userName)}
+                >
+                  {userName}
+                </span>
+              );
+            })
+          : null}
         <button onClick={() => handleDelete(doc_id)}>Delete</button>
       </div>
     );

@@ -475,14 +475,16 @@ app.delete(
           .json({ success: false, message: "Authorization error" });
       }
       let userIdToRevoke;
+      let documentOwner;
       const { docId, ownerId, authorizedUserName } = req.body;
-      if (authorizedUserName) {
-        userIdToRevoke = await getId(pool, authorizedUserName);
-      } else {
-        userIdToRevoke = req.userId;
-      }
 
-      if (req.userId !== ownerId && req.userId !== userIdToRevoke) {
+      authorizedUserName
+        ? (userIdToRevoke = await getId(pool, authorizedUserName))
+        : (userIdToRevoke = req.userId);
+
+      ownerId ? (documentOwner = ownerId) : (documentOwner = req.userId);
+
+      if (req.userId !== documentOwner && req.userId !== userIdToRevoke) {
         return res
           .status(403)
           .json({ success: "false", message: "Authorization error" });
@@ -490,7 +492,7 @@ app.delete(
       const { success, message } = await revokeSharedAccess(
         pool,
         docId,
-        ownerId,
+        documentOwner,
         userIdToRevoke
       );
       if (!success) {
