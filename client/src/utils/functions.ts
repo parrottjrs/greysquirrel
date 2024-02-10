@@ -1,4 +1,4 @@
-const refresh = async () => {
+export const refresh = async () => {
   try {
     const response = await fetch("/api/refresh", {
       method: "POST",
@@ -13,6 +13,7 @@ const refresh = async () => {
 const handleAuthenticate = async (message: any) => {
   switch (message) {
     case "Authorized":
+      await refresh();
       return true;
     case "Authorization error":
       const auth = await refresh();
@@ -31,7 +32,6 @@ export const authenticate = async () => {
     const response = await fetch("/api/authenticate");
     const json = await response.json();
     const authenticated = await handleAuthenticate(json.message);
-    console.log(authenticated);
     return authenticated;
   } catch (err) {
     console.error(err);

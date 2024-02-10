@@ -4,12 +4,23 @@ import LogoutButton from "../components/LogoutButton";
 import DocumentsGrid from "../components/DocumentsGrid";
 import Invites from "../components/Invites";
 import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
-import { authenticate } from "../utils/functions";
+import { authenticate, refresh } from "../utils/functions";
 
 export default function Documents() {
+  const refreshTokenDelay = 540000; //nine minutes;
   const [authorization, setAuthorization] = useState(false);
-
   const navigate = useNavigate();
+
+  const refreshToken = async () => {
+    try {
+      const refreshed = await refresh();
+      if (!refreshed.message) {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const authenticateUser = async () => {
     try {
@@ -38,6 +49,10 @@ export default function Documents() {
     navigate(`/editor/${id}`);
   };
 
+  useEffect(() => {
+    let interval = setInterval(() => refreshToken(), refreshTokenDelay);
+    return () => clearInterval(interval);
+  }, [authorization]);
   useEffect(() => {
     authenticateUser();
   }, []);

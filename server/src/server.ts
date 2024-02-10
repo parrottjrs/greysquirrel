@@ -399,7 +399,6 @@ app.post(
       }
       const { inviteId, docId, senderId, recipientId } = req.body;
       if (req.userId !== recipientId) {
-        console.log("recipient:", recipientId, "user:", req.userId);
         return res
           .status(403)
           .json({ success: false, message: "Authorization error" });

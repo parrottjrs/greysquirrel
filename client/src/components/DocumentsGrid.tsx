@@ -64,7 +64,6 @@ export default function DocumentsGrid() {
     await fetchRevoke(docId, authorizedUserName);
   };
 
-  console.log(documents);
   return documents.map((document: Document) => {
     const { title, doc_id, authorizedUsers } = document;
     return (

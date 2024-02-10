@@ -5,20 +5,20 @@ import "react-quill/dist/quill.snow.css";
 import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/consts";
-import { authenticate } from "../utils/functions";
+import { authenticate, refresh } from "../utils/functions";
 
 export default function Editor() {
   const params = useParams();
   const docId = params.docId;
-
   const WS_URL = "ws://localhost:8000";
   const client = useWebSocket(WS_URL);
+  const autoSaveDelay = 10000;
+  const refreshTokenDelay = 540000; //nine minutes;
+  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
-  const timeoutDelayMs = 10000;
   const [authorization, setAuthorization] = useState(false);
   const [recipient, setRecipient] = useState("");
-  const navigate = useNavigate();
 
   const authenticateUser = async () => {
     try {
@@ -27,6 +27,17 @@ export default function Editor() {
         navigate("/");
       }
       setAuthorization(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refreshToken = async () => {
+    try {
+      const refreshed = await refresh();
+      if (!refreshed.message) {
+        navigate("/");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -68,9 +79,12 @@ export default function Editor() {
 
   useEffect(() => {
     fetchContent(docId);
+    let interval = setInterval(() => refreshToken(), refreshTokenDelay);
+    return () => clearInterval(interval);
   }, [authorization]);
+
   useEffect(() => {
-    let timer: any = setTimeout(() => fetchSave(), timeoutDelayMs);
+    let timer: any = setTimeout(() => fetchSave(), autoSaveDelay);
     return () => clearTimeout(timer);
   }, [text, title]);
 
