@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/consts";
+import { authenticate } from "../utils/functions";
 
 export default function Editor() {
   const params = useParams();
@@ -19,42 +20,13 @@ export default function Editor() {
   const [recipient, setRecipient] = useState("");
   const navigate = useNavigate();
 
-  const refresh = async () => {
+  const authenticateUser = async () => {
     try {
-      const response = await fetch("/api/refresh", {
-        method: "POST",
-      });
-      const json = await response.json();
-      return json;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleAuthenticate = async (message: any) => {
-    switch (message) {
-      case "Authorized":
-        setAuthorization(true);
-        break;
-      case "Authorization error":
-        const auth = await refresh();
-        if (auth.message === "Authorization error") {
-          setAuthorization(false);
-          navigate("/expired");
-        }
-        setAuthorization(true);
-        break;
-      default:
-        console.error("An unexpected error has occurred");
-        break;
-    }
-  };
-
-  const authenticate = async () => {
-    try {
-      const response = await fetch("/api/authenticate");
-      const json = await response.json();
-      handleAuthenticate(json.message);
+      const authorized = await authenticate();
+      if (!authorized) {
+        navigate("/");
+      }
+      setAuthorization(true);
     } catch (err) {
       console.error(err);
     }
@@ -91,11 +63,12 @@ export default function Editor() {
   };
 
   useEffect(() => {
-    authenticate();
-
-    fetchContent(docId);
+    authenticateUser();
   }, []);
 
+  useEffect(() => {
+    fetchContent(docId);
+  }, [authorization]);
   useEffect(() => {
     let timer: any = setTimeout(() => fetchSave(), timeoutDelayMs);
     return () => clearTimeout(timer);

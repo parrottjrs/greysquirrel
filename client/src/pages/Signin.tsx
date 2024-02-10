@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { STYLES } from "../utils/consts";
 import { AlertCircle } from "lucide-react";
 import Eye from "../components/Eye";
+import { authenticate } from "../utils/functions";
 
 type FormData = {
   username: string;
@@ -14,7 +15,7 @@ type FormData = {
 export default function Signin() {
   const [change, setChange] = useState(false);
   const [show, setShow] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -24,6 +25,20 @@ export default function Signin() {
   });
 
   const navigate = useNavigate();
+  const authenticateUser = async () => {
+    try {
+      const authorized = await authenticate();
+      if (authorized) {
+        navigate("/documents");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    authenticateUser();
+  }, []);
 
   const fetchUser = async (data: FormData) => {
     data.username = data.username.toLowerCase();
@@ -56,7 +71,9 @@ export default function Signin() {
     fetchUser(data);
   };
 
-  return (
+  return loading ? (
+    <div>Gathering information...</div>
+  ) : (
     <div className={STYLES.CENTER}>
       <h1 className={STYLES.WELCOME_HEADER}>Welcome Back!</h1>
 

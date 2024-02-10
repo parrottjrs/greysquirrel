@@ -138,7 +138,7 @@ export const createDocument = async (con: any, userId: number) => {
   VALUES (?, ?, ?)
   `;
   const getIdQuery = `SELECT LAST_INSERT_ID() as docId`;
-  con.query(insertQuery, insertValues);
+  await con.query(insertQuery, insertValues);
   const [result, _] = await con.query(getIdQuery);
   const id = JSON.parse(JSON.stringify(result));
   return result.length > 0
