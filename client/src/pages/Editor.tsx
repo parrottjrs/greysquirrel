@@ -12,7 +12,7 @@ export default function Editor() {
   const docId = params.docId;
   const WS_URL = "ws://localhost:8000";
   const client = useWebSocket(WS_URL);
-  const autoSaveDelay = 10000;
+  const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
   const [text, setText] = useState("");
@@ -34,8 +34,8 @@ export default function Editor() {
 
   const refreshToken = async () => {
     try {
-      const refreshed = await refresh();
-      if (!refreshed.message) {
+      const { success } = await refresh();
+      if (!success) {
         navigate("/");
       }
     } catch (err) {
@@ -52,6 +52,7 @@ export default function Editor() {
           doc: { docId: docId, title: title, content: text },
         }),
       });
+      console.log("saved!");
     } catch (err) {
       console.error(err);
     }

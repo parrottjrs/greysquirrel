@@ -15,7 +15,6 @@ type FormData = {
 export default function Signin() {
   const [change, setChange] = useState(false);
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -25,6 +24,7 @@ export default function Signin() {
   });
 
   const navigate = useNavigate();
+
   const authenticateUser = async () => {
     try {
       const authorized = await authenticate();
@@ -71,9 +71,7 @@ export default function Signin() {
     fetchUser(data);
   };
 
-  return loading ? (
-    <div>Gathering information...</div>
-  ) : (
+  return (
     <div className={STYLES.CENTER}>
       <h1 className={STYLES.WELCOME_HEADER}>Welcome Back!</h1>
 

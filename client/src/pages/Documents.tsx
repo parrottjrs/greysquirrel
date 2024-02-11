@@ -15,8 +15,8 @@ export default function Documents() {
 
   const refreshToken = async () => {
     try {
-      const refreshed = await refresh();
-      if (!refreshed.message) {
+      const { success } = await refresh();
+      if (!success) {
         navigate("/");
       }
     } catch (err) {
