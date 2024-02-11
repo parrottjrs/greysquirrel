@@ -1,4 +1,4 @@
-import { Bell, BellDot } from "lucide-react";
+import { UserRoundX } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
@@ -6,11 +6,11 @@ type Invite = {
   invite_id: number;
   doc_id: number;
   sender_id: number;
-  sender_name: string;
+  recipient_name: string;
   recipient_id: number;
 };
 
-export default function Invites() {
+export default function InvitesSent() {
   let currentInvites: Array<Invite> = [];
   const invitesRefreshDelay = 900000;
   const [count, setCount] = useState(0);
@@ -19,7 +19,7 @@ export default function Invites() {
 
   const fetchInvites = async () => {
     try {
-      const response = await fetch("/api/invite");
+      const response = await fetch("/api/invites-sent");
       const json = await response.json();
       setCount(json.invites ? json.invites.length : 0);
       return json.invites;
@@ -121,7 +121,7 @@ export default function Invites() {
     <div>
       <DropdownMenu.Root open={viewingInvites && count > 0 ? true : false}>
         <DropdownMenu.Trigger asChild onClick={() => setViewingInvites(true)}>
-          {count > 0 ? <BellDot /> : <Bell />}
+          <UserRoundX />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
@@ -132,37 +132,23 @@ export default function Invites() {
             {count > 0 ? (
               <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">
                 <DropdownMenu.DropdownMenuLabel>
-                  Invites
+                  Pending Invites
                 </DropdownMenu.DropdownMenuLabel>
                 {invites.map((invite: Invite) => {
                   const {
                     invite_id,
                     doc_id,
-                    sender_name,
+                    recipient_name,
                     sender_id,
                     recipient_id,
                   } = invite;
                   return (
                     <DropdownMenu.Item key={invite_id}>
                       <div>
-                        <p>
-                          {sender_name} has invited you to work on a document
-                          with them!
-                        </p>
-                        <button
-                          onClick={() =>
-                            handleAccept(
-                              invite_id,
-                              doc_id,
-                              sender_id,
-                              recipient_id
-                            )
-                          }
-                        >
-                          accept
-                        </button>
+                        <p>{recipient_name}</p>
+
                         <button onClick={() => handleDelete(invite_id)}>
-                          decline
+                          Cancel invite
                         </button>
                       </div>
                     </DropdownMenu.Item>

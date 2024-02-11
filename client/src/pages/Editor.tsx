@@ -65,6 +65,9 @@ export default function Editor() {
         body: JSON.stringify({ docId: docId }),
       });
       const json = await response.json();
+      if (!response.ok) {
+        navigate("/");
+      }
       const { title, content } = json.document;
       setTitle(title ? title : "");
       setText(content ? content : "");

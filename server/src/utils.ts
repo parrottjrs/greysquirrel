@@ -310,12 +310,30 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
 
 //Invitation queries
 
-export const getInvites = async (pool: any, userId: number) => {
+export const getInvitesReceived = async (pool: any, userId: number) => {
   const query = `
   SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, i.recipient_id 
   FROM invites i
   JOIN users u ON i.sender_id = u.user_id
   WHERE recipient_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  if (result.length === 0) {
+    return { success: false, message: "No invites" };
+  }
+  return {
+    success: true,
+    message: "Invites successfully retrieved",
+    invites: result,
+  };
+};
+
+export const getInvitesSent = async (pool: any, userId: number) => {
+  const query = `
+  SELECT i.invite_id, i.doc_id, u.user_name AS recipient_name, i.sender_id, i.recipient_id 
+  FROM invites i
+  JOIN users u ON i.recipient_id = u.user_id
+  WHERE sender_id = ?
   `;
   const [result, _] = await pool.query(query, [userId]);
   if (result.length === 0) {

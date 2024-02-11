@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import DocumentsGrid from "../components/DocumentsGrid";
-import Invites from "../components/Invites";
+import Invites from "../components/InvitesReceived";
 import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
 import { authenticate, refresh } from "../utils/functions";
+import InvitesRecieved from "../components/InvitesReceived";
+import InvitesSent from "../components/InvitesSent";
 
 export default function Documents() {
   const refreshTokenDelay = 540000; //nine minutes;
@@ -59,7 +61,8 @@ export default function Documents() {
   return (
     authorization && (
       <div>
-        <Invites />
+        <InvitesRecieved />
+        <InvitesSent />
         <LogoutButton />
         <h1>Documents</h1>
         <DocumentsGrid />

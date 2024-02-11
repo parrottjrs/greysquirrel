@@ -17,7 +17,8 @@ import {
   getAllSharedDocs,
   getDocument,
   getId,
-  getInvites,
+  getInvitesReceived,
+  getInvitesSent,
   getUsernames,
   revokeSharedAccess,
   saveDocument,
@@ -340,27 +341,63 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-app.get("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    if (req.userId === undefined) {
+app.get(
+  "/api/invites-received",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { success, message, invites } = await getInvitesReceived(
+        pool,
+        req.userId
+      );
+      if (!success) {
+        return res.status(200).json({ success: success, message: message });
+      }
       return res
-        .status(403)
-        .json({ success: false, message: "Authorization error" });
+        .status(200)
+        .json({ success: success, message: message, invites: invites });
+    } catch (err) {
+      console.error("Cannot get invite:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error getting invite" });
     }
-    const { success, message, invites } = await getInvites(pool, req.userId);
-    if (!success) {
-      return res.status(200).json({ success: success, message: message });
-    }
-    return res
-      .status(200)
-      .json({ success: success, message: message, invites: invites });
-  } catch (err) {
-    console.error("Cannot get invite:", err);
-    return res
-      .status(500)
-      .json({ success: false, message: "Error getting invite" });
   }
-});
+);
+
+app.get(
+  "/api/invites-sent",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { success, message, invites } = await getInvitesSent(
+        pool,
+        req.userId
+      );
+      if (!success) {
+        return res.status(200).json({ success: success, message: message });
+      }
+      return res
+        .status(200)
+        .json({ success: success, message: message, invites: invites });
+    } catch (err) {
+      console.error("Cannot get invite:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error getting invite" });
+    }
+  }
+);
 
 app.delete("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   try {
