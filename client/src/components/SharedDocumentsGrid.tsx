@@ -38,8 +38,8 @@ export default function SharedDocumentsGrid() {
     fetchSharedDocuments();
   }, []);
 
-  const handleDelete = (docId: any, ownerId: any) => {
-    fetchDelete(docId, ownerId);
+  const handleDelete = async (docId: any, ownerId: any) => {
+    await fetchDelete(docId, ownerId);
     setSharedDocuments((currentDocuments) => {
       return currentDocuments.filter(
         (document: sharedDocument) => document.doc_id !== docId

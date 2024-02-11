@@ -21,14 +21,6 @@ export interface AuthRequest extends Request {
 
 //User creation/Authentication handling & queries
 
-const getHash = (password: string) => {
-  const salt = randomBytes(64).toString("base64");
-  const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
-    "base64"
-  );
-  return { salt, hash };
-};
-
 const getPassword = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users

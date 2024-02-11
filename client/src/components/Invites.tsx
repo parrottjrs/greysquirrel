@@ -12,6 +12,7 @@ type Invite = {
 
 export default function Invites() {
   let currentInvites: Array<Invite> = [];
+  const invitesRefreshDelay = 900000;
   const [count, setCount] = useState(0);
   const [invites, setInvites] = useState(currentInvites);
   const [viewingInvites, setViewingInvites] = useState(false);
@@ -36,14 +37,14 @@ export default function Invites() {
         body: JSON.stringify({ inviteId: id }),
       });
       if (response.ok) {
-        const updatedInvites = invites.filter(
-          (invite) => invite.invite_id !== id
+        setInvites((prevInvites) =>
+          prevInvites.filter((invite) => invite.invite_id !== id)
         );
-        setInvites(updatedInvites);
-        setCount(count - 1);
-        if (count === 0) {
-          setViewingInvites(false);
-        }
+
+        setCount((prevCount) => {
+          const updatedCount = prevCount - 1;
+          return updatedCount;
+        });
       }
     } catch (err) {
       console.error(err);
@@ -81,20 +82,15 @@ export default function Invites() {
     recipientId: number
   ) => {
     await acceptInvite(inviteId, docId, senderId, recipientId);
-
-    setInvites((prevInvites) =>
-      prevInvites.filter((invite) => invite.invite_id !== inviteId)
-    );
-
     await deleteInvite(inviteId);
   };
 
-  const handleDelete = (inviteId: number) => {
-    deleteInvite(inviteId);
+  const handleDelete = async (inviteId: number) => {
+    await deleteInvite(inviteId);
   };
 
-  useEffect(() => {
-    fetchInvites()
+  const handleFetch = async () => {
+    await fetchInvites()
       .then((invites: any) => {
         if (invites) {
           setInvites(invites);
@@ -103,8 +99,24 @@ export default function Invites() {
       .catch((error) => {
         console.error("Error fetching invites:", error);
       });
+  };
+
+  useEffect(() => {
+    handleFetch();
   }, []);
 
+  useEffect(() => {
+    let interval = setInterval(() => {
+      handleFetch();
+    }, invitesRefreshDelay);
+    return () => clearInterval(interval);
+  }, [invites, count, viewingInvites]);
+
+  useEffect(() => {
+    if (count === 0) {
+      setViewingInvites(false);
+    }
+  }, [invites, count, viewingInvites]);
   return (
     <div>
       <DropdownMenu.Root open={viewingInvites && count > 0 ? true : false}>
@@ -113,7 +125,9 @@ export default function Invites() {
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            onInteractOutside={() => setViewingInvites(false)}
+            onInteractOutside={() => {
+              setViewingInvites(false);
+            }}
           >
             {count > 0 ? (
               <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">

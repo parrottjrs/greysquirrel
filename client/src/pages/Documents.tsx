@@ -45,7 +45,6 @@ export default function Documents() {
 
   const handleClick = async () => {
     const id = await fetchCreate();
-    console.log(id);
     navigate(`/editor/${id}`);
   };
 
