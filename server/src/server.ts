@@ -315,7 +315,7 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
     const recipientId: number = await getId(pool, recipient);
     if (!recipientId) {
       return res
-        .status(404)
+        .status(200)
         .json({ success: false, message: "Recipient does not exist" });
     }
     if (req.userId === recipientId) {

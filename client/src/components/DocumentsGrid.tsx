@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ShareModal from "./ShareModal";
 
 interface Document extends Object {
   doc_id?: number;
@@ -82,6 +83,7 @@ export default function DocumentsGrid() {
               );
             })
           : null}
+        <ShareModal docId={doc_id} />
         <button onClick={() => handleDelete(doc_id)}>Delete</button>
       </div>
     );

@@ -6,6 +6,7 @@ import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/consts";
 import { authenticate, refresh } from "../utils/functions";
+import ShareModal from "../components/ShareModal";
 
 export default function Editor() {
   const params = useParams();
@@ -168,13 +169,7 @@ export default function Editor() {
         </div>
         <LogoutButton />
         <div>
-          <input
-            type="text"
-            value={recipient}
-            onChange={(e) => handleRecipient(e.target.value)}
-            autoComplete="false"
-          />
-          <button onClick={handleInvite}>Invite</button>
+          <ShareModal docId={docId} />
         </div>
       </div>
     )
