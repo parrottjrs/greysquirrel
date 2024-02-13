@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { Invite } from "../pages/Documents";
 
-interface sharedDocument extends Object {
+interface SharedDocument extends Object {
   doc_id?: number;
   title?: string;
   content?: string;
   owner: { owner_id?: number; owner_name?: string };
 }
 
-export default function SharedDocumentsGrid() {
+interface ChildProps {
+  invites: Array<Invite>;
+}
+export default function SharedDocumentsGrid({ invites }: ChildProps) {
   const [sharedDocuments, setSharedDocuments] = useState([]);
   const fetchSharedDocuments = async () => {
     try {
@@ -36,13 +40,13 @@ export default function SharedDocumentsGrid() {
 
   useEffect(() => {
     fetchSharedDocuments();
-  }, []);
+  }, [invites]);
 
   const handleDelete = async (docId: any, ownerId: any) => {
     await fetchDelete(docId, ownerId);
     setSharedDocuments((currentDocuments) => {
       return currentDocuments.filter(
-        (document: sharedDocument) => document.doc_id !== docId
+        (document: SharedDocument) => document.doc_id !== docId
       );
     });
   };
@@ -50,7 +54,7 @@ export default function SharedDocumentsGrid() {
   return sharedDocuments.length > 0 ? (
     <div>
       <h2>Shared Documents</h2>
-      {sharedDocuments.map((document: sharedDocument) => {
+      {sharedDocuments.map((document: SharedDocument) => {
         const {
           title,
           doc_id,

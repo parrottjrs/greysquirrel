@@ -14,7 +14,7 @@ export default function ShareModal({ docId }: any) {
     },
   });
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [doesNotExist, setDoesNotExist] = useState(false);
   const [shareInput, setShareInput] = useState("");
 

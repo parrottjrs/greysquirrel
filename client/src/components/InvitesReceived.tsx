@@ -1,27 +1,32 @@
 import { Bell, BellDot } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Invite } from "../pages/Documents";
 
-type Invite = {
-  invite_id: number;
-  doc_id: number;
-  sender_id: number;
-  sender_name: string;
-  recipient_id: number;
-};
+interface ChildProps {
+  invites: Array<Invite>;
+  count: number;
+  inviteChange: (newInvitesList: Array<Invite>) => void;
+  countChange: (newCount: number) => void;
+  filterInvites: (id: number) => void;
+}
 
-export default function InvitesRecieved() {
-  let currentInvites: Array<Invite> = [];
+export default function InvitesRecieved({
+  invites,
+  count,
+  inviteChange,
+  countChange,
+  filterInvites,
+}: ChildProps) {
   const invitesRefreshDelay = 900000;
-  const [count, setCount] = useState(0);
-  const [invites, setInvites] = useState(currentInvites);
+
   const [viewingInvites, setViewingInvites] = useState(false);
 
   const fetchInvites = async () => {
     try {
       const response = await fetch("/api/invites-received");
       const json = await response.json();
-      setCount(json.invites ? json.invites.length : 0);
+      countChange(json.invites ? json.invites.length : 0);
       return json.invites;
     } catch (err) {
       console.error(err);
@@ -37,14 +42,7 @@ export default function InvitesRecieved() {
         body: JSON.stringify({ inviteId: id }),
       });
       if (response.ok) {
-        setInvites((prevInvites) =>
-          prevInvites.filter((invite) => invite.invite_id !== id)
-        );
-
-        setCount((prevCount) => {
-          const updatedCount = prevCount - 1;
-          return updatedCount;
-        });
+        filterInvites(id);
       }
     } catch (err) {
       console.error(err);
@@ -93,7 +91,7 @@ export default function InvitesRecieved() {
     await fetchInvites()
       .then((invites: any) => {
         if (invites) {
-          setInvites(invites);
+          inviteChange(invites);
         }
       })
       .catch((error) => {
