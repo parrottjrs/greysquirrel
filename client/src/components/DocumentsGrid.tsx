@@ -75,6 +75,7 @@ export default function DocumentsGrid() {
               const index = authorizedUsers.indexOf(userName);
               return (
                 <span
+                  className="cursor-pointer"
                   key={index}
                   onClick={() => handleRevoke(doc_id, userName)}
                 >

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
-import { Share } from "lucide-react";
+import { UserRoundPlus } from "lucide-react";
 
 interface FormData {
   recipientName: string;
@@ -54,8 +54,8 @@ export default function ShareModal({ docId }: any) {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger>
-        <Share />
+      <Dialog.Trigger asChild>
+        <UserRoundPlus />
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay />
