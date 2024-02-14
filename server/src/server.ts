@@ -37,6 +37,7 @@ const THIRTY_DAYS = 2.592e9;
 // const path = require("path");
 // const relativePath = "../client/build";
 // const absolutePath = path.resolve(relativePath);
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -126,6 +127,22 @@ app.post("/api/signIn", async (req, res) => {
   }
 });
 
+// app.put("/api/change-password", async (req: AuthRequest, res) => {
+//   try {
+//     if (!req.userId) {
+//       return res
+//         .status(401)
+//         .json({ success: false, message: "Authorization error" });
+//     }
+//     const { success, message } = await changePassword(pool, req.userId);
+//     const status = success ? 200 : 400;
+//     return res.status(status).json({ success: success, message: message });
+//   } catch (err) {
+//     console.error("Error changing password:", err);
+//     return res.status(500).json({ message: "internal server error" });
+//   }
+// });
+
 app.get(
   "/api/authenticate",
   authenticateToken,
@@ -156,7 +173,7 @@ app.post("/api/refresh", async (req, res) => {
     const verified = RefreshToken.verify(refreshToken);
     if (!refreshToken || !verified) {
       return res
-        .status(401)
+        .status(200)
         .json({ success: false, message: "Authorization error" });
     }
     const access = AccessToken.create(verified.userId);

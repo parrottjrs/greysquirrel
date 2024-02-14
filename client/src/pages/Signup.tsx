@@ -31,17 +31,27 @@ export default function Signup() {
   });
 
   const signup = async (data: FormData) => {
-    data.username = data.username.toLowerCase();
+    const trimmedData = {
+      username: data.username.trim(),
+      email: data.email.trim(),
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      password: data.password.trim(),
+      passCheck: data.passCheck.trim(),
+    };
+
+    // console.log("data:", data, "newData:", newData);
     try {
       const response = await fetch("/api/signUp", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({ data: trimmedData }),
       });
       const json = await response.json();
       switch (json.message) {
-        case "Bad request: User already exists":
+        case "User already exists":
           setNameWarning(true);
+          console.log(nameWarning);
           break;
         case "User created":
           navigate(`/documents`);
@@ -95,10 +105,11 @@ export default function Signup() {
       <form
         className={STYLES.FLEX_COL_CENTER}
         onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
       >
         <div className="mt-10">
           <label className={STYLES.LABEL} htmlFor={"username"}>
-            Username:
+            * Username:
           </label>
           <input
             className={STYLES.FORM_INPUT}
@@ -110,11 +121,13 @@ export default function Signup() {
           />
         </div>
         {nameWarning && (
-          <p className="text-red-600">You must choose a different username.</p>
+          <p className={STYLES.ALERT_TEXT}>
+            You must choose a different username.
+          </p>
         )}
         <div className="mt-10">
           <label className={STYLES.LABEL} htmlFor={"email"}>
-            Email:
+            * Email:
           </label>
           <input
             className={STYLES.FORM_INPUT}
@@ -122,6 +135,7 @@ export default function Signup() {
             type="text"
             {...register("email")}
             autoComplete="off"
+            required={true}
           />
         </div>
         <div className="mt-10">
@@ -148,7 +162,7 @@ export default function Signup() {
         </div>
         <div className="mt-10">
           <label className={STYLES.LABEL} htmlFor={"password"}>
-            Password:
+            * Password:
           </label>
           <input
             className={STYLES.FORM_INPUT}
@@ -162,7 +176,7 @@ export default function Signup() {
         <Eye onClick={handleChange} show={show} />
         <div className="mt-10">
           <label className={STYLES.LABEL} htmlFor={"passCheck"}>
-            Re-type your password:
+            * Re-enter password:
           </label>
           <input
             className={STYLES.FORM_INPUT}

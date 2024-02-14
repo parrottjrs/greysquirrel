@@ -102,6 +102,8 @@ export const createUser = async (
     : { success: false, message: "Failed to create user" };
 };
 
+export const changePassword = (pool: any, userId: number) => {};
+
 export const authenticateToken = (
   req: AuthRequest,
   res: Response,
