@@ -32,7 +32,7 @@ export default function Signup() {
 
   const signup = async (data: FormData) => {
     const trimmedData = {
-      username: data.username.trim(),
+      username: data.username.toLowerCase().trim(),
       email: data.email.trim(),
       firstName: data.firstName.trim(),
       lastName: data.lastName.trim(),

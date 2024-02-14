@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AccessToken } from "./Token";
+import { AccessToken } from "../Token";
 import { pbkdf2Sync, randomBytes } from "crypto";
 
 //Custom types
@@ -60,11 +60,40 @@ export const getUsernames = async (pool: any) => {
   });
 };
 
+const isVerified = async (pool: any, userName: string) => {
+  const query = `
+  SELECT is_verified
+  FROM users
+  WHERE user_name = ?
+  `;
+  const [result, _] = await pool.query(query, [userName]);
+  return result[0].is_verified;
+};
+
+export const verifyUser = async (pool: any, userId: number) => {
+  const values = [1, null, userId];
+  const query = `
+  (
+  UPDATE users
+  SET is_verified = ?,
+  email_token = ?
+  WHERE user_id = ?
+  )`;
+  const [response, _] = await pool.query(query, values);
+  return response.affectedRows > 1
+    ? { success: true, message: "verification successful" }
+    : { success: false, message: "verification unsuccessful" };
+};
+
 export const authenticateUser = async (
   username: string,
   password: string,
   pool: any
 ) => {
+  const verified = await isVerified(pool, username);
+  if (!verified) {
+    return false;
+  }
   const { truePass, salt } = await getPassword(pool, username);
   const attemptedPass = pbkdf2Sync(
     password,
@@ -88,14 +117,31 @@ export const createUser = async (
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
   );
-  const values = [username, email, firstName, lastName, hash, salt];
+  const emailToken = randomBytes(64).toString("base64");
+  const values = [
+    username,
+    email,
+    firstName,
+    lastName,
+    hash,
+    salt,
+    false,
+    emailToken,
+  ];
   const query = `
   INSERT INTO users (
-    user_name, email, first_name, last_name, password, salt
+    user_name, 
+    email, 
+    first_name, 
+    last_name, 
+    password, 
+    salt, 
+    is_verified,
+    email_token
     ) 
   VALUES (
-  ?,?,?,?,?,?
-)`;
+  ?,?,?,?,?,?,?,?
+  )`;
   const [result, _] = await pool.query(query, values);
   return result.affectedRows > 0
     ? { success: true, message: "User created" }

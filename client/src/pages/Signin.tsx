@@ -41,13 +41,20 @@ export default function Signin() {
   }, []);
 
   const fetchUser = async (data: FormData) => {
+    const trimmedData = {
+      username: data.username.toLowerCase().trim(),
+      password: data.password.trim(),
+      remember: data.remember,
+    };
+
     data.username = data.username.toLowerCase();
     try {
       const response = await fetch("/api/signIn", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({ data: trimmedData }),
       });
+
       const json = await response.json();
       switch (json.message) {
         case "Access granted":

@@ -1,4 +1,5 @@
 import express from "express";
+
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import mysql from "mysql2/promise";
@@ -24,12 +25,14 @@ import {
   saveDocument,
   sendInvite,
   strongPassword,
-} from "./utils";
+} from "./utils/utils";
+import { sendEmail } from "./utils/mailUtils";
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8000;
+
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
 const THIRTY_DAYS = 2.592e9;
@@ -45,6 +48,16 @@ const pool = mysql.createPool({
   host: "localhost",
   user: "root",
   database: "myDB",
+});
+
+app.post("/api/email", async (req, res) => {
+  try {
+    const { userName, email, emailToken } = req.body;
+    await sendEmail(userName, email, emailToken);
+    return res.status(200).json({ message: "email sent!" });
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 app.post("/api/signUp", async (req, res) => {

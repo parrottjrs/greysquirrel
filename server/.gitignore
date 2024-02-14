@@ -4,3 +4,4 @@ node_modules
 /files
 .env
 .env.test
+mailconfig.ts
