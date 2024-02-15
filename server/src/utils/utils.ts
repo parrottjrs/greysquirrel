@@ -60,27 +60,74 @@ export const getUsernames = async (pool: any) => {
   });
 };
 
-const isVerified = async (pool: any, userName: string) => {
+const verifyByName = async (pool: any, userName: string) => {
   const query = `
   SELECT is_verified
   FROM users
   WHERE user_name = ?
   `;
   const [result, _] = await pool.query(query, [userName]);
-  return result[0].is_verified;
+  const parsedResult = JSON.parse(JSON.stringify(result));
+  if (parsedResult[0].is_verified === 0) {
+    return false;
+  }
+  return true;
 };
 
-export const verifyUser = async (pool: any, userId: number) => {
+export const verifyById = async (pool: any, userId: number) => {
+  const query = `
+  SELECT is_verified
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  const parsedResult = JSON.parse(JSON.stringify(result));
+  if (parsedResult[0].is_verified === 0) {
+    return false;
+  }
+  return true;
+};
+
+const getEmailToken = async (pool: any, userId: number) => {
+  const query = `
+  SELECT email_token
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  const parsedResult = JSON.parse(JSON.stringify(result));
+  const emailToken = parsedResult[0].email_token;
+  return result.length > 0
+    ? { success: true, existingEmailToken: emailToken }
+    : { success: false, message: "Failed to retreive emailToken" };
+};
+
+export const verifyEmailToken = async (
+  pool: any,
+  userId: number,
+  emailToken: string
+) => {
+  const { success, message, existingEmailToken } = await getEmailToken(
+    pool,
+    userId
+  );
+
+  if (!success) {
+    return { success: success, message: message };
+  }
+  if (existingEmailToken !== emailToken) {
+    return { success: false, message: "Tokens do not match." };
+  }
   const values = [1, null, userId];
   const query = `
-  (
   UPDATE users
   SET is_verified = ?,
-  email_token = ?
+      email_token = ?
   WHERE user_id = ?
-  )`;
+  `;
   const [response, _] = await pool.query(query, values);
-  return response.affectedRows > 1
+
+  return response.affectedRows > 0
     ? { success: true, message: "verification successful" }
     : { success: false, message: "verification unsuccessful" };
 };
@@ -90,7 +137,7 @@ export const authenticateUser = async (
   password: string,
   pool: any
 ) => {
-  const verified = await isVerified(pool, username);
+  const verified = await verifyByName(pool, username);
   if (!verified) {
     return false;
   }
@@ -144,7 +191,7 @@ export const createUser = async (
   )`;
   const [result, _] = await pool.query(query, values);
   return result.affectedRows > 0
-    ? { success: true, message: "User created" }
+    ? { success: true, message: "User created", emailToken: emailToken }
     : { success: false, message: "Failed to create user" };
 };
 

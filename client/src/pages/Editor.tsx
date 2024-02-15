@@ -53,7 +53,6 @@ export default function Editor() {
           doc: { docId: docId, title: title, content: text },
         }),
       });
-      console.log("saved!");
     } catch (err) {
       console.error(err);
     }

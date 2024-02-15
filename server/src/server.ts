@@ -25,8 +25,10 @@ import {
   saveDocument,
   sendInvite,
   strongPassword,
+  verifyById,
+  verifyEmailToken,
 } from "./utils/utils";
-import { sendEmail } from "./utils/mailUtils";
+import { sendEmail } from "./utils/mail";
 
 const app = express();
 const server = http.createServer(app);
@@ -50,16 +52,6 @@ const pool = mysql.createPool({
   database: "myDB",
 });
 
-app.post("/api/email", async (req, res) => {
-  try {
-    const { userName, email, emailToken } = req.body;
-    await sendEmail(userName, email, emailToken);
-    return res.status(200).json({ message: "email sent!" });
-  } catch (err) {
-    console.error(err);
-  }
-});
-
 app.post("/api/signUp", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
@@ -77,7 +69,7 @@ app.post("/api/signUp", async (req, res) => {
         message: "Password does not meet site requirements. Please try again.",
       });
     }
-    const { success, message } = await createUser(
+    const { success, message, emailToken } = await createUser(
       pool,
       username,
       email,
@@ -88,6 +80,7 @@ app.post("/api/signUp", async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: success, message: message });
     }
+    await sendEmail(username, email, emailToken);
     const id = await getId(pool, username);
     const access = AccessToken.create(id);
     const refresh = RefreshToken.create(id);
@@ -104,6 +97,35 @@ app.post("/api/signUp", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+app.put(
+  "/api/verify-user",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+
+      const { emailToken } = req.body;
+      const { success, message } = await verifyEmailToken(
+        pool,
+        req.userId,
+        emailToken
+      );
+      const response = { success: success, message: message };
+      if (!success) {
+        return res.status(400).json(response);
+      }
+      return res.status(200).json(response);
+    } catch (err) {
+      console.error("Verification error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
 
 app.post("/api/signIn", async (req, res) => {
   try {
@@ -166,6 +188,13 @@ app.get(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
+      const verified = await verifyById(pool, req.userId);
+      if (!verified) {
+        return res.status(200).json({
+          success: false,
+          nessage: "Authorization error: User has not been verified.",
+        });
+      }
       return res.status(200).json({ success: true, message: "Authorized" });
     } catch (err) {
       console.error("Authentication error:", err);
@@ -227,6 +256,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
         .status(403)
         .json({ success: false, message: "Authorization error" });
     }
+
     const { docId } = req.body;
     if (!docId) {
       const newDocument = await createDocument(pool, req.userId);
@@ -294,6 +324,7 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     if (!success) {
       return res.status(200).json({ success: success, message: message });
     }
+
     return res.status(200).send({
       success: success,
       message: message,
