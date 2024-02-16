@@ -6,7 +6,7 @@ import Signup from "./pages/Signup";
 import Documents from "./pages/Documents";
 import NotFound from "./pages/404";
 import Signin from "./pages/Signin";
-import AwaitingVerification from "./pages/AwaitingVerification";
+import VerifyEmail from "./pages/VerifyEmail";
 
 export default function App() {
   return (
@@ -16,10 +16,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/documents" element={<Documents />} />
         <Route path="/editor/:docId" element={<Editor />} />
-        <Route
-          path="/verify-email/:emailToken?"
-          element={<AwaitingVerification />}
-        />
+        <Route path="/verify-email/:emailToken?" element={<VerifyEmail />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </HashRouter>

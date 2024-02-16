@@ -1,4 +1,4 @@
-import { randomBytes } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 import * as nodeMailer from "nodemailer";
 
 require("dotenv").config();
@@ -21,7 +21,7 @@ export const sendEmail = async (
 ) => {
   let userToken = emailToken;
   if (!emailToken) {
-    userToken = randomBytes(64).toString("base64");
+    userToken = randomUUID();
   }
   const mailOptions = {
     from: `"Security Squirrel" <${EMAIL}>`,
@@ -29,7 +29,7 @@ export const sendEmail = async (
     subject: "Verify your email...",
     html: `<p>Hello 👋 ${userName}! Please verify your email by clicking the link below 👇</p> 
       <a href="${CLIENT_URL}/#/verify-email/${userToken}">Verify Your Email</a>`,
-    text: `Hello ${userName}! Please verify your email by clicking the link below:\n${CLIENT_URL}/verify-email?emailToken=${userToken}`,
+    text: `Hello ${userName}! Please verify your email by clicking the link below:\n${CLIENT_URL}/#/verify-email?emailToken=${userToken}`,
   };
 
   mailer.sendMail(mailOptions, (error, info) => {

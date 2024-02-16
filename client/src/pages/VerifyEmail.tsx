@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-export default function AwaitingVerification() {
+export default function VerifyEmail() {
   const params = useParams();
   const navigate = useNavigate();
   const emailToken = params.emailToken;
   const location = useLocation();
-  // const { userName, email } = location.state;
+  const [verified, setVerified] = useState(false);
+  const { userName, email } = location.state;
 
   const verification = async (emailToken: string | undefined) => {
     const response = await fetch("/api/verify-user", {
@@ -17,8 +18,10 @@ export default function AwaitingVerification() {
       body: JSON.stringify({ emailToken: emailToken }),
     });
     const json = await response.json();
+
     if (json.success) {
-      navigate("/documents");
+      setVerified(true);
+      // navigate("/documents");
     }
   };
 
@@ -27,15 +30,31 @@ export default function AwaitingVerification() {
   };
 
   useEffect(() => {
-    handleVerification(emailToken);
+    if (emailToken) {
+      handleVerification(emailToken);
+    }
   });
 
   return (
     <div>
-      <p>
-        Please check your email, for a verification link.\n Not the right email?{" "}
-        <button>Click Here</button>
-      </p>
+      {!verified ? (
+        <div>
+          {" "}
+          <p>Please check your email, for a verification link.</p>
+          <div>
+            <p>Need another link?</p>
+            <button>Click Here</button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p>
+            Your account has been verified! Click the link below to create your
+            first document!
+          </p>
+          <a href="/documents">DOCUMENTS</a>
+        </div>
+      )}
     </div>
   );
 }

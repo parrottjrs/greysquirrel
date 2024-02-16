@@ -39,8 +39,6 @@ export default function Signup() {
       password: data.password.trim(),
       passCheck: data.passCheck.trim(),
     };
-
-    // console.log("data:", data, "newData:", newData);
     try {
       const response = await fetch("/api/signUp", {
         method: "POST",
@@ -51,7 +49,6 @@ export default function Signup() {
       switch (json.message) {
         case "User already exists":
           setNameWarning(true);
-          console.log(nameWarning);
           break;
         case "User created":
           const email = trimmedData.email;

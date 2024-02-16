@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AccessToken } from "../Token";
-import { pbkdf2Sync, randomBytes } from "crypto";
-
+import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
 //Custom types
 
 type Document = {
@@ -164,7 +163,7 @@ export const createUser = async (
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
   );
-  const emailToken = randomBytes(64).toString("base64");
+  const emailToken = randomUUID();
   const values = [
     username,
     email,
