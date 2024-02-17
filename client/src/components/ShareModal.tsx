@@ -64,7 +64,7 @@ export default function ShareModal({ docId }: any) {
           <Dialog.Description>
             Enter your friend/colleague's username
           </Dialog.Description>
-          <form onSubmit={handleSubmit(handleInvite)}>
+          <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
             <div>
               <input
                 id="titleInput"

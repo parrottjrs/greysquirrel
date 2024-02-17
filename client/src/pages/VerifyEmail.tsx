@@ -7,7 +7,6 @@ export default function VerifyEmail() {
   const emailToken = params.emailToken;
   const location = useLocation();
   const [verified, setVerified] = useState(false);
-  const { userName, email } = location.state;
 
   const verification = async (emailToken: string | undefined) => {
     const response = await fetch("/api/verify-user", {

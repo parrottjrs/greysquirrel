@@ -58,7 +58,7 @@ export default function Editor() {
     }
   };
 
-  const fetchContent = async (docId: any) => {
+  const fetchContent = async () => {
     try {
       const response = await fetch("/api/create", {
         method: "POST",
@@ -82,7 +82,7 @@ export default function Editor() {
   }, []);
 
   useEffect(() => {
-    fetchContent(docId);
+    fetchContent();
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);
   }, [authorization]);
@@ -99,27 +99,6 @@ export default function Editor() {
   const handleTitle = (title: string) => {
     setTitle(title);
   };
-
-  const fetchInvite = async () => {
-    try {
-      await fetch("/api/invite", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ docId: docId, recipient: recipient }),
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleInvite = () => {
-    fetchInvite();
-  };
-
-  const handleRecipient = (recipient: string) => {
-    setRecipient(recipient);
-  };
-
   // useWebSocket(WS_URL, {
   //   onMessage: (message) => {
   //     setText(message.data);
@@ -166,7 +145,7 @@ export default function Editor() {
             preserveWhitespace={true}
           />
         </div>
-        <LogoutButton />
+        <LogoutButton docId={docId} title={title} text={text} />
         <div>
           <ShareModal docId={docId} />
         </div>

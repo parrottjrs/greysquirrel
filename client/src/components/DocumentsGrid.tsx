@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import ShareModal from "./ShareModal";
 
-interface Document extends Object {
+interface Document {
   doc_id?: number;
   title?: string;
   content?: string;
-  authorizedUsers: Array<string>;
+  authorizedUsers: string[];
 }
 
 export default function DocumentsGrid() {
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const fetchDocuments = async () => {
     try {
       const response = await fetch("/api/documents");
       const json = await response.json();
-      json.success === false ? setDocuments([]) : setDocuments(json.docs);
+      if (json.success) {
+        setDocuments(json.docs);
+      }
     } catch (err) {
       console.error(err);
       return false;
@@ -61,8 +63,20 @@ export default function DocumentsGrid() {
     });
   };
 
-  const handleRevoke = async (docId: any, authorizedUserName: string) => {
-    await fetchRevoke(docId, authorizedUserName);
+  const handleRevoke = async (docId: any, userToRevoke: string) => {
+    await fetchRevoke(docId, userToRevoke);
+    setDocuments((previousDocuments) =>
+      previousDocuments.map((document: Document) =>
+        document.doc_id === docId
+          ? {
+              ...document,
+              authorizedUsers: document.authorizedUsers.filter(
+                (authorizedUser: string) => authorizedUser !== userToRevoke
+              ),
+            }
+          : document
+      )
+    );
   };
 
   return documents.map((document: Document) => {
