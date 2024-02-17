@@ -28,7 +28,7 @@ import {
   verifyById,
   verifyEmailToken,
 } from "./utils/utils";
-import { sendEmail } from "./utils/mail";
+import { sendVerificationEmail, userVerificationInfo } from "./utils/mail";
 
 const app = express();
 const server = http.createServer(app);
@@ -80,7 +80,7 @@ app.post("/api/signUp", async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: success, message: message });
     }
-    await sendEmail(username, email, emailToken);
+    await sendVerificationEmail(username, email, emailToken);
     const id = await getId(pool, username);
     const access = AccessToken.create(id);
     const refresh = RefreshToken.create(id);
@@ -177,6 +177,35 @@ app.post("/api/signIn", async (req, res) => {
 //     return res.status(500).json({ message: "internal server error" });
 //   }
 // });
+
+app.post(
+  "/api/resend-verification-email",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization Error" });
+      }
+      const { username, email, emailToken } = await userVerificationInfo(
+        pool,
+        req.userId
+      );
+      const { success, message } = await sendVerificationEmail(
+        username,
+        email,
+        emailToken
+      );
+      return res.status(200).json({ sucess: success, message: message });
+    } catch (err) {
+      console.error("Error sending verification email:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+);
 
 app.get(
   "/api/authenticate",

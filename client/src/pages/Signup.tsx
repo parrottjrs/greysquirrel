@@ -53,7 +53,7 @@ export default function Signup() {
         case "User created":
           const email = trimmedData.email;
           const username = trimmedData.username;
-          navigate(`/verify-email`, { state: { username, email } });
+          navigate(`/verify-email`);
           break;
         default:
           console.error("An unexpected error has occurred");
