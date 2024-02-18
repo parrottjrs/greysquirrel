@@ -7,6 +7,7 @@ import { STYLES } from "../utils/consts";
 type FormData = {
   username: string;
   email: string;
+  emailCheck: string;
   firstName: string;
   lastName: string;
   password: string;
@@ -15,14 +16,16 @@ type FormData = {
 
 export default function Signup() {
   const [show, setShow] = useState(false);
-  const [passWarning, setPassWarning] = useState(false);
-  const [nameWarning, setNameWarning] = useState(false);
-  const [passMatch, setPassMatch] = useState(false);
+  const [weakPassword, setWeakPassword] = useState(false);
+  const [userExists, setUserExists] = useState(false);
+  const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
+  const [emailsDontMatch, setEmailsDontMatch] = useState(false);
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
       email: "",
+      emailCheck: "",
       firstName: "",
       lastName: "",
       password: "",
@@ -48,11 +51,9 @@ export default function Signup() {
       const json = await response.json();
       switch (json.message) {
         case "User already exists":
-          setNameWarning(true);
+          setUserExists(true);
           break;
         case "User created":
-          const email = trimmedData.email;
-          const username = trimmedData.username;
           navigate(`/verify-email`);
           break;
         default:
@@ -64,38 +65,64 @@ export default function Signup() {
     }
   };
 
-  const checkPassword = (password: string) => {
+  const checkPasswordRestrictions = (password: string) => {
     const restrictions =
       /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    return restrictions.test(password);
+    const strongPassword = restrictions.test(password);
+    strongPassword ? setWeakPassword(false) : setWeakPassword(true);
+    return strongPassword;
+  };
+
+  const doPasswordsMatch = (passwordOne: string, passwordTwo: string) => {
+    const passwordsMatch = passwordOne === passwordTwo;
+    passwordsMatch ? setPasswordsDontMatch(false) : setPasswordsDontMatch(true);
+    return passwordsMatch;
+  };
+
+  const doEmailsMatch = (emailOne: string, emailTwo: string) => {
+    const emailsMatch = emailOne === emailTwo;
+    emailsMatch ? setEmailsDontMatch(false) : setEmailsDontMatch(true);
+    return emailsMatch;
+  };
+
+  const checkUserEntry = (
+    emailOne: string,
+    emailTwo: string,
+    passwordOne: string,
+    passwordTwo: string
+  ) => {
+    const emailsMatch = doEmailsMatch(emailOne, emailTwo);
+    const strongPassword = checkPasswordRestrictions(passwordOne);
+    const passwordsMatch = doPasswordsMatch(passwordOne, passwordTwo);
+    console.log(
+      "emailMatch:",
+      emailsMatch,
+      "strongPassword:",
+      strongPassword,
+      "passwordMatch:",
+      passwordsMatch
+    );
+    if (!emailsMatch || !strongPassword || !passwordsMatch) {
+      return false;
+    }
+    return true;
   };
 
   const handleChange = () => {
     setShow(!show);
   };
 
-  const handlePasswordValidation = (data: FormData) => {
-    switch (checkPassword(data.password)) {
-      case false:
-        setPassWarning(true);
-        data.password !== data.passCheck
-          ? setPassMatch(true)
-          : setPassMatch(false);
-        break;
-      case true:
-        setPassWarning(false);
-        if (data.password !== data.passCheck) {
-          return setPassMatch(true);
-        }
-        signup(data);
-        break;
-      default:
-        return console.error("Something went wrong");
+  const handleSignup = (data: FormData) => {
+    const { email, emailCheck, password, passCheck } = data;
+    const userEntryOK = checkUserEntry(email, emailCheck, password, passCheck);
+
+    if (userEntryOK) {
+      signup(data);
     }
   };
 
   const onSubmit = (data: FormData) => {
-    handlePasswordValidation(data);
+    handleSignup(data);
   };
 
   return (
@@ -119,7 +146,7 @@ export default function Signup() {
             required={true}
           />
         </div>
-        {nameWarning && (
+        {userExists && (
           <p className={STYLES.ALERT_TEXT}>
             You must choose a different username.
           </p>
@@ -137,6 +164,22 @@ export default function Signup() {
             required={true}
           />
         </div>
+        <div className="mt-10">
+          <label className={STYLES.LABEL} htmlFor={"emailCheck"}>
+            * Re-enter your email:
+          </label>
+          <input
+            className={STYLES.FORM_INPUT}
+            id={"emailCheck"}
+            type="text"
+            {...register("emailCheck")}
+            autoComplete="off"
+            required={true}
+          />
+        </div>
+        {emailsDontMatch && (
+          <p className={STYLES.ALERT_TEXT}>Emails must match.</p>
+        )}
         <div className="mt-10">
           <label className={STYLES.LABEL} htmlFor={"firstName"}>
             First Name:
@@ -187,10 +230,10 @@ export default function Signup() {
           />
         </div>
         <div className={STYLES.ALERT_DIV}>
-          {passMatch && (
+          {passwordsDontMatch && (
             <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
           )}
-          <p className={!passWarning ? "" : STYLES.ALERT_TEXT}>
+          <p className={!weakPassword ? "" : STYLES.ALERT_TEXT}>
             Password must be at least 8 characters and have at least one
             uppercase letter, one lowercase letter, one digit, and one special
             character.

@@ -217,13 +217,6 @@ app.get(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
-      const verified = await verifyById(pool, req.userId);
-      if (!verified) {
-        return res.status(200).json({
-          success: false,
-          nessage: "Authorization error: User has not been verified.",
-        });
-      }
       return res.status(200).json({ success: true, message: "Authorized" });
     } catch (err) {
       console.error("Authentication error:", err);
