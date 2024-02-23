@@ -6,6 +6,7 @@ import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
 import { authenticate, refresh } from "../utils/functions";
 import InvitesRecieved from "../components/InvitesReceived";
 import InvitesSent from "../components/InvitesSent";
+import Navbar from "../components/Navbar";
 
 export interface Invite {
   invite_id: number;
@@ -27,7 +28,7 @@ export default function Documents() {
     try {
       const { success } = await refresh();
       if (!success) {
-        navigate("/");
+        navigate("/signin");
       }
     } catch (err) {
       console.error(err);
@@ -38,7 +39,7 @@ export default function Documents() {
     try {
       const authorized = await authenticate();
       if (!authorized) {
-        navigate("/");
+        navigate("/signin");
       }
       setAuthorization(true);
     } catch (err) {
@@ -91,6 +92,7 @@ export default function Documents() {
   return (
     authorization && (
       <div>
+        <Navbar isLoggedIn={true} />
         <InvitesRecieved
           invites={invites}
           count={count}

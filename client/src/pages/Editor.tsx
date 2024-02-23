@@ -4,9 +4,10 @@ import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";
 import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { STYLES } from "../utils/consts";
+import { STYLES } from "../utils/styles";
 import { authenticate, refresh } from "../utils/functions";
 import ShareModal from "../components/ShareModal";
+import Navbar from "../components/Navbar";
 
 export default function Editor() {
   const params = useParams();
@@ -25,7 +26,7 @@ export default function Editor() {
     try {
       const authorized = await authenticate();
       if (!authorized) {
-        navigate("/");
+        navigate("/signin");
       }
       setAuthorization(true);
     } catch (err) {
@@ -37,7 +38,7 @@ export default function Editor() {
     try {
       const { success } = await refresh();
       if (!success) {
-        navigate("/");
+        navigate("/signin");
       }
     } catch (err) {
       console.error(err);
@@ -67,7 +68,7 @@ export default function Editor() {
       });
       const json = await response.json();
       if (!response.ok) {
-        navigate("/");
+        navigate("/signin");
       }
       const { title, content } = json.document;
       setTitle(title ? title : "");
@@ -131,6 +132,7 @@ export default function Editor() {
   return (
     authorization && (
       <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
+        <Navbar isLoggedIn={true} />
         <input
           type="text"
           value={title}

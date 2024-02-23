@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function VerifyEmail() {
   const params = useParams();
@@ -68,7 +69,7 @@ export default function VerifyEmail() {
             Your account has been verified! Click the link below to create your
             first document.
           </p>
-          <a href="/documents">DOCUMENTS</a>
+          <a href="#/documents">DOCUMENTS</a>
         </div>
       )}
     </div>

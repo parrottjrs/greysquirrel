@@ -136,10 +136,6 @@ export const authenticateUser = async (
   password: string,
   pool: any
 ) => {
-  // const verified = await verifyByName(pool, username);
-  // if (!verified) {
-  //   return false;
-  // }
   const { truePass, salt } = await getPassword(pool, username);
   const attemptedPass = pbkdf2Sync(
     password,
