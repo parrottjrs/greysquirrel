@@ -1,5 +1,5 @@
 import React from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import { BellIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
 

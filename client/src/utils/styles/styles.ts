@@ -1,8 +1,10 @@
 export const STYLES = {
-  //UNIVERSAL
+  //GENERAL
   STYLIZED_ANCHOR:
-    "py-1.5 px-4 bg-aeroBlue font-sans font-medium text-sm text-base text-nero no-underline border rounded-lg border-nero",
-  SMALL_BLACK_TEXT: "",
+    "py-1.5 px-4 bg-aeroBlue font-sans font-medium text-sm text-base text-nero no-underline rounded-lg",
+  FORM_INPUT:
+    "flex h-4 w-60 md:w-96 pl-2.5 py-2.5 items-center gap-2.5 border border-nero rounded-lg text-nero font-sans font-normal",
+  INSTRUCTIONS: "-mt-1 font-sans text-nero text-sm font-medium md:text-base",
   // HOME
   HOME_PARENT_CONTAINER:
     "h-screen -mt-24 flex flex-row items-center justify-center",
@@ -14,6 +16,7 @@ export const STYLES = {
   SQUIRREL_IMAGE: "w-72 h-72",
   WELCOME_HEADER:
     "text-left text-nero text-xl font-sans font-medium md:text-3xl",
+
   //NAVBAR
   NAVBAR_HEADER:
     "text-center text-nero text-md font-sans font-medium md:text-2xl",
@@ -23,28 +26,35 @@ export const STYLES = {
 
   // SIGNIN
   SIGNIN_PARENT_CONTAINER:
-    "h-screen -mt-24 flex flex-col items-center justify-center",
+    "md:h-screen md:-mt-24 flex flex-col items-center justify-center",
   SIGNIN_HEADER:
     "mb-0 text-left text-nero text-xl font-sans font-medium md:text-3xl",
-  INSTRUCTIONS: "font-sans text-nero text-sm font-medium md:text-base",
+
   LABEL: "text-center text-nero text-sm font-sans font-medium md:text-base",
-  FORM_INPUT:
-    "flex h-4 w-60 md:w-96 pl-2.5 py-2.5 items-center gap-2.5 border rounded-lg border-nero text-nero font-sans font-normal border-nero",
-  VIOLET_TEXT: "text-vividViolet text-sm font-sans font-medium text-base",
+
+  VIOLET_TEXT:
+    "ml-2 text-vividViolet text-sm font-sans font-medium no-underline md: text-base ",
   LOGIN_BUTTON:
-    "mt-3 mb-8 px-20 md:px-44 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 border rounded-lg border-nero",
-  LOGIN_BUTTON_ALERT:
-    "mt-4 mb-8 px-20 md:px-44 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 border rounded-lg border-nero",
+    "mt-3 mb-8 px-20 md:px-44 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-lg border-0",
   FLEX_COL_CENTER: "flex flex-col items-center",
-  SIGN_IN_DIVIDER: "mb-6 w-full h-px bg-nero",
-  ALERT_DIV: "flex absolute w-full items-center",
+  SIGN_IN_DIVIDER: "mb-12 w-full h-px bg-nero",
+  ALERT_DIV: "-mt-2 flex absolute w-full items-center",
   ALERT_TEXT: "ml-2 text-roman text-xs font-sans leading-4 md:text-sm ",
+  BOLD: "font-medium ",
   REMEMBER_CONTAINER: "w-full mt-16 flex flex-row items-center justify-left",
   REMEMBER_TEXT: "text-nero text-xs md: text-sm font-sans font-medium",
   CHECK_BOX: "mr-2",
 
+  // SIGNUP
+  SIGNUP_PARENT_CONTAINER:
+    "m-auto mb-24 w-1/2 flex flex-col items-center justify-center",
+  SIGNUP_BUTTON:
+    "mt-12 mb-12 px-20 md:px-44 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-lg border-0",
+  WEAK_PASSWORD_DIV: "absolute",
+
   //   ICONS
-  ALERT_CIRCLE: "h-4 w-4 text-roman",
+  ALERT_CIRCLE: "h-4 w-4 text-roman pointer-events-none",
+
   EYE: "flex ml-[13.5rem] md:ml-[22.5rem] -mt-[1.9rem]",
 
   // EDITOR

@@ -1,5 +1,5 @@
 import React from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import Navbar from "../components/Navbar";
 
 export default function Notifications() {

@@ -1,5 +1,5 @@
 import React from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import LogoutButton from "../components/LogoutButton";
 import Navbar from "../components/Navbar";
 

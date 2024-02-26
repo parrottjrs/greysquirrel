@@ -1,5 +1,5 @@
 import React from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import { EyeIcon, EyeOff } from "lucide-react";
 
 type Params = {

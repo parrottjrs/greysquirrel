@@ -32,7 +32,6 @@ export const authenticate = async () => {
     const response = await fetch("/api/authenticate");
     const json = await response.json();
     const authenticated = await handleAuthenticate(json.message);
-    console.log(json);
     return authenticated;
   } catch (err) {
     console.error(err);

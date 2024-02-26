@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import { AlertCircle } from "lucide-react";
 import Eye from "../components/Eye";
 import { authenticate } from "../utils/functions";
@@ -144,20 +144,20 @@ export default function Signin() {
                 Remember me for 30 days
               </label>
             </div>
-            <input
-              className={
-                !change ? STYLES.LOGIN_BUTTON : STYLES.LOGIN_BUTTON_ALERT
-              }
+            <button
+              className={STYLES.LOGIN_BUTTON}
               type="submit"
               value="Log In"
-            />
+            >
+              Sign in
+            </button>
           </form>
           <div className={STYLES.SIGN_IN_DIVIDER} />
         </div>
         <div>
           <label className={STYLES.LABEL} htmlFor="signup">
             Don't have an account?
-          </label>{" "}
+          </label>
           <a className={STYLES.VIOLET_TEXT} id="signup" href="#/signup">
             Sign up here!
           </a>
