@@ -82,8 +82,8 @@ export default function Signin() {
   return (
     <div>
       <Navbar />
-      <div className={STYLES.CENTER}>
-        <h1 className={STYLES.WELCOME_HEADER}>Welcome Back!</h1>
+      <div className={STYLES.SIGNIN_PARENT_CONTAINER}>
+        <h1 className={STYLES.SIGNIN_HEADER}>Welcome Back!</h1>
 
         <p className={STYLES.INSTRUCTIONS}>
           Enter your credentials to access your account
@@ -107,32 +107,43 @@ export default function Signin() {
                 required={true}
               />
             </div>
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"password"}>
-                Password:
-              </label>
-              <input
-                className={STYLES.FORM_INPUT}
-                id={"password"}
-                type={!show ? "password" : "text"}
-                {...register("password")}
-                autoComplete="off"
-                required={true}
-              />
-            </div>
-
-            <Eye onClick={handleShow} show={show} />
-
-            {change && (
-              <div className={STYLES.ALERT_DIV}>
-                <AlertCircle className={STYLES.ALERT_CIRCLE} />
-                <p className={STYLES.ALERT_TEXT}>
-                  Authentication failed. Please try again.
-                </p>
+            <div>
+              <div className="mt-10">
+                <label className={STYLES.LABEL} htmlFor={"password"}>
+                  Password:
+                </label>
+                <input
+                  className={STYLES.FORM_INPUT}
+                  id={"password"}
+                  type={!show ? "password" : "text"}
+                  {...register("password")}
+                  autoComplete="off"
+                  required={true}
+                />
               </div>
-            )}
-            <div />
 
+              <Eye onClick={handleShow} show={show} />
+
+              {change && (
+                <div className={STYLES.ALERT_DIV}>
+                  <AlertCircle className={STYLES.ALERT_CIRCLE} />
+                  <p className={STYLES.ALERT_TEXT}>
+                    Authentication failed. Please try again.
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className={STYLES.REMEMBER_CONTAINER}>
+              <input
+                id="remember"
+                type="checkbox"
+                className={STYLES.CHECK_BOX}
+                {...register("remember")}
+              />
+              <label className={STYLES.REMEMBER_TEXT} htmlFor="remember">
+                Remember me for 30 days
+              </label>
+            </div>
             <input
               className={
                 !change ? STYLES.LOGIN_BUTTON : STYLES.LOGIN_BUTTON_ALERT
@@ -140,15 +151,13 @@ export default function Signin() {
               type="submit"
               value="Log In"
             />
-            <label htmlFor="remember">Remember me for 30 days</label>
-            <input id="remember" type="checkbox" {...register("remember")} />
           </form>
           <div className={STYLES.SIGN_IN_DIVIDER} />
         </div>
         <div>
           <label className={STYLES.LABEL} htmlFor="signup">
             Don't have an account?
-          </label>
+          </label>{" "}
           <a className={STYLES.VIOLET_TEXT} id="signup" href="#/signup">
             Sign up here!
           </a>

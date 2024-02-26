@@ -24,12 +24,9 @@ export default function Navbar({ isLoggedIn }: ChildProps) {
   };
 
   return (
-    <header className="z-10 mb-5 h-18  md:mb-10 md:h-16 flex flex-row items-center justify-between p-1">
+    <header className="h-18 md:h-16 flex flex-row items-center justify-between p-1">
       <div className="w-full">
-        <nav
-          className="z-20 justify-between md:flex md:w-auto px-7"
-          id="navbar"
-        >
+        <nav className="justify-between md:flex md:w-auto px-7" id="navbar">
           <h1 className={STYLES.NAVBAR_HEADER}>Greysquirrel</h1>
 
           {!isLoggedIn ? (
@@ -38,7 +35,7 @@ export default function Navbar({ isLoggedIn }: ChildProps) {
                 About
               </a>
               <a href="#/signin" className={STYLES.STYLIZED_ANCHOR}>
-                Signin
+                Sign in
               </a>
             </div>
           ) : (

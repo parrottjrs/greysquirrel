@@ -6,7 +6,6 @@ import squirrel from "../images/squirrel.png";
 import { STYLES } from "../utils/styles";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const authenticateUser = async () => {
     try {
@@ -26,10 +25,10 @@ export default function Home() {
   return (
     <div>
       <Navbar isLoggedIn={false} />
-      <div className="flex flex-row">
-        <div className="w-96">
+      <div className={STYLES.HOME_PARENT_CONTAINER}>
+        <div className={STYLES.HOME_WELCOME_CONTAINER}>
           <h1 className={STYLES.WELCOME_HEADER}>Welcome to Greysquirrel</h1>
-          <p>
+          <p className={STYLES.WELCOME_PARAGRAPH}>
             Greysquirrel is a seamless web app designed to simplify the way you
             and your team work together on shared documents. Unlike the rest,
             we've crafted a special experience that's intuitive and keeps the
@@ -40,7 +39,7 @@ export default function Home() {
             Get started
           </a>
         </div>
-        <img src={squirrel} className="w-72 h-72" />
+        <img src={squirrel} className={STYLES.SQUIRREL_IMAGE} />
       </div>
     </div>
   );
