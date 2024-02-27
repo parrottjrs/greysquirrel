@@ -10,15 +10,27 @@ interface Document {
   content?: string;
   authorizedUsers: string[];
 }
+interface SharedDocument {
+  doc_id?: number;
+  title?: string;
+  content?: string;
+  owner: { owner_id?: number; owner_name?: string };
+}
 
 interface ChildProps {
   docId?: number;
-  handleDocs: React.Dispatch<React.SetStateAction<Document[]>>;
+  ownerId?: number;
+  handleDocs:
+    | React.Dispatch<React.SetStateAction<Document[]>>
+    | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
+  shared?: boolean;
 }
 
 export default function DocumentOptionsDropdown({
   docId,
+  ownerId,
   handleDocs,
+  shared,
 }: ChildProps) {
   const [show, setShow] = useState(false);
 
@@ -36,9 +48,30 @@ export default function DocumentOptionsDropdown({
 
   const handleDelete = async (id: any) => {
     await fetchDelete(id);
-    handleDocs((currentDocuments) => {
+    handleDocs((currentDocuments: any) => {
       return currentDocuments.filter(
         (document: Document) => document.doc_id !== id
+      );
+    });
+  };
+
+  const fetchDeleteShared = async (docId: number, ownerId: number) => {
+    try {
+      await fetch("api/shared-docs", {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ docId: docId, ownerId: ownerId }),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteShared = async (docId: any, ownerId: any) => {
+    await fetchDeleteShared(docId, ownerId);
+    handleDocs((currentDocuments: any) => {
+      return currentDocuments.filter(
+        (document: SharedDocument) => document.doc_id !== docId
       );
     });
   };
@@ -67,7 +100,11 @@ export default function DocumentOptionsDropdown({
               <DropdownMenu.Item>
                 <button
                   className={STYLES.OPTIONS_TEXT}
-                  onClick={() => handleDelete(docId)}
+                  onClick={() => {
+                    !shared
+                      ? handleDelete(docId)
+                      : handleDeleteShared(docId, ownerId);
+                  }}
                 >
                   Delete
                   {/* TODO: "move to trash" function */}

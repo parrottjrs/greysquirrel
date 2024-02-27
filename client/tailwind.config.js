@@ -5,13 +5,14 @@ export const corePlugins = {
 };
 export const theme = {
   colors: {
-    white: "#FFF",
-    transparent: "#0000",
-    nero: "#1D1D1D",
-    vividViolet: "#A4319E",
     aeroBlue: "#C2E9D2",
-    roman: "#DF5E5E",
+    alto: "#D9D9D9",
     dustyGray: "#999999",
+    nero: "#1D1D1D",
+    roman: "#DF5E5E",
+    transparent: "#0000",
+    vividViolet: "#A4319E",
+    white: "#FFF",
   },
   extend: {},
 };

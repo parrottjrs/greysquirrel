@@ -89,13 +89,13 @@ export default function DocumentsGrid() {
       return joined + "...";
     };
 
-    const newTitle = clipText(title, "title");
+    const newTitle = title ? clipText(title, "title") : "Untitled";
 
     const cleanContent = content
       ? sanitize(content, { allowedTags: [], allowedAttributes: {} })
       : null;
 
-    const newContent = clipText(cleanContent, "content");
+    const newContent = content ? clipText(cleanContent, "content") : "";
 
     return (
       <div

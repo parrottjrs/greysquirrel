@@ -1,7 +1,14 @@
 import { Bell, BellDot } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Invite } from "../pages/Documents";
+
+export interface Invite {
+  invite_id: number;
+  doc_id: number;
+  sender_id: number;
+  sender_name: string;
+  recipient_id: number;
+}
 
 interface ChildProps {
   invites: Array<Invite>;

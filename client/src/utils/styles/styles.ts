@@ -7,8 +7,7 @@ export const STYLES = {
   INSTRUCTIONS: "-mt-1 font-sans text-nero text-sm font-medium md:text-base",
   PARAGRAPH: "text-left text-nero text-sm font-sans md:text-base",
   // HOME
-  HOME_PARENT_CONTAINER:
-    "h-screen -mt-24 flex flex-row items-center justify-center",
+  HOME_PARENT_CONTAINER: "h-screen  flex flex-row items-center justify-center",
 
   HOME_WELCOME_CONTAINER: "w-96 mr-28",
 
@@ -26,7 +25,7 @@ export const STYLES = {
 
   // SIGNIN
   SIGNIN_PARENT_CONTAINER:
-    "md:h-screen md:-mt-24 flex flex-col items-center justify-center",
+    "md:h-screen md:mt-18 flex flex-col items-center justify-center",
   SIGNIN_HEADER:
     "mb-0 text-left text-nero text-xl font-sans font-medium md:text-3xl",
 
@@ -62,7 +61,7 @@ export const STYLES = {
 
   //DOCUMENTS
   DOCUMENTS_CONTAINER:
-    "m-auto p-1 mb-24 w-2/3 max-w-2xl flex flex-col items-left",
+    "m-auto mt-24 p-1 mb-24 w-2/3 max-w-2xl flex flex-col items-left",
   DOC_HEADER: "m-0 text-nero text-sm font-sans font-medium md:text-2xl",
   CREATE_BUTTON:
     "w-36 mt-8 mb-12 p-2 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-lg border-0",
@@ -70,4 +69,8 @@ export const STYLES = {
     "w-96 mt-1 text-left text-nero text-sm font-sans break-words md:text-base",
   OPTIONS_TEXT:
     "p-0 bg-transparent border-none text-nero text-sm font-sans md:text-lg",
+  DOCUMENTS_SWITCH:
+    "w-36 mr-4 p-2 text-nero text-sm font-sans font-medium bg-alto gap-2.5 rounded-lg border-0",
+  DOCUMENTS_SWITCH_SELECTED:
+    "w-36 mr-4 p-2 text-nero text-sm font-sans font-medium bg-dustyGray gap-2.5 rounded-lg border border-solid border-dustyGray",
 };

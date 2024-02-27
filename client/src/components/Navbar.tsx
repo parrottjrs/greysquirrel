@@ -24,7 +24,7 @@ export default function Navbar({ isLoggedIn }: ChildProps) {
   };
 
   return (
-    <header className="h-18 md:h-16 flex flex-row items-center justify-between p-1">
+    <header className="z-10 h-18 w-full md:h-16 flex flex-row items-center bg-white justify-between p-1 fixed inset-0">
       <div className="w-full">
         <nav className="justify-between md:flex md:w-auto px-7" id="navbar">
           <h1 className={STYLES.NAVBAR_HEADER}>Greysquirrel</h1>
