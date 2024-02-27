@@ -7,6 +7,7 @@ import { authenticate, refresh } from "../utils/functions";
 import InvitesRecieved from "../components/InvitesReceived";
 import InvitesSent from "../components/InvitesSent";
 import Navbar from "../components/Navbar";
+import { STYLES } from "../utils/styles/styles";
 
 export interface Invite {
   invite_id: number;
@@ -102,10 +103,17 @@ export default function Documents() {
         />
         <InvitesSent />
         <LogoutButton />
-        <h1>Documents</h1>
-        <DocumentsGrid />
-        <SharedDocumentsGrid invites={invites} />
-        <button onClick={handleClick}>Create Document</button>
+        <div className={STYLES.DOCUMENTS_CONTAINER}>
+          <div className="flex flex-row justify-between">
+            <h1 className={STYLES.WELCOME_HEADER}>My Documents</h1>
+            <button className={STYLES.CREATE_BUTTON} onClick={handleClick}>
+              New Document
+            </button>
+          </div>
+          <span className={STYLES.PARAGRAPH}>Files</span>
+          <DocumentsGrid />
+          <SharedDocumentsGrid invites={invites} />
+        </div>
       </div>
     )
   );

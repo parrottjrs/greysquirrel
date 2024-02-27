@@ -55,7 +55,7 @@ export default function ShareModal({ docId }: any) {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <UserRoundPlus />
+        <span>share</span>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay />

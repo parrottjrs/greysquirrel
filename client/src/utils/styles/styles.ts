@@ -1,21 +1,21 @@
 export const STYLES = {
   //GENERAL
   STYLIZED_ANCHOR:
-    "py-1.5 px-4 bg-aeroBlue font-sans font-medium text-sm text-base text-nero no-underline rounded-lg",
+    "py-1.5 px-4 bg-aeroBlue font-sans font-medium text-sm text-base text-nero no-underline border-0 rounded-lg",
   FORM_INPUT:
     "flex h-4 w-60 md:w-96 pl-2.5 py-2.5 items-center gap-2.5 border border-nero rounded-lg text-nero font-sans font-normal",
   INSTRUCTIONS: "-mt-1 font-sans text-nero text-sm font-medium md:text-base",
+  PARAGRAPH: "text-left text-nero text-sm font-sans md:text-base",
   // HOME
   HOME_PARENT_CONTAINER:
     "h-screen -mt-24 flex flex-row items-center justify-center",
 
   HOME_WELCOME_CONTAINER: "w-96 mr-28",
-  WELCOME_PARAGRAPH: "text-left text-nero text-sm font-sans md:text-base",
+
   SIGNUP_ANCHOR:
     "py-2 px-6 bg-aeroBlue font-sans font-medium text-sm text-base text-nero no-underline",
   SQUIRREL_IMAGE: "w-72 h-72",
-  WELCOME_HEADER:
-    "text-left text-nero text-xl font-sans font-medium md:text-3xl",
+  WELCOME_HEADER: "text-nero text-xl font-sans font-medium md:text-3xl",
 
   //NAVBAR
   NAVBAR_HEADER:
@@ -40,7 +40,7 @@ export const STYLES = {
   SIGN_IN_DIVIDER: "mb-12 w-full h-px bg-nero",
   ALERT_DIV: "-mt-2 flex absolute w-full items-center",
   ALERT_TEXT: "ml-2 text-roman text-xs font-sans leading-4 md:text-sm ",
-  BOLD: "font-medium ",
+  BOLD: "font-medium",
   REMEMBER_CONTAINER: "w-full mt-16 flex flex-row items-center justify-left",
   REMEMBER_TEXT: "text-nero text-xs md: text-sm font-sans font-medium",
   CHECK_BOX: "mr-2",
@@ -54,9 +54,18 @@ export const STYLES = {
 
   //   ICONS
   ALERT_CIRCLE: "h-4 w-4 text-roman pointer-events-none",
-
+  DOCUMENT_ICON: "w-12 h-12 mr-4 pointer-events-none",
   EYE: "flex ml-[13.5rem] md:ml-[22.5rem] -mt-[1.9rem]",
 
   // EDITOR
   MOUSEOUT_DIV: "w-screen h-screen",
+
+  //DOCUMENTS
+  DOCUMENTS_CONTAINER:
+    "m-auto p-1 mb-24 w-2/3 max-w-2xl flex flex-col items-left",
+  DOC_HEADER: "m-0 text-nero text-sm font-sans font-medium md:text-2xl",
+  CREATE_BUTTON:
+    "w-36 mt-8 mb-12 p-2 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-lg border-0",
+  PREVIEW:
+    "w-96 mt-1 text-left text-nero text-sm font-sans break-words md:text-base",
 };

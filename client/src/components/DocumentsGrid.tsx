@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ShareModal from "./ShareModal";
+import sanitize from "sanitize-html";
+import { File, FileText } from "lucide-react";
+import { STYLES } from "../utils/styles/styles";
+import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
 
 interface Document {
   doc_id?: number;
@@ -23,18 +27,6 @@ export default function DocumentsGrid() {
     }
   };
 
-  const fetchDelete = async (id: any) => {
-    try {
-      await fetch("api/documents", {
-        method: "DELETE",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ docId: id }),
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const fetchRevoke = async (docId: number, authorizedUserName: string) => {
     try {
       await fetch("api/shared-docs", {
@@ -54,15 +46,6 @@ export default function DocumentsGrid() {
     fetchDocuments();
   }, []);
 
-  const handleDelete = async (id: any) => {
-    await fetchDelete(id);
-    setDocuments((currentDocuments) => {
-      return currentDocuments.filter(
-        (document: Document) => document.doc_id !== id
-      );
-    });
-  };
-
   const handleRevoke = async (docId: any, userToRevoke: string) => {
     await fetchRevoke(docId, userToRevoke);
     setDocuments((previousDocuments) =>
@@ -80,26 +63,39 @@ export default function DocumentsGrid() {
   };
 
   return documents.map((document: Document) => {
-    const { title, doc_id, authorizedUsers } = document;
+    const { title, doc_id, content, authorizedUsers } = document;
+    const cleanContent = content
+      ? sanitize(content, { allowedTags: [], allowedAttributes: {} })
+      : null;
     return (
-      <div key={doc_id}>
-        <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>{" "}
-        {authorizedUsers.length > 0
-          ? authorizedUsers.map((userName: string) => {
-              const index = authorizedUsers.indexOf(userName);
-              return (
-                <span
-                  className="cursor-pointer"
-                  key={index}
-                  onClick={() => handleRevoke(doc_id, userName)}
-                >
-                  {userName}
-                </span>
-              );
-            })
-          : null}
-        <ShareModal docId={doc_id} />
-        <button onClick={() => handleDelete(doc_id)}>Delete</button>
+      <div
+        className="flex flex-row justify-between h-24 p-4 my-4  border-solid border border-dustyGray rounded-lg overflow-hidden"
+        key={doc_id}
+      >
+        <div className="flex flex-row w- relative mr-4 ">
+          <a className="w-full h-full absolute" href={`#/editor/${doc_id}`} />
+          <FileText className={STYLES.DOCUMENT_ICON} />
+          <div className="flex flex-col">
+            <h2 className={STYLES.DOC_HEADER}>{!title ? "Untitled" : title}</h2>
+            <p className={STYLES.PREVIEW}>{cleanContent}</p>
+            {authorizedUsers.length > 0
+              ? authorizedUsers.map((userName: string) => {
+                  const index = authorizedUsers.indexOf(userName);
+                  return (
+                    <span
+                      className="cursor-pointer"
+                      key={index}
+                      onClick={() => handleRevoke(doc_id, userName)}
+                    >
+                      {userName}
+                    </span>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+
+        <DocumentOptionsDropdown docId={doc_id} handleDocs={setDocuments} />
       </div>
     );
   });

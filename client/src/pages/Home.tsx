@@ -28,7 +28,7 @@ export default function Home() {
       <div className={STYLES.HOME_PARENT_CONTAINER}>
         <div className={STYLES.HOME_WELCOME_CONTAINER}>
           <h1 className={STYLES.WELCOME_HEADER}>Welcome to Greysquirrel</h1>
-          <p className={STYLES.WELCOME_PARAGRAPH}>
+          <p className={STYLES.PARAGRAPH}>
             Greysquirrel is a seamless web app designed to simplify the way you
             and your team work together on shared documents. Unlike the rest,
             we've crafted a special experience that's intuitive and keeps the

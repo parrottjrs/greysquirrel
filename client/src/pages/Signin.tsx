@@ -155,7 +155,7 @@ export default function Signin() {
           <div className={STYLES.SIGN_IN_DIVIDER} />
         </div>
         <div>
-          <label className={STYLES.LABEL} htmlFor="signup">
+          <label className={STYLES.LABEL} aria-label="signup">
             Don't have an account?
           </label>
           <a className={STYLES.VIOLET_TEXT} id="signup" href="#/signup">

@@ -201,14 +201,13 @@ export default function Signup() {
               autoComplete="off"
               required={true}
             />
+            {emailsDontMatch && (
+              <div className={STYLES.ALERT_DIV}>
+                <AlertCircle className={STYLES.ALERT_CIRCLE} />
+                <p className={STYLES.ALERT_TEXT}>Emails must match.</p>
+              </div>
+            )}
           </div>
-
-          {emailsDontMatch && (
-            <div className={STYLES.ALERT_DIV}>
-              <AlertCircle className={STYLES.ALERT_CIRCLE} />
-              <p className={STYLES.ALERT_TEXT}>Emails must match.</p>
-            </div>
-          )}
 
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"password"}>
@@ -272,7 +271,7 @@ export default function Signup() {
           <div className={STYLES.SIGN_IN_DIVIDER} />
         </form>
         <div>
-          <label className={STYLES.LABEL} htmlFor="signup">
+          <label className={STYLES.LABEL} htmlFor="signin">
             Have an account?
           </label>
           <a className={STYLES.VIOLET_TEXT} id="signin" href="#/signin">

@@ -9,6 +9,7 @@ export const theme = {
     vividViolet: "#A4319E",
     aeroBlue: "#C2E9D2",
     roman: "#DF5E5E",
+    dustyGray: "#999999",
   },
   extend: {},
 };
