@@ -5,6 +5,8 @@ export const corePlugins = {
 };
 export const theme = {
   colors: {
+    white: "#FFF",
+    transparent: "#0000",
     nero: "#1D1D1D",
     vividViolet: "#A4319E",
     aeroBlue: "#C2E9D2",

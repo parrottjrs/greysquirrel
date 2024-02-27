@@ -64,20 +64,52 @@ export default function DocumentsGrid() {
 
   return documents.map((document: Document) => {
     const { title, doc_id, content, authorizedUsers } = document;
+
+    const clipText = (text: any, type: string) => {
+      let maxLength = 0;
+      let maxWords = 0;
+      switch (type) {
+        case "title":
+          maxLength = 20;
+          maxWords = 4;
+          break;
+        case "content":
+          maxLength = 120;
+          maxWords = 20;
+          break;
+        default:
+          break;
+      }
+      if (text.length <= maxLength) {
+        return text;
+      }
+      const split = text.split(" ");
+      const sliced = split.slice(0, maxWords);
+      const joined = sliced.join(" ");
+      return joined + "...";
+    };
+
+    const newTitle = clipText(title, "title");
+
     const cleanContent = content
       ? sanitize(content, { allowedTags: [], allowedAttributes: {} })
       : null;
+
+    const newContent = clipText(cleanContent, "content");
+
     return (
       <div
-        className="flex flex-row justify-between h-24 p-4 my-4  border-solid border border-dustyGray rounded-lg overflow-hidden"
+        className="relative flex flex-row justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
         key={doc_id}
       >
-        <div className="flex flex-row w- relative mr-4 ">
+        <div className="flex flex-row relative mr-4 ">
           <a className="w-full h-full absolute" href={`#/editor/${doc_id}`} />
           <FileText className={STYLES.DOCUMENT_ICON} />
           <div className="flex flex-col">
-            <h2 className={STYLES.DOC_HEADER}>{!title ? "Untitled" : title}</h2>
-            <p className={STYLES.PREVIEW}>{cleanContent}</p>
+            <h2 className={STYLES.DOC_HEADER}>
+              {!title ? "Untitled" : newTitle}
+            </h2>
+            <p className={STYLES.PREVIEW}>{newContent}</p>
             {authorizedUsers.length > 0
               ? authorizedUsers.map((userName: string) => {
                   const index = authorizedUsers.indexOf(userName);

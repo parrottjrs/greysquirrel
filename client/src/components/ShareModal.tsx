@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
-import { UserRoundPlus } from "lucide-react";
+import { STYLES } from "../utils/styles/styles";
 
 interface FormData {
   recipientName: string;
@@ -55,18 +55,21 @@ export default function ShareModal({ docId }: any) {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <span>share</span>
+        <button className={STYLES.OPTIONS_TEXT}>Share</button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay />
-        <Dialog.Content>
-          <Dialog.Title>Share your document</Dialog.Title>
-          <Dialog.Description>
+        <Dialog.Content className="absolute left-1/4 top-1/2 w-96 h-48 p-4 pr-10 border border-solid rounded-lg bg-white">
+          <Dialog.Title className={`${STYLES.DOC_HEADER} pb-2`}>
+            Share your document
+          </Dialog.Title>
+          <Dialog.Description className={STYLES.INSTRUCTIONS}>
             Enter your friend/colleague's username
           </Dialog.Description>
           <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
             <div>
               <input
+                className={STYLES.FORM_INPUT}
                 id="titleInput"
                 type="text"
                 {...register("recipientName")}
@@ -76,7 +79,7 @@ export default function ShareModal({ docId }: any) {
               />
               {doesNotExist && <p>User doesn't exist!</p>}
             </div>
-            <input type="submit" />
+            <input className={STYLES.CREATE_BUTTON} type="submit" />
           </form>
         </Dialog.Content>
       </Dialog.Portal>

@@ -68,4 +68,6 @@ export const STYLES = {
     "w-36 mt-8 mb-12 p-2 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-lg border-0",
   PREVIEW:
     "w-96 mt-1 text-left text-nero text-sm font-sans break-words md:text-base",
+  OPTIONS_TEXT:
+    "p-0 bg-transparent border-none text-nero text-sm font-sans md:text-lg",
 };
