@@ -14,6 +14,7 @@ interface Document {
 
 export default function DocumentsGrid() {
   const [documents, setDocuments] = useState<Document[]>([]);
+
   const fetchDocuments = async () => {
     try {
       const response = await fetch("/api/documents");
@@ -44,6 +45,8 @@ export default function DocumentsGrid() {
 
   useEffect(() => {
     fetchDocuments();
+
+    console.log("hello");
   }, []);
 
   const handleRevoke = async (docId: any, userToRevoke: string) => {

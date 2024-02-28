@@ -11,6 +11,7 @@ import {
   authenticateToken,
   authenticateUser,
   AuthRequest,
+  countInvites,
   createDocument,
   createUser,
   deleteDocument,
@@ -423,6 +424,27 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
       .json({ success: false, message: "Error sending invite" });
   }
 });
+
+app.get(
+  "/api/count-invites",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { success } = await countInvites(pool, req.userId);
+      return res.status(200).json({ success: success });
+    } catch (err) {
+      console.error("Cannot count invites:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "error counting invites" });
+    }
+  }
+);
 
 app.get(
   "/api/invites-received",

@@ -1,6 +1,5 @@
-import { Bell, BellDot } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { STYLES } from "../utils/styles/styles";
 
 export interface Invite {
   invite_id: number;
@@ -8,33 +7,30 @@ export interface Invite {
   sender_id: number;
   sender_name: string;
   recipient_id: number;
+  title: string;
 }
 
-interface ChildProps {
-  invites: Array<Invite>;
-  count: number;
-  inviteChange: (newInvitesList: Array<Invite>) => void;
-  countChange: (newCount: number) => void;
-  filterInvites: (id: number) => void;
-}
+export default function InvitesRecieved() {
+  const [invites, setInvites] = useState<Invite[]>([]);
 
-export default function InvitesRecieved({
-  invites,
-  count,
-  inviteChange,
-  countChange,
-  filterInvites,
-}: ChildProps) {
-  const invitesRefreshDelay = 900000;
+  const inviteChange = (newInvitesList: Array<Invite>) => {
+    setInvites(newInvitesList);
+  };
 
-  const [viewingInvites, setViewingInvites] = useState(false);
+  const filterInvites = (id: number) => {
+    setInvites((prevInvites) =>
+      prevInvites.filter((invite) => invite.invite_id !== id)
+    );
+  };
 
   const fetchInvites = async () => {
     try {
       const response = await fetch("/api/invites-received");
       const json = await response.json();
-      countChange(json.invites ? json.invites.length : 0);
-      return json.invites;
+      console.log(json);
+      if (json.success) {
+        setInvites(json.invites);
+      }
     } catch (err) {
       console.error(err);
       return false;
@@ -81,103 +77,51 @@ export default function InvitesRecieved({
   };
 
   const handleAccept = async (
-    inviteId: number,
-    docId: number,
-    senderId: number,
-    recipientId: number
+    inviteId: any,
+    docId: any,
+    senderId: any,
+    recipientId: any
   ) => {
     await acceptInvite(inviteId, docId, senderId, recipientId);
     await deleteInvite(inviteId);
   };
 
-  const handleDelete = async (inviteId: number) => {
+  const handleDelete = async (inviteId: any) => {
     await deleteInvite(inviteId);
   };
 
-  const handleFetch = async () => {
-    await fetchInvites()
-      .then((invites: any) => {
-        if (invites) {
-          inviteChange(invites);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching invites:", error);
-      });
-  };
-
   useEffect(() => {
-    handleFetch();
+    fetchInvites();
   }, []);
 
-  useEffect(() => {
-    let interval = setInterval(() => {
-      handleFetch();
-    }, invitesRefreshDelay);
-    return () => clearInterval(interval);
-  }, [invites, count, viewingInvites]);
-
-  useEffect(() => {
-    if (count === 0) {
-      setViewingInvites(false);
-    }
-  }, [invites, count, viewingInvites]);
-  return (
-    <div>
-      <DropdownMenu.Root open={viewingInvites && count > 0 ? true : false}>
-        <DropdownMenu.Trigger asChild onClick={() => setViewingInvites(true)}>
-          {count > 0 ? <BellDot /> : <Bell />}
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content
-            onInteractOutside={() => {
-              setViewingInvites(false);
-            }}
+  return invites.map((invite: Invite) => {
+    const { invite_id, doc_id, sender_name, sender_id, recipient_id, title } =
+      invite;
+    return (
+      <div
+        className="relative flex flex-col justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
+        key={invite_id}
+      >
+        <p>
+          {sender_name} shared "{title}" with you.
+        </p>
+        <div className="flex flex-row">
+          <button
+            className="border-0 bg-transparent text-vividViolet mr-2"
+            onClick={() =>
+              handleAccept(invite_id, doc_id, sender_id, recipient_id)
+            }
           >
-            {count > 0 ? (
-              <div className="absolute z-0 p-2 w-28 mt-5 mr-4 rounded-xl bg-aeroBlue">
-                <DropdownMenu.DropdownMenuLabel>
-                  Invites
-                </DropdownMenu.DropdownMenuLabel>
-                {invites.map((invite: Invite) => {
-                  const {
-                    invite_id,
-                    doc_id,
-                    sender_name,
-                    sender_id,
-                    recipient_id,
-                  } = invite;
-                  return (
-                    <DropdownMenu.Item key={invite_id}>
-                      <div>
-                        <p>
-                          {sender_name} has invited you to work on a document
-                          with them!
-                        </p>
-                        <button
-                          onClick={() =>
-                            handleAccept(
-                              invite_id,
-                              doc_id,
-                              sender_id,
-                              recipient_id
-                            )
-                          }
-                        >
-                          accept
-                        </button>
-                        <button onClick={() => handleDelete(invite_id)}>
-                          decline
-                        </button>
-                      </div>
-                    </DropdownMenu.Item>
-                  );
-                })}
-              </div>
-            ) : null}
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    </div>
-  );
+            accept
+          </button>
+          <button
+            className="border-0 bg-transparent text-vividViolet "
+            onClick={() => handleDelete(invite_id)}
+          >
+            decline
+          </button>
+        </div>
+      </div>
+    );
+  });
 }

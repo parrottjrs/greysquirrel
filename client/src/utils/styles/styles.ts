@@ -70,7 +70,7 @@ export const STYLES = {
   OPTIONS_TEXT:
     "p-0 bg-transparent border-none text-nero text-sm font-sans md:text-lg",
   DOCUMENTS_SWITCH:
-    "w-36 mr-4 p-2 text-nero text-sm font-sans font-medium bg-alto gap-2.5 rounded-lg border-0",
+    "w-36 mr-4 p-2 text-nero text-sm font-sans font-medium bg-white gap-2.5 rounded-lg border border-black border-solid",
   DOCUMENTS_SWITCH_SELECTED:
-    "w-36 mr-4 p-2 text-nero text-sm font-sans font-medium bg-dustyGray gap-2.5 rounded-lg border border-solid border-dustyGray",
+    "w-36 mr-4 p-2 text-white text-sm font-sans font-medium bg-nero gap-2.5 rounded-lg border border-solid border-nero",
 };

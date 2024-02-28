@@ -399,11 +399,24 @@ const docOwnership = async (pool: any, docId: number, userId: number) => {
 };
 
 //Invitation queries
+export const countInvites = async (pool: any, userId: number) => {
+  const query = `
+  SELECT COUNT(*) as count 
+  FROM invites
+  WHERE recipient_id = ? AND viewed = 0
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  const count = result[0].count;
+  return count > 0
+    ? { success: true, message: "user has unviewed invites" }
+    : { success: false, message: "user has no unviewed invites" };
+};
 
 export const getInvitesReceived = async (pool: any, userId: number) => {
   const query = `
-  SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, i.recipient_id 
+  SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, i.recipient_id, d.title AS title 
   FROM invites i
+  JOIN documents d ON i.doc_id = d.doc_id 
   JOIN users u ON i.sender_id = u.user_id
   WHERE recipient_id = ?
   `;
@@ -420,8 +433,9 @@ export const getInvitesReceived = async (pool: any, userId: number) => {
 
 export const getInvitesSent = async (pool: any, userId: number) => {
   const query = `
-  SELECT i.invite_id, i.doc_id, u.user_name AS recipient_name, i.sender_id, i.recipient_id 
+  SELECT i.invite_id, i.doc_id, u.user_name AS recipient_name, i.sender_id, i.recipient_id, d.title AS title 
   FROM invites i
+  JOIN documents d ON i.doc_id = d.doc_id
   JOIN users u ON i.recipient_id = u.user_id
   WHERE sender_id = ?
   `;
@@ -474,10 +488,11 @@ export const sendInvite = async (
   if (findDuplicateResult.length === 0) {
     //add invite to database
     const createDocQuery = `
-    INSERT INTO invites (doc_id, sender_id, recipient_id)
-    VALUES (?, ?, ?)
+    INSERT INTO invites (doc_id, sender_id, recipient_id, viewed, share_date)
+    VALUES (?, ?, ?, ?, ?)
     `;
-    const createDocValues = [docId, senderId, recipientId];
+    const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const createDocValues = [docId, senderId, recipientId, 0, date];
     const [createResult, _] = await pool.query(createDocQuery, createDocValues);
     return createResult.affectedRows > 0
       ? { success: true, message: "Invite sent" }

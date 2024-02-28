@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { STYLES } from "../utils/styles/styles";
 import Navbar from "../components/Navbar";
 import InvitesSent from "../components/InvitesSent";
 import InvitesRecieved from "../components/InvitesReceived";
+import { authenticate, refresh } from "../utils/functions";
+import { useNavigate } from "react-router-dom";
 
 export interface Invite {
   invite_id: number;
@@ -12,38 +14,76 @@ export interface Invite {
   recipient_id: number;
 }
 export default function Notifications() {
-  const [count, setCount] = useState(0);
-  let currentInvites: Array<Invite> = [];
-  const [invites, setInvites] = useState(currentInvites);
-  const inviteChange = (newInvitesList: Array<Invite>) => {
-    setInvites(newInvitesList);
+  const refreshTokenDelay = 540000; //nine minutes;
+  const [authorization, setAuthorization] = useState(false);
+  const [notifications, setNotifications] = useState("shared");
+
+  const navigate = useNavigate();
+
+  const refreshToken = async () => {
+    try {
+      const { success } = await refresh();
+      if (!success) {
+        navigate("/signin");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const countChange = (newCount: number) => {
-    setCount(newCount);
+  const authenticateUser = async () => {
+    try {
+      const authorized = await authenticate();
+      if (!authorized) {
+        navigate("/signin");
+      }
+      setAuthorization(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const filterInvites = (id: number) => {
-    setInvites((prevInvites) =>
-      prevInvites.filter((invite) => invite.invite_id !== id)
-    );
+  useEffect(() => {
+    let interval = setInterval(() => refreshToken(), refreshTokenDelay);
+    return () => clearInterval(interval);
+  }, [authorization]);
 
-    setCount((prevCount) => {
-      const updatedCount = prevCount - 1;
-      return updatedCount;
-    });
-  };
+  useEffect(() => {
+    authenticateUser();
+  }, []);
+
   return (
-    <div>
-      <Navbar isLoggedIn={true} />
-      <InvitesRecieved
-        invites={invites}
-        count={count}
-        inviteChange={inviteChange}
-        countChange={countChange}
-        filterInvites={filterInvites}
-      />
-      <InvitesSent />
-    </div>
+    authorization && (
+      <div>
+        <Navbar isLoggedIn={true} page={"notifications"} />
+        <div className={STYLES.DOCUMENTS_CONTAINER}>
+          <h1 className={`${STYLES.WELCOME_HEADER} mb-14`}>Notifications</h1>
+          <div>
+            <button
+              className={
+                notifications === "shared"
+                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
+                  : STYLES.DOCUMENTS_SWITCH
+              }
+              onClick={() => setNotifications("shared")}
+            >
+              Shared with me
+            </button>
+            <button
+              className={
+                notifications === "pending"
+                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
+                  : STYLES.DOCUMENTS_SWITCH
+              }
+              onClick={() => setNotifications("pending")}
+            >
+              Pending invites
+            </button>
+          </div>
+          {notifications === "shared" && <InvitesRecieved />}
+          {notifications === "pending" && <InvitesSent />}
+        </div>
+      </div>
+    )
   );
 }

@@ -133,23 +133,25 @@ export default function Editor() {
     authorization && (
       <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
         <Navbar isLoggedIn={true} />
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => handleTitle(e.target.value)}
-        />
-        <div>
-          <ReactQuill
-            className="quill"
-            theme="snow"
-            value={text}
-            onChange={handleChange}
-            preserveWhitespace={true}
+        <div className="mt-24">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => handleTitle(e.target.value)}
           />
-        </div>
-        <LogoutButton docId={docId} title={title} text={text} />
-        <div>
-          <ShareModal docId={docId} />
+          <div>
+            <ReactQuill
+              className="quill"
+              theme="snow"
+              value={text}
+              onChange={handleChange}
+              preserveWhitespace={true}
+            />
+          </div>
+          <LogoutButton docId={docId} title={title} text={text} />
+          <div>
+            <ShareModal docId={docId} />
+          </div>
         </div>
       </div>
     )

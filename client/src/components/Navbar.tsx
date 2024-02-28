@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { STYLES } from "../utils/styles/styles";
-import { BellIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
+import { LucideBell, LucideBellDot } from "lucide-react";
 
 interface ChildProps {
   isLoggedIn?: boolean;
+  page?: string;
 }
 
-export default function Navbar({ isLoggedIn }: ChildProps) {
+export default function Navbar({ isLoggedIn, page }: ChildProps) {
+  const invitesRefreshDelay = 900000;
+  const [pendingInvites, setPendingInvites] = useState(false);
   const navigate = useNavigate();
+
   const fetchCreate = async () => {
     const response = await fetch("/api/create", {
       method: "POST",
@@ -22,6 +26,32 @@ export default function Navbar({ isLoggedIn }: ChildProps) {
     const id = await fetchCreate();
     navigate(`/editor/${id}`);
   };
+
+  const countInvites = async () => {
+    try {
+      const response = await fetch("/api/count-invites");
+      const { success } = await response.json();
+      success ? setPendingInvites(true) : setPendingInvites(false);
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    if (page !== "notifications") {
+      countInvites();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (page !== "notifications") {
+      let interval = setInterval(() => {
+        countInvites();
+      }, invitesRefreshDelay);
+      return () => clearInterval(interval);
+    }
+  }, [pendingInvites]);
 
   return (
     <header className="z-10 h-18 w-full md:h-16 flex flex-row items-center bg-white justify-between p-1 fixed inset-0">
@@ -47,7 +77,11 @@ export default function Navbar({ isLoggedIn }: ChildProps) {
                 Account
               </a>
               <a href="#/notifications">
-                <BellIcon className="text-nero h-6 w-6" />
+                {pendingInvites ? (
+                  <LucideBellDot className="text-nero h-6 w-6 text-vividViolet" />
+                ) : (
+                  <LucideBell className="text-nero h-6 w-6" />
+                )}
               </a>
               <button className={STYLES.STYLIZED_ANCHOR} onClick={handleClick}>
                 New Document

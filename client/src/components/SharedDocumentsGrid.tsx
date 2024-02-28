@@ -51,28 +51,6 @@ export default function SharedDocumentsGrid() {
     });
   };
 
-  //   return sharedDocuments.length > 0 ? (
-  //     <div>
-  //       <h2>Shared Documents</h2>
-  //       {sharedDocuments.map((document: SharedDocument) => {
-  //         const {
-  //           title,
-  //           doc_id,
-  //           owner: { owner_id, owner_name },
-  //         } = document;
-  //         return (
-  //           <div key={doc_id}>
-  //             <a href={`#/editor/${doc_id}`}>{!title ? "hello world" : title}</a>
-  //             <p>Shared by: {owner_name}</p>
-  //             <button onClick={() => handleDelete(doc_id, owner_id)}>
-  //               Delete
-  //             </button>
-  //           </div>
-  //         );
-  //       })}
-  //     </div>
-  //   ) : null;
-  // }
   return sharedDocuments.map((document: SharedDocument) => {
     const {
       title,
