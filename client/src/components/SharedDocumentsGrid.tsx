@@ -26,30 +26,9 @@ export default function SharedDocumentsGrid() {
     }
   };
 
-  const fetchDelete = async (docId: number, ownerId: number) => {
-    try {
-      await fetch("api/shared-docs", {
-        method: "DELETE",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ docId: docId, ownerId: ownerId }),
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
     fetchSharedDocuments();
   }, []);
-
-  const handleDelete = async (docId: any, ownerId: any) => {
-    await fetchDelete(docId, ownerId);
-    setSharedDocuments((currentDocuments) => {
-      return currentDocuments.filter(
-        (document: SharedDocument) => document.doc_id !== docId
-      );
-    });
-  };
 
   return sharedDocuments.map((document: SharedDocument) => {
     const {
@@ -96,15 +75,17 @@ export default function SharedDocumentsGrid() {
         className="relative flex flex-row justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
         key={doc_id}
       >
-        <div className="flex flex-row relative mr-4 ">
-          <a className="w-full h-full absolute" href={`#/editor/${doc_id}`} />
-          <FileText className={STYLES.DOCUMENT_ICON} />
-          <div className="flex flex-col">
-            <h2 className={STYLES.DOC_HEADER}>{newTitle}</h2>
-            <p className={STYLES.PREVIEW}>{newContent}</p>
-            <p className="text-sm text-dustyGray">Shared by: {owner_name}</p>
+        {" "}
+        <a className="no-underline text-nero" href={`#/editor/${doc_id}`}>
+          <div className="flex flex-row relative mr-4 ">
+            <FileText className={STYLES.DOCUMENT_ICON} />
+            <div className="flex flex-col">
+              <h2 className={STYLES.DOC_HEADER}>{newTitle}</h2>
+              <p className={STYLES.PREVIEW}>{newContent}</p>
+              <p className="text-sm text-dustyGray">Shared by: {owner_name}</p>
+            </div>
           </div>
-        </div>
+        </a>
         <DocumentOptionsDropdown
           docId={doc_id}
           handleDocs={setSharedDocuments}

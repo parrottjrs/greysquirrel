@@ -59,6 +59,7 @@ export default function Signin() {
       const json = await response.json();
       switch (json.message) {
         case "Access granted":
+          localStorage.setItem("hasSignedUp", "true");
           navigate(`/documents`);
           break;
         case "Unauthorized: Invalid username and/or password":

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ShareModal from "./ShareModal";
 import sanitize from "sanitize-html";
-import { File, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { STYLES } from "../utils/styles/styles";
 import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
 
@@ -45,8 +44,6 @@ export default function DocumentsGrid() {
 
   useEffect(() => {
     fetchDocuments();
-
-    console.log("hello");
   }, []);
 
   const handleRevoke = async (docId: any, userToRevoke: string) => {
@@ -102,34 +99,35 @@ export default function DocumentsGrid() {
 
     return (
       <div
-        className="relative flex flex-row justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
+        className="relative flex flex-row justify-between h-30 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
         key={doc_id}
       >
-        <div className="flex flex-row relative mr-4 ">
-          <a className="w-full h-full absolute" href={`#/editor/${doc_id}`} />
-          <FileText className={STYLES.DOCUMENT_ICON} />
-          <div className="flex flex-col">
-            <h2 className={STYLES.DOC_HEADER}>
-              {!title ? "Untitled" : newTitle}
-            </h2>
-            <p className={STYLES.PREVIEW}>{newContent}</p>
-            {authorizedUsers.length > 0
-              ? authorizedUsers.map((userName: string) => {
-                  const index = authorizedUsers.indexOf(userName);
-                  return (
-                    <span
-                      className="cursor-pointer"
-                      key={index}
-                      onClick={() => handleRevoke(doc_id, userName)}
-                    >
-                      {userName}
-                    </span>
-                  );
-                })
-              : null}
+        {" "}
+        <a className="no-underline text-nero" href={`#/editor/${doc_id}`}>
+          <div className="flex flex-row relative mr-4 ">
+            <FileText className={STYLES.DOCUMENT_ICON} />
+            <div className="flex flex-col">
+              <h2 className={STYLES.DOC_HEADER}>
+                {!title ? "Untitled" : newTitle}
+              </h2>
+              <p className={STYLES.PREVIEW}>{newContent}</p>
+              {authorizedUsers.length > 0
+                ? authorizedUsers.map((userName: string) => {
+                    const index = authorizedUsers.indexOf(userName);
+                    return (
+                      <span
+                        className="cursor-pointer"
+                        key={index}
+                        onClick={() => handleRevoke(doc_id, userName)}
+                      >
+                        {userName}
+                      </span>
+                    );
+                  })
+                : null}
+            </div>
           </div>
-        </div>
-
+        </a>
         <DocumentOptionsDropdown docId={doc_id} handleDocs={setDocuments} />
       </div>
     );

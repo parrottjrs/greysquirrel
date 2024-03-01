@@ -20,7 +20,6 @@ export default function Editor() {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [authorization, setAuthorization] = useState(false);
-  const [recipient, setRecipient] = useState("");
 
   const authenticateUser = async () => {
     try {

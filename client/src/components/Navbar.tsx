@@ -39,8 +39,10 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
   };
 
   useEffect(() => {
-    if (page !== "notifications") {
-      countInvites();
+    if (isLoggedIn) {
+      if (page !== "notifications") {
+        countInvites();
+      }
     }
   }, []);
 

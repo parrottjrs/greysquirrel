@@ -56,6 +56,7 @@ export default function Signup() {
           setUserExists(true);
           break;
         case "User created":
+          localStorage.setItem("hasSignedUp", "true");
           navigate(`/verify-email`);
           break;
         default:

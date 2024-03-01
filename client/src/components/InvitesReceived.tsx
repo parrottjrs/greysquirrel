@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
 
 export interface Invite {
   invite_id: number;
@@ -13,10 +12,6 @@ export interface Invite {
 export default function InvitesRecieved() {
   const [invites, setInvites] = useState<Invite[]>([]);
 
-  const inviteChange = (newInvitesList: Array<Invite>) => {
-    setInvites(newInvitesList);
-  };
-
   const filterInvites = (id: number) => {
     setInvites((prevInvites) =>
       prevInvites.filter((invite) => invite.invite_id !== id)
@@ -27,7 +22,6 @@ export default function InvitesRecieved() {
     try {
       const response = await fetch("/api/invites-received");
       const json = await response.json();
-      console.log(json);
       if (json.success) {
         setInvites(json.invites);
       }

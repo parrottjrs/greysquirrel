@@ -6,12 +6,21 @@ import squirrel from "../images/squirrel.png";
 import { STYLES } from "../utils/styles/styles";
 
 export default function Home() {
+  const hasSignedUp =
+    JSON.parse(JSON.stringify(localStorage.getItem("hasSignedUp"))) === "true"
+      ? true
+      : false;
+
   const navigate = useNavigate();
   const authenticateUser = async () => {
     try {
       const authorized = await authenticate();
       if (authorized) {
         navigate("/documents");
+      }
+
+      if (hasSignedUp) {
+        navigate("/signIn");
       }
     } catch (err) {
       console.error(err);
