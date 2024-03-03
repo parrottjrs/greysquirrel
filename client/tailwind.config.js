@@ -10,6 +10,7 @@ export const theme = {
     dustyGray: "#999999",
     nero: "#1D1D1D",
     roman: "#DF5E5E",
+    silver: "#C4C4C4",
     transparent: "#0000",
     vividViolet: "#A4319E",
     white: "#FFF",

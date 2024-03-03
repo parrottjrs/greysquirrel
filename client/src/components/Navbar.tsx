@@ -39,15 +39,13 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      if (page !== "notifications") {
-        countInvites();
-      }
+    if (page !== "notifications" && isLoggedIn) {
+      countInvites();
     }
   }, []);
 
   useEffect(() => {
-    if (page !== "notifications") {
+    if (page !== "notifications" && isLoggedIn) {
       let interval = setInterval(() => {
         countInvites();
       }, invitesRefreshDelay);

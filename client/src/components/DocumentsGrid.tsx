@@ -102,7 +102,6 @@ export default function DocumentsGrid() {
         className="relative flex flex-row justify-between h-30 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
         key={doc_id}
       >
-        {" "}
         <a className="no-underline text-nero" href={`#/editor/${doc_id}`}>
           <div className="flex flex-row relative mr-4 ">
             <FileText className={STYLES.DOCUMENT_ICON} />
@@ -128,7 +127,11 @@ export default function DocumentsGrid() {
             </div>
           </div>
         </a>
-        <DocumentOptionsDropdown docId={doc_id} handleDocs={setDocuments} />
+        <DocumentOptionsDropdown
+          docId={doc_id}
+          title={title}
+          handleDocs={setDocuments}
+        />
       </div>
     );
   });

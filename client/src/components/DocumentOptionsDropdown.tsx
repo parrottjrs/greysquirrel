@@ -20,6 +20,7 @@ interface SharedDocument {
 interface ChildProps {
   docId?: number;
   ownerId?: number;
+  title?: string;
   handleDocs:
     | React.Dispatch<React.SetStateAction<Document[]>>
     | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
@@ -28,6 +29,7 @@ interface ChildProps {
 
 export default function DocumentOptionsDropdown({
   docId,
+  title,
   ownerId,
   handleDocs,
   shared,
@@ -77,43 +79,39 @@ export default function DocumentOptionsDropdown({
   };
 
   return (
-    <div>
-      <DropdownMenu.Root open={show ? true : false}>
-        <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
-          <MoreVertical />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content
-            onInteractOutside={() => {
-              setShow(false);
-            }}
-          >
-            <div className="fixed -bottom-[1.85rem] left-12 p-2 pb-3 h-12 w-28 mt-5 mr-4 border-solid border rounded">
-              <div>
-                <DropdownMenu.Item>
-                  <ShareModal />
-                </DropdownMenu.Item>
-              </div>
+    <DropdownMenu.Root open={show ? true : false}>
+      <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
+        <MoreVertical />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          onInteractOutside={() => {
+            setShow(false);
+          }}
+        >
+          <div className="relative left-28 bottom-10 p-2 pb-3 h-12 w-28 border-solid border rounded-lg">
+            <DropdownMenu.Item>
+              <ShareModal docId={docId} title={title} />
+            </DropdownMenu.Item>
 
-              {/* TODO: Rename function */}
+            {/* TODO: Rename function */}
 
-              <DropdownMenu.Item>
-                <button
-                  className={STYLES.OPTIONS_TEXT}
-                  onClick={() => {
-                    !shared
-                      ? handleDelete(docId)
-                      : handleDeleteShared(docId, ownerId);
-                  }}
-                >
-                  Delete
-                  {/* TODO: "move to trash" function */}
-                </button>
-              </DropdownMenu.Item>
-            </div>
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    </div>
+            <DropdownMenu.Item>
+              <button
+                className={STYLES.OPTIONS_TEXT}
+                onClick={() => {
+                  !shared
+                    ? handleDelete(docId)
+                    : handleDeleteShared(docId, ownerId);
+                }}
+              >
+                Delete
+                {/* TODO: "move to trash" function */}
+              </button>
+            </DropdownMenu.Item>
+          </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   );
 }

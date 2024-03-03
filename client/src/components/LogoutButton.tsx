@@ -31,8 +31,10 @@ export default function LogoutButton({ docId, title, text }: ChildProps) {
     }
   };
 
-  const handleLogout = () => {
-    fetchSave();
+  const handleLogout = async () => {
+    if (docId) {
+      await fetchSave();
+    }
     logout();
   };
   return <button onClick={handleLogout}>Sign out</button>;

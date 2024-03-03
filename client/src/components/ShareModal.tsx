@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { STYLES } from "../utils/styles/styles";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface FormData {
   recipientName: string;
 }
-
-export default function ShareModal({ docId }: any) {
+interface ChildProps {
+  docId: any;
+  title?: string;
+}
+export default function ShareModal({ docId, title }: ChildProps) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       recipientName: "",
     },
   });
 
+  const [sent, setSent] = useState(false);
   const [open, setOpen] = useState(false);
   const [doesNotExist, setDoesNotExist] = useState(false);
   const [shareInput, setShareInput] = useState("");
@@ -27,10 +31,9 @@ export default function ShareModal({ docId }: any) {
       });
       const json = await response.json();
       if (json.message === "Recipient does not exist") {
-        setOpen(true);
         return setDoesNotExist(true);
       }
-      setOpen(false);
+
       setDoesNotExist(false);
     } catch (err) {
       console.error(err);
@@ -50,39 +53,68 @@ export default function ShareModal({ docId }: any) {
       return null;
     }
     await fetchInvite(docId, data.recipientName);
+    setSent(true);
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
+    <DropdownMenu.Root open={open ? true : false}>
+      <DropdownMenu.Trigger asChild onClick={() => setOpen(true)}>
         <button className={STYLES.OPTIONS_TEXT}>Share</button>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay />
-        <Dialog.Content className="absolute left-1/4 top-1/2 w-96 h-48 p-4 pr-10 border border-solid rounded-lg bg-white">
-          <Dialog.Title className={`${STYLES.DOC_HEADER} pb-2`}>
-            Share your document
-          </Dialog.Title>
-          <Dialog.Description className={STYLES.INSTRUCTIONS}>
-            Enter your friend/colleague's username
-          </Dialog.Description>
-          <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
-            <div>
-              <input
-                className={STYLES.FORM_INPUT}
-                id="titleInput"
-                type="text"
-                {...register("recipientName")}
-                autoComplete="off"
-                value={shareInput}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-              {doesNotExist && <p>User doesn't exist!</p>}
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          className="fixed flex flex-col items-left -top-24 right-36 max-h-60 w-96 p-4 pr-10 drop-shadow-2xl rounded-lg bg-white"
+          onInteractOutside={() => {
+            setOpen(false);
+          }}
+        >
+          <h2 className={`${STYLES.DOC_HEADER} pb-4`}>
+            Share "{title ? title : "Untitled Document"}"
+          </h2>
+          {sent ? (
+            <div className="flex flex-col">
+              <span className={STYLES.INSTRUCTIONS}>Invite successful!</span>
+              <button
+                className={STYLES.CREATE_BUTTON}
+                onClick={() => setOpen(false)}
+              >
+                OK
+              </button>
             </div>
-            <input className={STYLES.CREATE_BUTTON} type="submit" />
-          </form>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+          ) : (
+            <div>
+              <span className={STYLES.INSTRUCTIONS}>
+                Enter your friend/colleague's username
+              </span>
+              <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
+                <div>
+                  <input
+                    className={STYLES.FORM_INPUT}
+                    id="titleInput"
+                    type="text"
+                    {...register("recipientName")}
+                    autoComplete="off"
+                    value={shareInput}
+                    onChange={(e) => handleChange(e.target.value)}
+                  />
+                  {doesNotExist && <p>User doesn't exist!</p>}
+                </div>
+                <div className="flex flex-row justify-between">
+                  <button className={STYLES.CREATE_BUTTON} type="submit">
+                    Share
+                  </button>
+                  <button
+                    className={STYLES.CREATE_BUTTON}
+                    onClick={() => setOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   );
 }

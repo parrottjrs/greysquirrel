@@ -413,21 +413,29 @@ export const countInvites = async (pool: any, userId: number) => {
 };
 
 export const getInvitesReceived = async (pool: any, userId: number) => {
-  const query = `
-  SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, i.recipient_id, d.title AS title 
-  FROM invites i
-  JOIN documents d ON i.doc_id = d.doc_id 
-  JOIN users u ON i.sender_id = u.user_id
-  WHERE recipient_id = ?
+  const selectQuery = `
+  SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, 
+  i.recipient_id, d.title AS title 
+	FROM invites i
+	JOIN documents d ON i.doc_id = d.doc_id
+	JOIN users u ON i.sender_id = u.user_id
+	WHERE recipient_id = ?;
   `;
-  const [result, _] = await pool.query(query, [userId]);
-  if (result.length === 0) {
+  const [selectResult, _] = await pool.query(selectQuery, [userId]);
+  if (selectResult.length === 0) {
     return { success: false, message: "No invites" };
   }
+  const updateQuery = `
+  UPDATE invites
+	SET viewed = 1
+	WHERE recipient_id = ? AND viewed = 0;
+`;
+  await pool.query(updateQuery, [userId]);
+  console.log(selectResult);
   return {
     success: true,
     message: "Invites successfully retrieved",
-    invites: result,
+    invites: selectResult,
   };
 };
 
@@ -437,7 +445,7 @@ export const getInvitesSent = async (pool: any, userId: number) => {
   FROM invites i
   JOIN documents d ON i.doc_id = d.doc_id
   JOIN users u ON i.recipient_id = u.user_id
-  WHERE sender_id = ?
+  WHERE sender_id = ?;
   `;
   const [result, _] = await pool.query(query, [userId]);
   if (result.length === 0) {
