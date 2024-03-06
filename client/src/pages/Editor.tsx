@@ -131,7 +131,7 @@ export default function Editor() {
   return (
     authorization && (
       <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
-        <Navbar isLoggedIn={true} />
+        <Navbar isLoggedIn={true} page={"editor"} />
         <div className="mt-24">
           <input
             type="text"
@@ -146,10 +146,6 @@ export default function Editor() {
               onChange={handleChange}
               preserveWhitespace={true}
             />
-          </div>
-          <LogoutButton docId={docId} title={title} text={text} />
-          <div>
-            <ShareModal docId={docId} />
           </div>
         </div>
       </div>

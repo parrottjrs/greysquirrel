@@ -3,6 +3,7 @@ import sanitize from "sanitize-html";
 import { FileText } from "lucide-react";
 import { STYLES } from "../utils/styles/styles";
 import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
+import { clipText } from "../utils/functions";
 
 interface Document {
   doc_id?: number;
@@ -64,30 +65,6 @@ export default function DocumentsGrid() {
 
   return documents.map((document: Document) => {
     const { title, doc_id, content, authorizedUsers } = document;
-
-    const clipText = (text: any, type: string) => {
-      let maxLength = 0;
-      let maxWords = 0;
-      switch (type) {
-        case "title":
-          maxLength = 20;
-          maxWords = 4;
-          break;
-        case "content":
-          maxLength = 120;
-          maxWords = 20;
-          break;
-        default:
-          break;
-      }
-      if (text.length <= maxLength) {
-        return text;
-      }
-      const split = text.split(" ");
-      const sliced = split.slice(0, maxWords);
-      const joined = sliced.join(" ");
-      return joined + "...";
-    };
 
     const newTitle = title ? clipText(title, "title") : "Untitled";
 

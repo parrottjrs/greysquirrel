@@ -45,11 +45,6 @@ export default function Documents() {
     return json.docId;
   };
 
-  const handleClick = async () => {
-    const id = await fetchCreate();
-    navigate(`/editor/${id}`);
-  };
-
   useEffect(() => {
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);

@@ -76,16 +76,21 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
               <a href="#/account" className={STYLES.BASIC_LINK}>
                 Account
               </a>
-              <a href="#/notifications">
+              <a aria-label="notifications-bell" href="#/notifications">
                 {pendingInvites ? (
-                  <LucideBellDot className="text-nero h-6 w-6 text-vividViolet" />
+                  <LucideBellDot className="text-roman h-6 w-6 " />
                 ) : (
                   <LucideBell className="text-nero h-6 w-6" />
                 )}
               </a>
-              <button className={STYLES.STYLIZED_ANCHOR} onClick={handleClick}>
-                New Document
-              </button>
+              {page !== "editor" && (
+                <button
+                  className={STYLES.STYLIZED_ANCHOR}
+                  onClick={handleClick}
+                >
+                  New Document
+                </button>
+              )}
             </div>
           )}
         </nav>

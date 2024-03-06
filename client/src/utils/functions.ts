@@ -37,3 +37,33 @@ export const authenticate = async () => {
     console.error(err);
   }
 };
+
+export const clipText = (text: any, type: string) => {
+  let maxLength = 0;
+  let maxWords = 0;
+  switch (type) {
+    case "title":
+      maxLength = 20;
+      maxWords = 4;
+      break;
+    case "content":
+      maxLength = 120;
+      maxWords = 20;
+      break;
+    default:
+      break;
+  }
+  console.log({
+    type: type,
+    text: text,
+    length: text.length,
+    isLonger: text.length <= maxLength,
+  });
+  if (text.length <= maxLength) {
+    return text;
+  }
+  const split = text.split(" ");
+  const sliced = split.slice(0, maxWords);
+  const joined = sliced.join(" ");
+  return joined + "...";
+};

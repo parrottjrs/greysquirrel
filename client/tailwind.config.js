@@ -7,8 +7,10 @@ export const theme = {
   colors: {
     aeroBlue: "#C2E9D2",
     alto: "#D9D9D9",
+    boulder: "#797878",
     dustyGray: "#999999",
     nero: "#1D1D1D",
+    paleRose: "#FFC1C1",
     roman: "#DF5E5E",
     silver: "#C4C4C4",
     transparent: "#0000",

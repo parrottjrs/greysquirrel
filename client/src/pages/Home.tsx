@@ -18,7 +18,6 @@ export default function Home() {
       if (authorized) {
         navigate("/documents");
       }
-
       if (hasSignedUp) {
         navigate("/signIn");
       }
@@ -33,7 +32,7 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       <div className={STYLES.HOME_PARENT_CONTAINER}>
         <div className={STYLES.HOME_WELCOME_CONTAINER}>
           <h1 className={STYLES.WELCOME_HEADER}>Welcome to Greysquirrel</h1>

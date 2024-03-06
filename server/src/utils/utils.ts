@@ -415,7 +415,7 @@ export const countInvites = async (pool: any, userId: number) => {
 export const getInvitesReceived = async (pool: any, userId: number) => {
   const selectQuery = `
   SELECT i.invite_id, i.doc_id, u.user_name AS sender_name, i.sender_id, 
-  i.recipient_id, d.title AS title 
+  i.recipient_id, d.title AS title, i.share_date 
 	FROM invites i
 	JOIN documents d ON i.doc_id = d.doc_id
 	JOIN users u ON i.sender_id = u.user_id
@@ -441,7 +441,7 @@ export const getInvitesReceived = async (pool: any, userId: number) => {
 
 export const getInvitesSent = async (pool: any, userId: number) => {
   const query = `
-  SELECT i.invite_id, i.doc_id, u.user_name AS recipient_name, i.sender_id, i.recipient_id, d.title AS title 
+  SELECT i.invite_id, i.doc_id, u.user_name AS recipient_name, i.sender_id, i.recipient_id, d.title AS title, i.share_date  
   FROM invites i
   JOIN documents d ON i.doc_id = d.doc_id
   JOIN users u ON i.recipient_id = u.user_id

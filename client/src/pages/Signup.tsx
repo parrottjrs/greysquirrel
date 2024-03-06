@@ -124,7 +124,7 @@ export default function Signup() {
     <div>
       <Navbar />
       <div className={STYLES.SIGNUP_PARENT_CONTAINER}>
-        <h1 className={STYLES.WELCOME_HEADER}>Let's Get Started</h1>
+        <h1 className={`${STYLES.WELCOME_HEADER} mt-24`}>Let's Get Started</h1>
         <p className={STYLES.INSTRUCTIONS}>
           Join Greysquirrel by creating an account
         </p>
@@ -135,7 +135,7 @@ export default function Signup() {
         >
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"firstName"}>
-              First Name:
+              First Name
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -147,7 +147,7 @@ export default function Signup() {
           </div>
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"lastName"}>
-              Last Name:
+              Last Name
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -159,7 +159,7 @@ export default function Signup() {
           </div>
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"username"}>
-              Username:
+              Username
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -179,7 +179,7 @@ export default function Signup() {
 
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"email"}>
-              Email:
+              Email
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -192,7 +192,7 @@ export default function Signup() {
           </div>
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"emailCheck"}>
-              Confirm your email:
+              Confirm your email
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -212,7 +212,7 @@ export default function Signup() {
 
           <div className="mt-10">
             <label className={STYLES.LABEL} htmlFor={"password"}>
-              Password:
+              Password
             </label>
             <input
               className={STYLES.FORM_INPUT}
@@ -248,7 +248,7 @@ export default function Signup() {
 
           <div className="mt-24">
             <label className={STYLES.LABEL} htmlFor={"passCheck"}>
-              Confirm your password:
+              Confirm your password
             </label>
             <input
               className={STYLES.FORM_INPUT}
