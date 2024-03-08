@@ -20,7 +20,7 @@ export interface AuthRequest extends Request {
 
 //User creation/Authentication handling & queries
 
-const getPassword = async (pool: any, username: string) => {
+const getPasswordFromUsername = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users
   WHERE user_name = ?
@@ -31,6 +31,17 @@ const getPassword = async (pool: any, username: string) => {
     return { truePass: "", salt: "" };
   }
   return { truePass: user[0].password, salt: user[0].salt };
+};
+
+const getPasswordFromUserId = async (pool: any, userId: number) => {
+  const query = `
+  SELECT password FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  return result.length > 0
+    ? { success: true, currentPassword: result[0].password }
+    : { success: false };
 };
 
 export const getId = async (pool: any, username: string) => {
@@ -136,7 +147,7 @@ export const authenticateUser = async (
   password: string,
   pool: any
 ) => {
-  const { truePass, salt } = await getPassword(pool, username);
+  const { truePass, salt } = await getPasswordFromUsername(pool, username);
   const attemptedPass = pbkdf2Sync(
     password,
     salt,
@@ -190,8 +201,6 @@ export const createUser = async (
     : { success: false, message: "Failed to create user" };
 };
 
-export const changePassword = (pool: any, userId: number) => {};
-
 export const authenticateToken = (
   req: AuthRequest,
   res: Response,
@@ -208,6 +217,74 @@ export const authenticateToken = (
       .status(403)
       .json({ message: "Unauthorized: Missing or invalid token" });
   }
+};
+
+export const getUserInfo = async (pool: any, userId: number) => {
+  const query = `
+  SELECT first_name as firstName, last_name as lastName, user_name as userName, email
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  console.log(result[0]);
+  return result.length > 0
+    ? {
+        success: true,
+        message: "Info successfully retreived",
+        userInfo: result[0],
+      }
+    : { success: false, message: "Could not retreive user info" };
+};
+
+export const updateUserInfo = async (
+  pool: any,
+  firstName: string,
+  lastName: string,
+  userName: string,
+  email: string,
+  password: string,
+  userId: number
+) => {
+  const salt = randomBytes(64).toString("base64");
+  let passWordToUpdate = pbkdf2Sync(
+    password,
+    salt,
+    10000,
+    64,
+    "sha512"
+  ).toString("base64");
+
+  if (password === "") {
+    const { success, currentPassword } = await getPasswordFromUserId(
+      pool,
+      userId
+    );
+    if (success) {
+      passWordToUpdate = currentPassword;
+    }
+  }
+  const values = [
+    firstName,
+    lastName,
+    userName,
+    email,
+    passWordToUpdate,
+    salt,
+    userId,
+  ];
+  const query = `
+  UPDATE users
+  SET first_name = ?, last_name = ?, user_name = ?, email = ?, password = ?, salt = ?
+  WHERE user_id = ?
+  `;
+
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? {
+        success: true,
+        message: "User info updated",
+      }
+    : { success: false, message: "Could not update user info" };
 };
 
 //Document queries
@@ -431,7 +508,7 @@ export const getInvitesReceived = async (pool: any, userId: number) => {
 	WHERE recipient_id = ? AND viewed = 0;
 `;
   await pool.query(updateQuery, [userId]);
-  console.log(selectResult);
+
   return {
     success: true,
     message: "Invites successfully retrieved",
@@ -690,3 +767,5 @@ export const revokeSharedAccess = async (
           "Failed to revoke access. Document is not currently being shared with user",
       };
 };
+
+export const changeUserInfo = async (pool: any) => {};

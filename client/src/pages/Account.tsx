@@ -20,14 +20,21 @@ type FormData = {
 export default function Account() {
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    email: "",
+  });
   const [show, setShow] = useState(false);
   const [weakPassword, setWeakPassword] = useState(false);
   const [userExists, setUserExists] = useState(false);
   const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
   const [authorization, setAuthorization] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      username: "",
+      username: userInfo.userName,
       email: "",
       firstName: "",
       lastName: "",
@@ -59,6 +66,18 @@ export default function Account() {
     }
   };
 
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch("/api/get-user-info");
+      if (response.ok) {
+        const json = await response.json();
+        setUserInfo(json.userInfo);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const updateUserInfo = async (data: FormData) => {
     const trimmedData = {
       username: data.username.toLowerCase().trim(),
@@ -69,23 +88,23 @@ export default function Account() {
       passCheck: data.passCheck.trim(),
     };
     try {
-      // const response = await fetch("/api/signUp", {
-      //   method: "POST",
-      //   headers: { "content-type": "application/json" },
-      //   body: JSON.stringify({ data: trimmedData }),
-      // });
-      // const json = await response.json();
-      // switch (json.message) {
-      //   case "User already exists":
-      //     setUserExists(true);
-      //     break;
-      //   case "User created":
-      //     localStorage.setItem("hasSignedUp", "true");
-      //     navigate(`/verify-email`);
-      //     break;
-      //   default:
-      //     console.error("An unexpected error has occurred");
-      //     break;
+      console.log(trimmedData);
+      const response = await fetch("/api/update-user", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ data: trimmedData }),
+      });
+      const json = await response.json();
+      switch (json.message) {
+        case "User already exists":
+          setUserExists(true);
+          break;
+        case "User created":
+          break;
+        default:
+          console.error("An unexpected error has occurred");
+          break;
+      }
     } catch (err) {
       console.error(err);
     }
@@ -118,7 +137,7 @@ export default function Account() {
     setShow(!show);
   };
 
-  const handleSignup = (data: FormData) => {
+  const handleUpdate = (data: FormData) => {
     const { password, passCheck } = data;
     const userEntryOK = checkUserEntry(password, passCheck);
 
@@ -128,11 +147,12 @@ export default function Account() {
   };
 
   const onSubmit = (data: FormData) => {
-    handleSignup(data);
+    handleUpdate(data);
   };
 
   useEffect(() => {
     authenticateUser();
+    getUserInfo();
   }, []);
 
   useEffect(() => {
@@ -160,7 +180,6 @@ export default function Account() {
                 id={"firstName"}
                 {...register("firstName")}
                 autoComplete="off"
-                required={true}
               />
             </div>
             <div className="mt-10">
@@ -172,7 +191,6 @@ export default function Account() {
                 id={"lastName"}
                 {...register("lastName")}
                 autoComplete="off"
-                required={true}
               />
             </div>
             <div className="mt-10">
@@ -185,7 +203,6 @@ export default function Account() {
                 type="text"
                 {...register("username")}
                 autoComplete="off"
-                required={true}
               />
               {userExists && (
                 <div className={STYLES.ALERT_DIV}>
@@ -207,7 +224,6 @@ export default function Account() {
                 type="text"
                 {...register("email")}
                 autoComplete="off"
-                required={true}
               />
             </div>
 
@@ -221,7 +237,6 @@ export default function Account() {
                 type={!show ? "password" : "text"}
                 {...register("password")}
                 autoComplete="off"
-                required={true}
               />
               <Eye onClick={handleChange} show={show} />
               {weakPassword && (
@@ -258,7 +273,6 @@ export default function Account() {
                 type={!show ? "password" : "text"}
                 {...register("passCheck")}
                 autoComplete="off"
-                required={true}
               />
               {passwordsDontMatch && (
                 <div className={STYLES.ALERT_DIV}>

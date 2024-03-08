@@ -21,11 +21,13 @@ import {
   getId,
   getInvitesReceived,
   getInvitesSent,
+  getUserInfo,
   getUsernames,
   revokeSharedAccess,
   saveDocument,
   sendInvite,
   strongPassword,
+  updateUserInfo,
   verifyById,
   verifyEmailToken,
 } from "./utils/utils";
@@ -163,6 +165,63 @@ app.post("/api/signIn", async (req, res) => {
   }
 });
 
+app.get(
+  "/api/get-user-info",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { success, message, userInfo } = await getUserInfo(
+        pool,
+        req.userId
+      );
+      if (!success) {
+        return res.status(400).json({ success: success, message: message });
+      }
+      return res
+        .status(200)
+        .json({ success: success, message: message, userInfo: userInfo });
+    } catch (err) {
+      console.error("Erro updating user info:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+app.put(
+  "/api/update-user-info",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { firstName, lastName, userName, email, password } = req.body;
+      const { success, message } = await updateUserInfo(
+        pool,
+        firstName,
+        lastName,
+        userName,
+        email,
+        password,
+        req.userId
+      );
+      if (!success) {
+        return res.status(400).json({ success: success, message: message });
+      }
+      return res.status(200).json({ success: success, message: message });
+    } catch (err) {
+      console.error("Error updating user info:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
 // app.put("/api/change-password", async (req: AuthRequest, res) => {
 //   try {
 //     if (!req.userId) {

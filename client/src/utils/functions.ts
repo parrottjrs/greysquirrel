@@ -53,12 +53,6 @@ export const clipText = (text: any, type: string) => {
     default:
       break;
   }
-  console.log({
-    type: type,
-    text: text,
-    length: text.length,
-    isLonger: text.length <= maxLength,
-  });
   if (text.length <= maxLength) {
     return text;
   }

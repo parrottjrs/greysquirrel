@@ -76,7 +76,7 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
               <a href="#/account" className={STYLES.BASIC_LINK}>
                 Account
               </a>
-              <a aria-label="notifications-bell" href="#/notifications">
+              <a aria-label="notifications" href="#/notifications">
                 {pendingInvites ? (
                   <LucideBellDot className="text-roman h-6 w-6 " />
                 ) : (
