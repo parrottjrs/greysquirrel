@@ -33,14 +33,7 @@ export default function Account() {
   const [authorization, setAuthorization] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
   const { register, handleSubmit } = useForm({
-    defaultValues: {
-      username: userInfo.userName,
-      email: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      passCheck: "",
-    },
+    defaultValues: async () => getUserInfo(),
   });
 
   const refreshToken = async () => {
@@ -71,7 +64,7 @@ export default function Account() {
       const response = await fetch("/api/get-user-info");
       if (response.ok) {
         const json = await response.json();
-        setUserInfo(json.userInfo);
+        return json.userInfo;
       }
     } catch (err) {
       console.error(err);
@@ -88,18 +81,17 @@ export default function Account() {
       passCheck: data.passCheck.trim(),
     };
     try {
-      console.log(trimmedData);
-      const response = await fetch("/api/update-user", {
-        method: "POST",
+      const response = await fetch("/api/update-user-info", {
+        method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),
       });
       const json = await response.json();
       switch (json.message) {
-        case "User already exists":
+        case "Username in use":
           setUserExists(true);
           break;
-        case "User created":
+        case "User info updated":
           break;
         default:
           console.error("An unexpected error has occurred");

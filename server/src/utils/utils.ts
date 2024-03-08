@@ -54,6 +54,18 @@ export const getId = async (pool: any, username: string) => {
   return result.length > 0 ? id[0].user_id : false;
 };
 
+export const userNameFromId = async (pool: any, userId: number) => {
+  const query = `
+  SELECT user_name as username
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  return result.length > 0
+    ? { success: true, username: result[0].username }
+    : { success: false };
+};
+
 export const strongPassword = (password: string) => {
   var restrictions = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
@@ -221,12 +233,11 @@ export const authenticateToken = (
 
 export const getUserInfo = async (pool: any, userId: number) => {
   const query = `
-  SELECT first_name as firstName, last_name as lastName, user_name as userName, email
+  SELECT first_name as firstName, last_name as lastName, user_name as username, email
   FROM users
   WHERE user_id = ?
   `;
   const [result, _] = await pool.query(query, [userId]);
-  console.log(result[0]);
   return result.length > 0
     ? {
         success: true,
@@ -240,7 +251,7 @@ export const updateUserInfo = async (
   pool: any,
   firstName: string,
   lastName: string,
-  userName: string,
+  username: string,
   email: string,
   password: string,
   userId: number
@@ -266,7 +277,7 @@ export const updateUserInfo = async (
   const values = [
     firstName,
     lastName,
-    userName,
+    username,
     email,
     passWordToUpdate,
     salt,

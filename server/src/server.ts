@@ -28,6 +28,7 @@ import {
   sendInvite,
   strongPassword,
   updateUserInfo,
+  userNameFromId,
   verifyById,
   verifyEmailToken,
 } from "./utils/utils";
@@ -186,11 +187,23 @@ app.get(
         .status(200)
         .json({ success: success, message: message, userInfo: userInfo });
     } catch (err) {
-      console.error("Erro updating user info:", err);
+      console.error("Error retreiving user info:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
   }
 );
+
+const usernameExists = async (userId: number, usernameToCheck: string) => {
+  const { username, success } = await userNameFromId(pool, userId);
+  if (!success) {
+    return true;
+  }
+  if (usernameToCheck !== username) {
+    const allUsernames = await getUsernames(pool);
+    return allUsernames.includes(usernameToCheck);
+  }
+  return false;
+};
 
 app.put(
   "/api/update-user-info",
@@ -202,12 +215,20 @@ app.put(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
-      const { firstName, lastName, userName, email, password } = req.body;
+      const { firstName, lastName, username, email, password } = req.body.data;
+      const userNameInUse = await usernameExists(req.userId, username);
+
+      if (userNameInUse) {
+        return res.status(200).json({
+          success: false,
+          message: "Username in use",
+        });
+      }
       const { success, message } = await updateUserInfo(
         pool,
         firstName,
         lastName,
-        userName,
+        username,
         email,
         password,
         req.userId
