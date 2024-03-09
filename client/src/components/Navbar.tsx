@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { STYLES } from "../utils/styles/styles";
-import { useNavigate } from "react-router-dom";
-import { LucideBell, LucideBellDot } from "lucide-react";
+import BellDot from "./BellDot";
+import Bell from "./Bell";
+import AccountCircle from "./AccountCircle";
+import AccountModal from "./AccountModal";
 
 interface ChildProps {
   isLoggedIn?: boolean;
@@ -11,21 +13,6 @@ interface ChildProps {
 export default function Navbar({ isLoggedIn, page }: ChildProps) {
   const invitesRefreshDelay = 900000;
   const [pendingInvites, setPendingInvites] = useState(false);
-  const navigate = useNavigate();
-
-  const fetchCreate = async () => {
-    const response = await fetch("/api/create", {
-      method: "POST",
-      headers: { "content-type": "application /json" },
-    });
-    const json = await response.json();
-    return json.docId;
-  };
-
-  const handleClick = async () => {
-    const id = await fetchCreate();
-    navigate(`/editor/${id}`);
-  };
 
   const countInvites = async () => {
     try {
@@ -58,7 +45,6 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
       <div className="w-full">
         <nav className="justify-between md:flex md:w-auto px-7" id="navbar">
           <h1 className={STYLES.NAVBAR_HEADER}>Greysquirrel</h1>
-
           {!isLoggedIn ? (
             <div className={STYLES.LINK_CONTAINER}>
               <a href="#/" className={STYLES.BASIC_LINK}>
@@ -73,24 +59,12 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
               <a href="#/documents" className={STYLES.BASIC_LINK}>
                 Documents
               </a>
-              <a href="#/account" className={STYLES.BASIC_LINK}>
-                Account
-              </a>
               <a aria-label="notifications" href="#/notifications">
-                {pendingInvites ? (
-                  <LucideBellDot className="text-roman h-6 w-6 " />
-                ) : (
-                  <LucideBell className="text-nero h-6 w-6" />
-                )}
+                {pendingInvites ? <BellDot /> : <Bell />}
               </a>
-              {page !== "editor" && (
-                <button
-                  className={STYLES.STYLIZED_ANCHOR}
-                  onClick={handleClick}
-                >
-                  New Document
-                </button>
-              )}
+              <span className="cursor-pointer">
+                <AccountModal />
+              </span>
             </div>
           )}
         </nav>

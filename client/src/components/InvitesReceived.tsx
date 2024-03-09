@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { STYLES } from "../utils/styles/styles";
-import { clipText } from "../utils/functions";
+import { clipText, formatDate } from "../utils/functions";
 
 export interface Invite {
   invite_id: number;
@@ -101,15 +101,9 @@ export default function InvitesRecieved() {
       title,
       share_date,
     } = invite;
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    const formattedShareDate = new Date(share_date).toLocaleDateString(
-      [],
-      options
-    );
+
+    const formattedShareDate = formatDate(share_date);
+
     const newTitle = title ? clipText(title, "title") : "Untitled";
     return (
       <div

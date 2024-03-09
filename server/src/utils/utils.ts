@@ -20,6 +20,21 @@ export interface AuthRequest extends Request {
 
 //User creation/Authentication handling & queries
 
+export const usernameExists = async (
+  pool: any,
+  userId: number,
+  usernameToCheck: string
+) => {
+  const { success, currentUsername } = await userNameFromId(pool, userId);
+  if (!success) {
+    return true;
+  }
+  if (usernameToCheck !== currentUsername) {
+    const allUsernames = await getUsernames(pool);
+    return allUsernames.includes(usernameToCheck);
+  }
+  return false;
+};
 const getPasswordFromUsername = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users
@@ -33,14 +48,18 @@ const getPasswordFromUsername = async (pool: any, username: string) => {
   return { truePass: user[0].password, salt: user[0].salt };
 };
 
-const getPasswordFromUserId = async (pool: any, userId: number) => {
+const passwordSaltFromUserId = async (pool: any, userId: number) => {
   const query = `
-  SELECT password FROM users
+  SELECT password, salt FROM users
   WHERE user_id = ?
   `;
   const [result, _] = await pool.query(query, [userId]);
   return result.length > 0
-    ? { success: true, currentPassword: result[0].password }
+    ? {
+        success: true,
+        currentPassword: result[0].password,
+        currentSalt: result[0].salt,
+      }
     : { success: false };
 };
 
@@ -62,7 +81,7 @@ export const userNameFromId = async (pool: any, userId: number) => {
   `;
   const [result, _] = await pool.query(query, [userId]);
   return result.length > 0
-    ? { success: true, username: result[0].username }
+    ? { success: true, currentUsername: result[0].username }
     : { success: false };
 };
 
@@ -160,6 +179,7 @@ export const authenticateUser = async (
   pool: any
 ) => {
   const { truePass, salt } = await getPasswordFromUsername(pool, username);
+
   const attemptedPass = pbkdf2Sync(
     password,
     salt,
@@ -256,31 +276,39 @@ export const updateUserInfo = async (
   password: string,
   userId: number
 ) => {
-  const salt = randomBytes(64).toString("base64");
+  let userNameToUpdate = username;
+  let saltToUpdate = randomBytes(64).toString("base64");
   let passWordToUpdate = pbkdf2Sync(
     password,
-    salt,
+    saltToUpdate,
     10000,
     64,
     "sha512"
   ).toString("base64");
 
   if (password === "") {
-    const { success, currentPassword } = await getPasswordFromUserId(
-      pool,
-      userId
-    );
+    const { success, currentPassword, currentSalt } =
+      await passwordSaltFromUserId(pool, userId);
     if (success) {
       passWordToUpdate = currentPassword;
+      saltToUpdate = currentSalt;
     }
   }
+
+  if (username === "") {
+    const { success, currentUsername } = await userNameFromId(pool, userId);
+    if (success) {
+      userNameToUpdate = currentUsername;
+    }
+  }
+
   const values = [
     firstName,
     lastName,
-    username,
+    userNameToUpdate,
     email,
     passWordToUpdate,
-    salt,
+    saltToUpdate,
     userId,
   ];
   const query = `
@@ -354,7 +382,7 @@ export const getDocument = async (pool: any, docId: number, userId: number) => {
 
 export const allDocuments = async (pool: any, userId: number) => {
   const query = `
-    SELECT d.doc_id, d.title, d.content, s.authorized_user, u.user_name AS authorized_username
+    SELECT d.doc_id, d.title, d.content, s.authorized_user, last_edit, u.user_name AS authorized_username
     FROM documents d
     LEFT JOIN shared_docs s ON d.doc_id = s.doc_id
     LEFT JOIN users u ON s.authorized_user = u.user_id
@@ -374,6 +402,7 @@ export const allDocuments = async (pool: any, userId: number) => {
       doc_id: number;
       title: string;
       content: string;
+      last_edit: string;
       authorizedUsers: string[];
     };
   } = {};
@@ -383,6 +412,7 @@ export const allDocuments = async (pool: any, userId: number) => {
       doc_id: number;
       title: string;
       content: string;
+      last_edit: string;
       authorized_username: string;
     }) => {
       const doc_id = doc.doc_id;
@@ -391,6 +421,7 @@ export const allDocuments = async (pool: any, userId: number) => {
           doc_id: doc_id,
           title: doc.title,
           content: doc.content,
+          last_edit: doc.last_edit,
           authorizedUsers: [],
         };
       }

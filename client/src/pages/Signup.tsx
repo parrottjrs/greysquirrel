@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import Eye from "../components/Eye";
 import { STYLES } from "../utils/styles/styles";
 import Navbar from "../components/Navbar";
 import { AlertCircle } from "lucide-react";
+import ShowPassword from "../components/ShowPasword";
+import ExclamationMark from "../components/ExclamationMark";
 
 type FormData = {
   username: string;
@@ -171,7 +172,9 @@ export default function Signup() {
             />
             {userExists && (
               <div className={STYLES.ALERT_DIV}>
-                <AlertCircle className={STYLES.ALERT_CIRCLE} />
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
                 <p className={STYLES.ALERT_TEXT}>Username is already taken.</p>
               </div>
             )}
@@ -204,7 +207,9 @@ export default function Signup() {
             />
             {emailsDontMatch && (
               <div className={STYLES.ALERT_DIV}>
-                <AlertCircle className={STYLES.ALERT_CIRCLE} />
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
                 <p className={STYLES.ALERT_TEXT}>Emails must match.</p>
               </div>
             )}
@@ -222,26 +227,22 @@ export default function Signup() {
               autoComplete="off"
               required={true}
             />
-            <Eye onClick={handleChange} show={show} />
+            <ShowPassword onClick={handleChange} show={show} />
             {weakPassword && (
-              <div className="relative">
-                <div className="absolute">
-                  <AlertCircle
-                    className={`${STYLES.ALERT_CIRCLE} relative top-4`}
-                  />
-                  <p
-                    className={`${STYLES.ALERT_TEXT} relative left-3 bottom-5`}
-                  >
-                    Password must be at least{" "}
-                    <span className={STYLES.BOLD}>8 characters</span> and have
-                    at least{" "}
-                    <span className={STYLES.BOLD}>
-                      one uppercase letter, one lowercase letter, one digit
-                    </span>
-                    , and{" "}
-                    <span className={STYLES.BOLD}>one special character</span>.
-                  </p>
-                </div>
+              <div className={STYLES.ALERT_DIV}>
+                <span className="mr-2 -mt-8">
+                  <ExclamationMark />
+                </span>
+                <p className={STYLES.ALERT_TEXT}>
+                  Password must be at least{" "}
+                  <span className="font-medium">8 characters</span> and have at
+                  least{" "}
+                  <span className="font-medium">
+                    one uppercase letter, one lowercase letter, one digit
+                  </span>
+                  , and{" "}
+                  <span className="font-medium">one special character</span>.
+                </p>
               </div>
             )}
           </div>
@@ -260,7 +261,9 @@ export default function Signup() {
             />
             {passwordsDontMatch && (
               <div className={STYLES.ALERT_DIV}>
-                <AlertCircle className={STYLES.ALERT_CIRCLE} />
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
                 <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
               </div>
             )}

@@ -8,6 +8,7 @@ interface Document {
   doc_id?: number;
   title?: string;
   content?: string;
+  last_edit: string;
   authorizedUsers: string[];
 }
 interface SharedDocument {
@@ -81,7 +82,7 @@ export default function DocumentOptionsDropdown({
   return (
     <DropdownMenu.Root open={show ? true : false}>
       <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
-        <MoreVertical />
+        <MoreVertical size={43} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content

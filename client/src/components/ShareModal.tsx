@@ -33,7 +33,6 @@ export default function ShareModal({ docId, title }: ChildProps) {
       if (json.message === "Recipient does not exist") {
         return setDoesNotExist(true);
       }
-
       setDoesNotExist(false);
     } catch (err) {
       console.error(err);

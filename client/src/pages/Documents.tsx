@@ -45,6 +45,11 @@ export default function Documents() {
     return json.docId;
   };
 
+  const handleClick = async () => {
+    const id = await fetchCreate();
+    navigate(`/editor/${id}`);
+  };
+
   useEffect(() => {
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);
@@ -60,11 +65,11 @@ export default function Documents() {
         <Navbar isLoggedIn={true} />
         <LogoutButton />
         <div className={STYLES.DOCUMENTS_CONTAINER}>
-          <div className="flex flex-row justify-between">
-            <h1 className={`${STYLES.WELCOME_HEADER} mb-14`}>Documents</h1>
-            {/* <button className={STYLES.CREATE_BUTTON} onClick={handleClick}>
+          <div className="flex flex-row items-center justify-between">
+            <h1 className={`${STYLES.WELCOME_HEADER} mb-10`}>Documents</h1>
+            <button className={STYLES.CREATE_BUTTON} onClick={handleClick}>
               New Document
-            </button> */}
+            </button>
           </div>
           <div>
             <button

@@ -47,8 +47,8 @@ export const clipText = (text: any, type: string) => {
       maxWords = 4;
       break;
     case "content":
-      maxLength = 120;
-      maxWords = 20;
+      maxLength = 150;
+      maxWords = 35;
       break;
     default:
       break;
@@ -60,4 +60,14 @@ export const clipText = (text: any, type: string) => {
   const sliced = split.slice(0, maxWords);
   const joined = sliced.join(" ");
   return joined + "...";
+};
+
+export const formatDate = (date: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const formattedDate = new Date(date).toLocaleDateString([], options);
+  return formattedDate;
 };

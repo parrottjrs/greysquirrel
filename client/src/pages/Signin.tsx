@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { STYLES } from "../utils/styles/styles";
 import { AlertCircle } from "lucide-react";
-import Eye from "../components/Eye";
+import ShowPassword from "../components/ShowPasword";
 import { authenticate } from "../utils/functions";
 import Navbar from "../components/Navbar";
 
@@ -123,7 +123,7 @@ export default function Signin() {
                 />
               </div>
 
-              <Eye onClick={handleShow} show={show} />
+              <ShowPassword onClick={handleShow} show={show} />
 
               {change && (
                 <div className={STYLES.ALERT_DIV}>

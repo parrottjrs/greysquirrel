@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { STYLES } from "../utils/styles/styles";
 
 export default function LogoutButton() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function LogoutButton() {
 
   return (
     <button
-      className="mx-3 px-20 md:px-44 py-2 text-nero text-sm font-sans font-medium bg-paleRose gap-2.5 rounded-lg border-0"
+      className="p-0 border-0 bg-transparent text-nero font-sans text-base"
       onClick={handleLogout}
     >
       Sign out
