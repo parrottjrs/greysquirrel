@@ -9,6 +9,7 @@ export const theme = {
     alto: "#D9D9D9",
     boulder: "#797878",
     dustyGray: "#999999",
+    gallery: "#ECECEC",
     nero: "#1D1D1D",
     paleRose: "#FFC1C1",
     roman: "#DF5E5E",
@@ -17,6 +18,9 @@ export const theme = {
     vividViolet: "#A4319E",
     white: "#FFF",
   },
-  extend: {},
+
+  extend: {
+    fontFamily: { IBM: ["IBM Plex Sans", "sans-serif"] },
+  },
 };
 export const plugins = [];

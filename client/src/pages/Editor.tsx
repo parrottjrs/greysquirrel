@@ -8,6 +8,7 @@ import { STYLES } from "../utils/styles/styles";
 import { authenticate, refresh } from "../utils/functions";
 import ShareModal from "../components/ShareModal";
 import Navbar from "../components/Navbar";
+import CustomQuill from "../components/CustomQuill";
 
 export default function Editor() {
   const params = useParams();
@@ -131,20 +132,14 @@ export default function Editor() {
   return (
     authorization && (
       <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
-        <Navbar isLoggedIn={true} page={"editor"} />
-        <div className="mt-24">
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => handleTitle(e.target.value)}
-          />
+        <Navbar isLoggedIn={true} />
+        <div className="mt-24 w-[51.75rem]">
           <div>
-            <ReactQuill
-              className="quill"
-              theme="snow"
-              value={text}
+            <CustomQuill
+              text={text}
+              title={title}
+              docId={docId}
               onChange={handleChange}
-              preserveWhitespace={true}
             />
           </div>
         </div>
