@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { authenticate } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 import squirrel from "../images/squirrel.png";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 
 export default function Home() {
   const hasSignedUp =

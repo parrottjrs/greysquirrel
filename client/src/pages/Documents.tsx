@@ -5,11 +5,28 @@ import DocumentsGrid from "../components/DocumentsGrid";
 import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
 import { authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
+import { SharedDocument, UserDocument } from "../utils/customTypes";
+
+// export interface Document {
+//   doc_id?: number;
+//   title?: string;
+//   content?: string;
+//   authorizedUsers: string[];
+//   last_edit: string;
+// }
+// interface SharedDocument {
+//   doc_id?: number;
+//   title?: string;
+//   content?: string;
+//   owner: { owner_id?: number; owner_name?: string };
+// }
 
 export default function Documents() {
   const refreshTokenDelay = 540000; //nine minutes;
   const [authorization, setAuthorization] = useState(false);
+  const [documents, setDocuments] = useState<UserDocument[]>([]);
+  const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([]);
   const [showOwnedDocuments, setShowOwnedDocuments] = useState(true);
   const navigate = useNavigate();
 
@@ -36,6 +53,32 @@ export default function Documents() {
     }
   };
 
+  const fetchDocuments = async () => {
+    try {
+      const response = await fetch("/api/documents");
+      const json = await response.json();
+      if (json.success) {
+        setDocuments(json.docs);
+      }
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  const fetchSharedDocuments = async () => {
+    try {
+      const response = await fetch("/api/shared-docs");
+      const json = await response.json();
+      json.success === false
+        ? setSharedDocuments([])
+        : setSharedDocuments(json.sharedDocs);
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
   const fetchCreate = async () => {
     const response = await fetch("/api/create", {
       method: "POST",
@@ -57,6 +100,8 @@ export default function Documents() {
 
   useEffect(() => {
     authenticateUser();
+    fetchDocuments();
+    fetchSharedDocuments();
   }, []);
 
   return (
@@ -93,7 +138,14 @@ export default function Documents() {
               Shared Documents
             </button>
           </div>
-          {showOwnedDocuments ? <DocumentsGrid /> : <SharedDocumentsGrid />}
+          {showOwnedDocuments ? (
+            <DocumentsGrid documents={documents} setDocuments={setDocuments} />
+          ) : (
+            <SharedDocumentsGrid
+              sharedDocuments={sharedDocuments}
+              setSharedDocuments={setSharedDocuments}
+            />
+          )}
         </div>
       </div>
     )

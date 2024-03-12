@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import Navbar from "../components/Navbar";
 import InvitesSent from "../components/InvitesSent";
 import InvitesRecieved from "../components/InvitesReceived";

@@ -1,36 +1,25 @@
 import React, { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
 import { FileText } from "lucide-react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
 import { clipText, formatDate } from "../utils/functions";
 import Page from "./Page";
 import CheckMark from "./CheckMark";
+import { DocumentsGridProps, UserDocument } from "../utils/customTypes";
 
-interface Document {
-  doc_id?: number;
-  title?: string;
-  content?: string;
-  authorizedUsers: string[];
-  last_edit: string;
-}
+// interface Document {
+//   doc_id?: number;
+//   title?: string;
+//   content?: string;
+//   authorizedUsers: string[];
+//   last_edit: string;
+// }
 
-export default function DocumentsGrid() {
-  const [documents, setDocuments] = useState<Document[]>([]);
-
-  const fetchDocuments = async () => {
-    try {
-      const response = await fetch("/api/documents");
-      const json = await response.json();
-      if (json.success) {
-        setDocuments(json.docs);
-      }
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-  };
-
+export default function DocumentsGrid({
+  documents,
+  setDocuments,
+}: DocumentsGridProps) {
   const fetchRevoke = async (docId: number, authorizedUserName: string) => {
     try {
       await fetch("api/shared-docs", {
@@ -46,14 +35,10 @@ export default function DocumentsGrid() {
     }
   };
 
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
-
   const handleRevoke = async (docId: any, userToRevoke: string) => {
     await fetchRevoke(docId, userToRevoke);
     setDocuments((previousDocuments) =>
-      previousDocuments.map((document: Document) =>
+      previousDocuments.map((document: UserDocument) =>
         document.doc_id === docId
           ? {
               ...document,
@@ -66,7 +51,7 @@ export default function DocumentsGrid() {
     );
   };
 
-  return documents.map((document: Document) => {
+  return documents.map((document: UserDocument) => {
     const { title, doc_id, content, authorizedUsers, last_edit } = document;
 
     const newTitle = title ? clipText(title, "title") : "Untitled";

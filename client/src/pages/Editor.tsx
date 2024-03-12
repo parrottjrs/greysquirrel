@@ -4,7 +4,7 @@ import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";
 import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import { authenticate, refresh } from "../utils/functions";
 import ShareModal from "../components/ShareModal";
 import Navbar from "../components/Navbar";

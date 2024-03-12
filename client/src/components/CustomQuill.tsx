@@ -45,7 +45,7 @@ export default function CustomQuill({
       <div className="w-[51.25rem] flex flex-row justify-between">
         <CustomToolbar />
 
-        <span className="border border-solid">
+        <span className="border border-solid ">
           <ShareModal docId={docId} title={title} />
         </span>
       </div>
@@ -57,6 +57,7 @@ export default function CustomQuill({
         onChange={onChange}
         preserveWhitespace={true}
         modules={CustomQuill.modules}
+        placeholder={"Enter text here..."}
       />
     </div>
   );

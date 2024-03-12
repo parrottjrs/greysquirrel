@@ -1,4 +1,4 @@
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 
 export default function NotFound() {
   return (

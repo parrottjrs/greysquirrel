@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import LogoutButton from "../components/LogoutButton";
 import Navbar from "../components/Navbar";
 import { AlertCircle } from "lucide-react";

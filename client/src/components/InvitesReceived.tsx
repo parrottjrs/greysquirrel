@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import { clipText, formatDate } from "../utils/functions";
 
 export interface Invite {

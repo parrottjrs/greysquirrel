@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 
 export default function LogoutButton() {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import BellDot from "./BellDot";
 import Bell from "./Bell";
 import AccountCircle from "./AccountCircle";

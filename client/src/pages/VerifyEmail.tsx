@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 
 export default function VerifyEmail() {
   const params = useParams();

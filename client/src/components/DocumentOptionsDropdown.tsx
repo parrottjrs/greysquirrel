@@ -1,32 +1,13 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import React, { useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import ShareModal from "./ShareModal";
-
-interface Document {
-  doc_id?: number;
-  title?: string;
-  content?: string;
-  last_edit: string;
-  authorizedUsers: string[];
-}
-interface SharedDocument {
-  doc_id?: number;
-  title?: string;
-  content?: string;
-  owner: { owner_id?: number; owner_name?: string };
-}
-
-interface ChildProps {
-  docId?: number;
-  ownerId?: number;
-  title?: string;
-  handleDocs:
-    | React.Dispatch<React.SetStateAction<Document[]>>
-    | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
-  shared?: boolean;
-}
+import {
+  DocumentOptionsProps,
+  SharedDocument,
+  UserDocument,
+} from "../utils/customTypes";
 
 export default function DocumentOptionsDropdown({
   docId,
@@ -34,7 +15,7 @@ export default function DocumentOptionsDropdown({
   ownerId,
   handleDocs,
   shared,
-}: ChildProps) {
+}: DocumentOptionsProps) {
   const [show, setShow] = useState(false);
 
   const fetchDelete = async (id: any) => {
@@ -53,7 +34,7 @@ export default function DocumentOptionsDropdown({
     await fetchDelete(id);
     handleDocs((currentDocuments: any) => {
       return currentDocuments.filter(
-        (document: Document) => document.doc_id !== id
+        (document: UserDocument) => document.doc_id !== id
       );
     });
   };

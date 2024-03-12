@@ -1,7 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import React, { useState } from "react";
 import AccountCircle from "./AccountCircle";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import LogoutButton from "./LogoutButton";
 
 export default function AccountModal() {

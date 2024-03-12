@@ -1,35 +1,21 @@
 import React, { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import { FileText } from "lucide-react";
 import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
+import { SharedDocument, SharedDocumentsGridProps } from "../utils/customTypes";
 
-interface SharedDocument {
-  doc_id?: number;
-  title?: string;
-  content?: string;
-  owner: { owner_id?: number; owner_name?: string };
-}
+// interface SharedDocument {
+//   doc_id?: number;
+//   title?: string;
+//   content?: string;
+//   owner: { owner_id?: number; owner_name?: string };
+// }
 
-export default function SharedDocumentsGrid() {
-  const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([]);
-  const fetchSharedDocuments = async () => {
-    try {
-      const response = await fetch("/api/shared-docs");
-      const json = await response.json();
-      json.success === false
-        ? setSharedDocuments([])
-        : setSharedDocuments(json.sharedDocs);
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-  };
-
-  useEffect(() => {
-    fetchSharedDocuments();
-  }, []);
-
+export default function SharedDocumentsGrid({
+  sharedDocuments,
+  setSharedDocuments,
+}: SharedDocumentsGridProps) {
   return sharedDocuments.map((document: SharedDocument) => {
     const {
       title,

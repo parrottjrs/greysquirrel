@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { STYLES } from "../utils/styles/styles";
+import { STYLES } from "../utils/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface FormData {

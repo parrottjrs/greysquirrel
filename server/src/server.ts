@@ -416,7 +416,7 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     if (!success) {
       return res.status(200).json({ success: success, message: message });
     }
-
+    console.log("Fetched documents!");
     return res.status(200).send({
       success: success,
       message: message,
@@ -662,6 +662,7 @@ app.get(
       if (!success) {
         return res.status(200).json({ success: success, message: message });
       }
+      console.log("Fetched shared documents!");
       return res
         .status(200)
         .json({ success: success, message: message, sharedDocs: sharedDocs });
