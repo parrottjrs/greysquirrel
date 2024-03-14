@@ -32,3 +32,11 @@ export interface DocumentOptionsProps {
     | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
   shared?: boolean;
 }
+
+export interface QuillProps {
+  text: string;
+  title: string;
+  docId: string | undefined;
+  onTextChange: (text: string) => void;
+  onTitleChange: (title: string) => void;
+}

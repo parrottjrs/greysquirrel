@@ -140,6 +140,7 @@ export default function Editor() {
               title={title}
               docId={docId}
               onChange={handleChange}
+              onTitleChange={setTitle}
             />
           </div>
         </div>
