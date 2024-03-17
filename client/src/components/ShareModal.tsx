@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { STYLES } from "../utils/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import Link from "./Link";
 
 interface FormData {
   recipientName: string;
@@ -9,8 +10,9 @@ interface FormData {
 interface ChildProps {
   docId: any;
   title?: string;
+  type?: string;
 }
-export default function ShareModal({ docId, title }: ChildProps) {
+export default function ShareModal({ type, docId, title }: ChildProps) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       recipientName: "",
@@ -58,7 +60,14 @@ export default function ShareModal({ docId, title }: ChildProps) {
   return (
     <DropdownMenu.Root open={open ? true : false}>
       <DropdownMenu.Trigger asChild onClick={() => setOpen(true)}>
-        <button className={STYLES.OPTIONS_TEXT}>Share</button>
+        {type === "button" ? (
+          <button className="bg-transparent py-[0.56rem] px-[1.19rem] gap-[0.83rem] border border-solid border-nero rounded-[0.88rem] font-IBM text-xl font-medium">
+            <Link />
+            <span className="ml-[0.83rem]"> Share</span>
+          </button>
+        ) : (
+          <button className={STYLES.OPTIONS_TEXT}>Share</button>
+        )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content

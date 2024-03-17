@@ -25,6 +25,7 @@ button {
 
 .ql-editor {
   font-family: "IBM Plex Sans", sans-serif;
+  color: #1d1d1d;
   font-size: 18px;
   padding: 0px !important;
 }
@@ -36,8 +37,17 @@ button {
 .ql-toolbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   background-color: #ececec;
   border-radius: 14px;
   border: none !important;
   width: 26rem;
+}
+
+.ql-picker-label {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #1d1d1d;
 }

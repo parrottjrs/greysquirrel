@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
 import useWebSocket from "react-use-websocket";
 import "react-quill/dist/quill.snow.css";
-import LogoutButton from "../components/LogoutButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/styles";
 import { authenticate, refresh } from "../utils/functions";
-import ShareModal from "../components/ShareModal";
 import Navbar from "../components/Navbar";
 import CustomQuill from "../components/CustomQuill";
 
@@ -93,11 +90,11 @@ export default function Editor() {
     return () => clearTimeout(timer);
   }, [text, title]);
 
-  const handleChange = (text: string) => {
+  const handleTextChange = (text: string) => {
     setText(text);
   };
 
-  const handleTitle = (title: string) => {
+  const handleTitleChange = (title: string) => {
     setTitle(title);
   };
   // useWebSocket(WS_URL, {
@@ -139,8 +136,8 @@ export default function Editor() {
               text={text}
               title={title}
               docId={docId}
-              onChange={handleChange}
-              onTitleChange={setTitle}
+              onTextChange={handleTextChange}
+              onTitleChange={handleTitleChange}
             />
           </div>
         </div>

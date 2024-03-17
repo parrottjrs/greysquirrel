@@ -35,6 +35,7 @@ export const usernameExists = async (
   }
   return false;
 };
+
 const getPasswordFromUsername = async (pool: any, username: string) => {
   const query = `
   SELECT password, salt FROM users

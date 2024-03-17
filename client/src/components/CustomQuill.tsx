@@ -3,6 +3,7 @@ import ReactQuill from "react-quill";
 import ShareModal from "./ShareModal";
 import { QuillProps } from "../utils/customTypes";
 import CustomQuillToolbar from "./CustomQuillToolbar";
+import Link from "./Link";
 
 export default function CustomQuill({
   text,
@@ -24,24 +25,28 @@ export default function CustomQuill({
 
   return (
     <div className="w-full">
-      <div className="w-[51.25rem] flex flex-row justify-between">
+      <div className="w-[51.25rem] flex flex-row justify-between mb-[1.66rem]">
         <CustomQuillToolbar />
-        <span className="border border-solid ">
-          <ShareModal docId={docId} title={title} />
-        </span>
+        <ShareModal type="button" docId={docId} title={title} />
       </div>
       <span>
         {editing ? (
           <input
-            className="h-[2.5rem] l-[21.8rem] py-[0.55rem] pl-[0.55rem]"
+            className="h-[1.5rem] l-[24.62rem] py-[0.62rem] pl-[0.62rem] mb-[1.66rem] font-IBM text-nero text-2xl font-medium border rounded-[0.62rem] items center"
             type="text"
             defaultValue={title}
+            autoFocus={true}
             onBlur={(e) => {
               handleTitleBlur(e.target.value);
             }}
           />
         ) : (
-          <h2 onClick={handleTitleClick}>{title}</h2>
+          <div
+            onClick={handleTitleClick}
+            className="mb-[1.66rem] font-IBM text-2xl text-nero font-medium"
+          >
+            {title}
+          </div>
         )}
       </span>
       <ReactQuill
