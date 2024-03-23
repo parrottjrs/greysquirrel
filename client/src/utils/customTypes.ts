@@ -39,4 +39,5 @@ export interface QuillProps {
   docId: string | undefined;
   onTextChange: (text: string) => void;
   onTitleChange: (title: string) => void;
+  shared: boolean;
 }

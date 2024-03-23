@@ -18,6 +18,7 @@ export default function Editor() {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [authorization, setAuthorization] = useState(false);
+  const { sendMessage, lastMessage, readyState } = client;
 
   const authenticateUser = async () => {
     try {
@@ -92,39 +93,13 @@ export default function Editor() {
 
   const handleTextChange = (text: string) => {
     setText(text);
+    const jsonData = { docId: docId, content: text };
+    sendMessage(JSON.stringify(jsonData));
   };
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
   };
-  // useWebSocket(WS_URL, {
-  //   onMessage: (message) => {
-  //     setText(message.data);
-  //     fetch("/api/createfile", {
-  //       method: "POST",
-  //       headers: { "content-type": "application/json" },
-  //       body: JSON.stringify({ text: message.data }),
-  //     })
-  //       .then(() => {
-  //         console.log("ok");
-  //       })
-  //       .catch((err) => console.log(err));
-  //   },
-  //   onOpen: () => {
-  //     fetchText()
-  //       .then((json) => {
-  //         setText(json.data);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   },
-  //   shouldReconnect: (closeEvent) => true,
-  //   share: true,
-  //   filter: () => false,
-  // });
-
-  // const handleChange = (text: string) => {
-  //   client.sendMessage(text);
-  // };
 
   return (
     authorization && (
@@ -138,6 +113,7 @@ export default function Editor() {
               docId={docId}
               onTextChange={handleTextChange}
               onTitleChange={handleTitleChange}
+              shared={params.shared ? true : false}
             />
           </div>
         </div>

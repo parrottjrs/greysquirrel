@@ -3,7 +3,6 @@ import ReactQuill from "react-quill";
 import ShareModal from "./ShareModal";
 import { QuillProps } from "../utils/customTypes";
 import CustomQuillToolbar from "./CustomQuillToolbar";
-import Link from "./Link";
 
 export default function CustomQuill({
   text,
@@ -11,6 +10,7 @@ export default function CustomQuill({
   docId,
   onTextChange,
   onTitleChange,
+  shared,
 }: QuillProps) {
   const [editing, setEditing] = useState(false);
 
@@ -27,7 +27,7 @@ export default function CustomQuill({
     <div className="w-full">
       <div className="w-[51.25rem] flex flex-row justify-between mb-[1.66rem]">
         <CustomQuillToolbar />
-        <ShareModal type="button" docId={docId} title={title} />
+        {!shared && <ShareModal type="button" docId={docId} title={title} />}
       </div>
       <span>
         {editing ? (

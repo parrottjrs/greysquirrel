@@ -61,7 +61,10 @@ export default function SharedDocumentsGrid({
         className="relative flex flex-row justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
         key={doc_id}
       >
-        <a className="no-underline text-nero" href={`#/editor/${doc_id}`}>
+        <a
+          className="no-underline text-nero"
+          href={`#/editor/${doc_id}/shared`}
+        >
           <div className="flex flex-row relative mr-4 ">
             <FileText className={STYLES.DOCUMENT_ICON} />
             <div className="flex flex-col">

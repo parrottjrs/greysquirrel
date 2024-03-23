@@ -72,4 +72,8 @@ export const STYLES = {
     "w-36 mr-4 p-2 text-nero text-sm font-IBM font-medium bg-white gap-2.5 rounded-xl border border-black border-solid",
   DOCUMENTS_SWITCH_SELECTED:
     "w-36 mr-4 p-2 text-white text-sm font-IBM font-medium bg-nero gap-2.5 rounded-xl border border-solid border-nero",
+
+  // ACCOUNT
+  ACCOUNT_FORM_CONTAINER:
+    "m-auto mt-36 mb-24 w-[404px] flex flex-col items-center justify-center",
 };

@@ -19,7 +19,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/documents" element={<Documents />} />
-        <Route path="/editor/:docId" element={<Editor />} />
+        <Route path="/editor/:docId/:shared?" element={<Editor />} />
         <Route path="/verify-email/:emailToken?" element={<VerifyEmail />} />
         <Route path="/account" element={<Account />} />
         <Route path="/notifications" element={<Notifications />} />

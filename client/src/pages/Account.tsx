@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 import ExclamationMark from "../components/ExclamationMark";
+import CheckMark from "../components/CheckMark";
 
 type FormData = {
   username: string;
@@ -21,18 +22,13 @@ type FormData = {
 export default function Account() {
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState({
-    firstName: "",
-    lastName: "",
-    userName: "",
-    email: "",
-  });
   const [show, setShow] = useState(false);
   const [weakPassword, setWeakPassword] = useState(false);
   const [userExists, setUserExists] = useState(false);
   const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
   const [authorization, setAuthorization] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
+  const [accountUpdated, setAccountUpdated] = useState(false);
   const { register, handleSubmit } = useForm({
     defaultValues: async () => getUserInfo(),
   });
@@ -93,6 +89,7 @@ export default function Account() {
           setUserExists(true);
           break;
         case "User info updated":
+          setAccountUpdated(true);
           break;
         default:
           console.error("An unexpected error has occurred");
@@ -161,7 +158,7 @@ export default function Account() {
     authorization && (
       <div>
         <Navbar isLoggedIn={true} />
-        <div className={`${STYLES.SIGNUP_PARENT_CONTAINER} mt-36`}>
+        <div className={STYLES.ACCOUNT_FORM_CONTAINER}>
           <h1 className={STYLES.WELCOME_HEADER}>My Account</h1>
           <form
             className={STYLES.FLEX_COL_CENTER}
@@ -259,7 +256,7 @@ export default function Account() {
 
             <div className="mt-10">
               <label className={STYLES.LABEL} htmlFor={"passCheck"}>
-                Confirm your password:
+                Confirm password
               </label>
               <input
                 className={STYLES.FORM_INPUT}
@@ -286,6 +283,12 @@ export default function Account() {
               Update information
             </button>
           </form>
+          {accountUpdated && (
+            <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-aeroBlue">
+              <CheckMark />
+              <span className="ml-[15px]">Your account has been updated</span>
+            </div>
+          )}
         </div>
       </div>
     )

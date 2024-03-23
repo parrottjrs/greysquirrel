@@ -472,9 +472,10 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
         .json({ success: false, message: "Recipient does not exist" });
     }
     if (req.userId === recipientId) {
-      return res
-        .status(200)
-        .json({ success: false, message: "User owns document" });
+      return res.status(200).json({
+        success: false,
+        message: "User already has access",
+      });
     }
     const { success, message } = await sendInvite(
       pool,
@@ -483,7 +484,7 @@ app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
       recipientId
     );
     if (!success) {
-      return res.status(400).json({ success: success, message: message });
+      return res.status(200).json({ success: success, message: message });
     }
     return res.status(200).json({ success: success, message: message });
   } catch (err) {
@@ -736,6 +737,18 @@ app.delete(
 //     });
 //   });
 // });
+
+wss.on("connection", function connection(ws) {
+  ws.on("message", function message(data) {
+    const parsedData = JSON.parse(data.toString());
+    const { docId, content } = parsedData;
+    console.log({
+      docId,
+      content,
+    });
+    ws.send("Server hears you loud and clear");
+  });
+});
 
 server.listen(PORT, () => {
   console.log(`Server started on ${PORT}`);
