@@ -16,6 +16,7 @@ export default function Home() {
     try {
       const authorized = await authenticate();
       if (authorized) {
+        console.log("hello world");
         navigate("/documents");
       }
       if (hasSignedUp) {

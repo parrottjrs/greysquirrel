@@ -1,7 +1,8 @@
 import express from "express";
 
 import http from "http";
-import WebSocket, { WebSocketServer } from "ws";
+// import WebSocket, { WebSocketServer } from "ws";\
+import { Server } from "socket.io";
 import mysql from "mysql2/promise";
 import cookieParser from "cookie-parser";
 import { AccessToken, RefreshToken } from "./Token";
@@ -37,9 +38,10 @@ import { sendVerificationEmail, userVerificationInfo } from "./utils/mail";
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
-const PORT = process.env.PORT || 8000;
 
+const io = new Server(server);
+const PORT = process.env.PORT || 8000;
+// const wss = new WebSocketServer({ server });
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
 const THIRTY_DAYS = 2.592e9;
@@ -287,7 +289,9 @@ app.get(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
-      return res.status(200).json({ success: true, message: "Authorized" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Authorized", userId: req.userId });
     } catch (err) {
       console.error("Authentication error:", err);
       return res
@@ -416,7 +420,6 @@ app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
     if (!success) {
       return res.status(200).json({ success: success, message: message });
     }
-    console.log("Fetched documents!");
     return res.status(200).send({
       success: success,
       message: message,
@@ -663,7 +666,6 @@ app.get(
       if (!success) {
         return res.status(200).json({ success: success, message: message });
       }
-      console.log("Fetched shared documents!");
       return res
         .status(200)
         .json({ success: success, message: message, sharedDocs: sharedDocs });
@@ -738,15 +740,26 @@ app.delete(
 //   });
 // });
 
-wss.on("connection", function connection(ws) {
-  ws.on("message", function message(data) {
-    const parsedData = JSON.parse(data.toString());
-    const { docId, content } = parsedData;
-    console.log({
-      docId,
-      content,
-    });
-    ws.send("Server hears you loud and clear");
+// wss.on("connection", function connection(ws) {
+//   ws.on("message", function message(data) {
+//     const parsedData = JSON.parse(data.toString());
+//     const { docId, content } = parsedData;
+//     console.log({
+//       docId,
+//       content,
+//     });
+//     ws.send("Server hears you loud and clear");
+//   });
+// });
+
+io.on("connection", (socket) => {
+  const { docId } = socket.handshake.query;
+  socket.join(`${docId}`);
+  socket.on("message", (evt) => {
+    io.to(`${docId}`).emit("message", evt);
+  });
+  socket.on("disconnect", () => {
+    console.log("someone left");
   });
 });
 

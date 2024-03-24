@@ -8,7 +8,7 @@ export default function LogoutButton() {
     try {
       localStorage.clear();
       await fetch("/api/logout");
-      navigate("/");
+      navigate("/#");
     } catch (err) {
       console.error(err);
     }

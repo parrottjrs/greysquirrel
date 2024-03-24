@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import useWebSocket from "react-use-websocket";
+
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/styles";
 import { authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
 import CustomQuill from "../components/CustomQuill";
+import { Socket, io } from "socket.io-client";
 
 export default function Editor() {
   const params = useParams();
   const docId = params.docId;
-  const WS_URL = "ws://localhost:8000";
-  const client = useWebSocket(WS_URL);
+  const WS_URL = "ws://localhost:3000";
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [authorization, setAuthorization] = useState(false);
-  const { sendMessage, lastMessage, readyState } = client;
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const authenticateUser = async () => {
     try {
@@ -78,6 +78,11 @@ export default function Editor() {
 
   useEffect(() => {
     authenticateUser();
+    const newSocket = io(WS_URL, { query: { docId: docId } });
+    setSocket(newSocket);
+    return () => {
+      newSocket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -94,8 +99,16 @@ export default function Editor() {
   const handleTextChange = (text: string) => {
     setText(text);
     const jsonData = { docId: docId, content: text };
-    sendMessage(JSON.stringify(jsonData));
+    if (socket) {
+      socket.send(jsonData);
+    }
   };
+
+  if (socket) {
+    socket.on("message", (data) => {
+      setText(data.content);
+    });
+  }
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
