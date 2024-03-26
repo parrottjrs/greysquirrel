@@ -23,18 +23,19 @@ const handleAuthenticate = async (message: any) => {
       return true;
     default:
       console.error("An unexpected error has occurred");
-      break;
+      return false;
   }
 };
 
 export const authenticate = async () => {
   try {
     const response = await fetch("/api/authenticate");
-    const json = await response.json();
-    const authenticated = await handleAuthenticate(json.message);
-    return authenticated;
+    const { message, userId } = await response.json();
+    const authenticated = await handleAuthenticate(message);
+    return { success: authenticated, userId: userId };
   } catch (err) {
     console.error(err);
+    return { success: false, userId: null };
   }
 };
 

@@ -28,8 +28,8 @@ export default function Signin() {
 
   const authenticateUser = async () => {
     try {
-      const authorized = await authenticate();
-      if (authorized) {
+      const { success } = await authenticate();
+      if (success) {
         navigate("/documents");
       }
     } catch (err) {

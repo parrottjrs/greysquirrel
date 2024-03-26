@@ -46,8 +46,8 @@ export default function Account() {
 
   const authenticateUser = async () => {
     try {
-      const authorized = await authenticate();
-      if (!authorized) {
+      const { success } = await authenticate();
+      if (!success) {
         navigate("/signin");
       }
       setAuthorization(true);

@@ -11,22 +11,25 @@ import { Socket, io } from "socket.io-client";
 export default function Editor() {
   const params = useParams();
   const docId = params.docId;
-  const WS_URL = "ws://localhost:3000";
+  const WS_URL = "ws://192.168.2.102:3000";
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [authorization, setAuthorization] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [lastMessage, setLastMessage] = useState("");
 
   const authenticateUser = async () => {
     try {
-      const authorized = await authenticate();
-      if (!authorized) {
+      const { success, userId } = await authenticate();
+      if (!success) {
         navigate("/signin");
       }
       setAuthorization(true);
+      setCurrentUserId(userId);
     } catch (err) {
       console.error(err);
     }
@@ -80,6 +83,7 @@ export default function Editor() {
     authenticateUser();
     const newSocket = io(WS_URL, { query: { docId: docId } });
     setSocket(newSocket);
+
     return () => {
       newSocket.disconnect();
     };
@@ -96,19 +100,39 @@ export default function Editor() {
     return () => clearTimeout(timer);
   }, [text, title]);
 
-  const handleTextChange = (text: string) => {
+  const preventDuplicate = async (
+    currentText: string,
+    textToBeSent: string
+  ) => {
+    return currentText === textToBeSent;
+  };
+
+  const handleTextChange = async (text: string) => {
     setText(text);
-    const jsonData = { docId: docId, content: text };
     if (socket) {
+      const jsonData = { docId: docId, content: text, userId: currentUserId };
+      const isDuplicateText = await preventDuplicate(
+        jsonData.content,
+        lastMessage
+      );
+      if (isDuplicateText) {
+        return null;
+      }
+      setLastMessage(jsonData.content);
       socket.send(jsonData);
     }
   };
 
-  if (socket) {
-    socket.on("message", (data) => {
-      setText(data.content);
-    });
-  }
+  useEffect(() => {
+    if (socket) {
+      socket.on("message", (data) => {
+        console.log(data);
+        if (data.content !== text) {
+          setText(data.content);
+        }
+      });
+    }
+  }, [socket]);
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
