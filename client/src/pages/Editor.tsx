@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,10 +7,11 @@ import { authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
 import CustomQuill from "../components/CustomQuill";
 import { Socket, io } from "socket.io-client";
+import * as Y from "yjs";
 
 export default function Editor() {
   const params = useParams();
-  const docId = params.docId;
+  const [docId] = useState(params.docId);
   const WS_URL = "ws://192.168.2.102:3000";
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
@@ -20,16 +21,23 @@ export default function Editor() {
   const [authorization, setAuthorization] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [lastMessage, setLastMessage] = useState("");
+  const [yDoc] = useState(new Y.Doc());
+  const yText = yDoc.getText(text);
+  const currentUserIdRef = useRef(currentUserId);
+
+  useEffect(() => {
+    currentUserIdRef.current = currentUserId;
+  }, [currentUserId]);
 
   const authenticateUser = async () => {
     try {
       const { success, userId } = await authenticate();
+
       if (!success) {
         navigate("/signin");
       }
-      setAuthorization(true);
       setCurrentUserId(userId);
+      setAuthorization(true);
     } catch (err) {
       console.error(err);
     }
@@ -93,46 +101,47 @@ export default function Editor() {
     fetchContent();
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);
-  }, [authorization]);
+  }, [authorization, currentUserId]);
 
   useEffect(() => {
     let timer: any = setTimeout(() => fetchSave(), autoSaveDelay);
     return () => clearTimeout(timer);
   }, [text, title]);
 
-  const preventDuplicate = async (
-    currentText: string,
-    textToBeSent: string
-  ) => {
-    return currentText === textToBeSent;
-  };
-
-  const handleTextChange = async (text: string) => {
+  const handleTextChange = async (text: string, delta: any, source: any) => {
     setText(text);
-    if (socket) {
-      const jsonData = { docId: docId, content: text, userId: currentUserId };
-      const isDuplicateText = await preventDuplicate(
-        jsonData.content,
-        lastMessage
-      );
-      if (isDuplicateText) {
-        return null;
-      }
-      setLastMessage(jsonData.content);
+    console.log("CurrentUderId while typing:", currentUserId);
+    if (socket && source === "user") {
+      const deltaString = JSON.stringify(delta);
+
+      const jsonData = {
+        docId: docId,
+        content: deltaString,
+        userId: currentUserId,
+      };
       socket.send(jsonData);
     }
+    return;
   };
+
+  const updateYdoc = () => {};
 
   useEffect(() => {
     if (socket) {
       socket.on("message", (data) => {
-        console.log(data);
-        if (data.content !== text) {
-          setText(data.content);
+        if (data.userId === currentUserIdRef.current) {
+          return;
         }
+
+        const deltaString = data.content;
+        const delta = JSON.parse(deltaString);
+
+        const yText: any = yDoc.getText(text);
+        yText.applyDelta(delta.ops);
+        console.log(yText.doc);
       });
     }
-  }, [socket]);
+  }, [socket, yDoc, currentUserId, text]);
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
@@ -143,7 +152,7 @@ export default function Editor() {
       <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
         <Navbar isLoggedIn={true} />
         <div className="mt-24 w-[51.75rem]">
-          <div>
+          <div onBlur={() => fetchSave()}>
             <CustomQuill
               text={text}
               title={title}

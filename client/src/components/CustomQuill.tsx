@@ -30,11 +30,11 @@ export default function CustomQuill({
         {!shared && <ShareModal type="button" docId={docId} title={title} />}
       </div>
       <span>
-        {editing ? (
+        {editing || title === "" ? (
           <input
             className="h-[1.5rem] l-[24.62rem] py-[0.62rem] pl-[0.62rem] mb-[1.66rem] font-IBM text-nero text-2xl font-medium border rounded-[0.62rem] items center"
             type="text"
-            defaultValue={title}
+            defaultValue={title ? title : "Untitled Document"}
             autoFocus={true}
             onBlur={(e) => {
               handleTitleBlur(e.target.value);

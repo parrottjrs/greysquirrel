@@ -1,3 +1,5 @@
+import { Text } from "yjs";
+
 export interface UserDocument {
   doc_id?: number;
   title?: string;
@@ -34,10 +36,10 @@ export interface DocumentOptionsProps {
 }
 
 export interface QuillProps {
-  text: string;
+  text: any;
   title: string;
   docId: string | undefined;
-  onTextChange: (text: string) => void;
+  onTextChange: (text: string, delta: any, source: any) => void;
   onTitleChange: (title: string) => void;
   shared: boolean;
 }
