@@ -5,6 +5,7 @@ import { QuillProps } from "../utils/customTypes";
 import CustomQuillToolbar from "./CustomQuillToolbar";
 
 export default function CustomQuill({
+  quillRef,
   text,
   title,
   docId,
@@ -50,6 +51,7 @@ export default function CustomQuill({
         )}
       </span>
       <ReactQuill
+        ref={quillRef}
         className="react-quill"
         value={text}
         onChange={onTextChange}

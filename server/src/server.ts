@@ -722,35 +722,6 @@ app.delete(
     }
   }
 );
-// const clients: any = {};
-
-// wss.on("connection", (connection) => {
-//   connection.on("error", console.error);
-
-//   const userId = uuid();
-
-//   clients[userId] = connection;
-
-//   connection.on("message", (message, isBinary) => {
-//     wss.clients.forEach((client) => {
-//       if (client !== connection && client.readyState === WebSocket.OPEN) {
-//         client.send(message, { binary: isBinary });
-//       }
-//     });
-//   });
-// });
-
-// wss.on("connection", function connection(ws) {
-//   ws.on("message", function message(data) {
-//     const parsedData = JSON.parse(data.toString());
-//     const { docId, content } = parsedData;
-//     console.log({
-//       docId,
-//       content,
-//     });
-//     ws.send("Server hears you loud and clear");
-//   });
-// });
 
 io.on("connection", (socket) => {
   const { docId } = socket.handshake.query;

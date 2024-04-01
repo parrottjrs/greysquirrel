@@ -1,5 +1,3 @@
-import { Text } from "yjs";
-
 export interface UserDocument {
   doc_id?: number;
   title?: string;
@@ -36,6 +34,7 @@ export interface DocumentOptionsProps {
 }
 
 export interface QuillProps {
+  quillRef: any;
   text: any;
   title: string;
   docId: string | undefined;

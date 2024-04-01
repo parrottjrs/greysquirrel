@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import CustomQuill from "../components/CustomQuill";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
+import ReactQuill from "react-quill";
 
 export default function Editor() {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function Editor() {
   const [yDoc] = useState(new Y.Doc());
   const yText = yDoc.getText(text);
   const currentUserIdRef = useRef(currentUserId);
+  let quillRef = useRef<ReactQuill>(null);
 
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
@@ -65,6 +67,24 @@ export default function Editor() {
       });
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleGetEditorContent = () => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+
+      if (quill) {
+        const htmlContent = quill.root.innerHTML;
+        const delta = quill.getContents();
+
+        console.log("HTML content:", htmlContent);
+        console.log("Delta:", delta);
+      } else {
+        console.error("Quill editor instance not found");
+      }
+    } else {
+      console.error("Quill ref is not assigned");
     }
   };
 
@@ -110,7 +130,7 @@ export default function Editor() {
 
   const handleTextChange = async (text: string, delta: any, source: any) => {
     setText(text);
-    console.log("CurrentUderId while typing:", currentUserId);
+    handleGetEditorContent();
     if (socket && source === "user") {
       const deltaString = JSON.stringify(delta);
 
@@ -154,6 +174,7 @@ export default function Editor() {
         <div className="mt-24 w-[51.75rem]">
           <div onBlur={() => fetchSave()}>
             <CustomQuill
+              quillRef={quillRef}
               text={text}
               title={title}
               docId={docId}
@@ -162,6 +183,9 @@ export default function Editor() {
               shared={params.shared ? true : false}
             />
           </div>
+          <button onClick={() => handleGetEditorContent()}>
+            Get Editor Content
+          </button>
         </div>
       </div>
     )
