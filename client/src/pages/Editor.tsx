@@ -9,6 +9,7 @@ import CustomQuill from "../components/CustomQuill";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
+import { QuillBinding } from "y-quill";
 
 export default function Editor() {
   const params = useParams();
@@ -22,11 +23,12 @@ export default function Editor() {
   const [authorization, setAuthorization] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [yDoc] = useState(new Y.Doc());
-  const yText = yDoc.getText(text);
+  let binding = null;
   const currentUserIdRef = useRef(currentUserId);
   let quillRef = useRef<ReactQuill>(null);
-
+  const yDoc = new Y.Doc();
+  const yText = yDoc.getText(text.toString());
+  yText.observe(() => {});
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
   }, [currentUserId]);
@@ -119,9 +121,15 @@ export default function Editor() {
 
   useEffect(() => {
     fetchContent();
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const newBinding = new QuillBinding(yText, quill);
+      binding = newBinding;
+    }
+
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);
-  }, [authorization, currentUserId]);
+  }, [authorization]);
 
   useEffect(() => {
     let timer: any = setTimeout(() => fetchSave(), autoSaveDelay);
@@ -130,10 +138,8 @@ export default function Editor() {
 
   const handleTextChange = async (text: string, delta: any, source: any) => {
     setText(text);
-    handleGetEditorContent();
     if (socket && source === "user") {
       const deltaString = JSON.stringify(delta);
-
       const jsonData = {
         docId: docId,
         content: deltaString,
@@ -144,24 +150,20 @@ export default function Editor() {
     return;
   };
 
-  const updateYdoc = () => {};
-
   useEffect(() => {
     if (socket) {
       socket.on("message", (data) => {
         if (data.userId === currentUserIdRef.current) {
           return;
         }
-
+        console.log("Received delta:", data.content);
         const deltaString = data.content;
         const delta = JSON.parse(deltaString);
 
-        const yText: any = yDoc.getText(text);
         yText.applyDelta(delta.ops);
-        console.log(yText.doc);
       });
     }
-  }, [socket, yDoc, currentUserId, text]);
+  }, [socket, currentUserId, text]);
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
