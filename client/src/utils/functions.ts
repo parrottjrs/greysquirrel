@@ -72,3 +72,11 @@ export const formatDate = (date: string) => {
   const formattedDate = new Date(date).toLocaleDateString([], options);
   return formattedDate;
 };
+
+export const applyDeltaSafely = (yText: any, delta: any) => {
+  try {
+    yText.applyDelta(delta);
+  } catch (error) {
+    console.error("Error applying delta:", error);
+  }
+};

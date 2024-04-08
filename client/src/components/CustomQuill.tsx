@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import ShareModal from "./ShareModal";
 import { QuillProps } from "../utils/customTypes";
@@ -67,6 +67,7 @@ CustomQuill.modules = {
   toolbar: {
     container: "#toolbar",
   },
+
   clipboard: {
     matchVisual: false,
   },

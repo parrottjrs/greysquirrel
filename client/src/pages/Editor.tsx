@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { STYLES } from "../utils/styles";
-import { authenticate, refresh } from "../utils/functions";
+import { applyDeltaSafely, authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
 import CustomQuill from "../components/CustomQuill";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
+import QuillCursors from "quill-cursors";
 
 export default function Editor() {
   const params = useParams();
@@ -28,7 +29,6 @@ export default function Editor() {
   let quillRef = useRef<ReactQuill>(null);
   const yDoc = new Y.Doc();
   const yText = yDoc.getText(text.toString());
-  yText.observe(() => {});
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
   }, [currentUserId]);
@@ -72,24 +72,6 @@ export default function Editor() {
     }
   };
 
-  const handleGetEditorContent = () => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-
-      if (quill) {
-        const htmlContent = quill.root.innerHTML;
-        const delta = quill.getContents();
-
-        console.log("HTML content:", htmlContent);
-        console.log("Delta:", delta);
-      } else {
-        console.error("Quill editor instance not found");
-      }
-    } else {
-      console.error("Quill ref is not assigned");
-    }
-  };
-
   const fetchContent = async () => {
     try {
       const response = await fetch("/api/create", {
@@ -125,11 +107,12 @@ export default function Editor() {
       const quill = quillRef.current.getEditor();
       const newBinding = new QuillBinding(yText, quill);
       binding = newBinding;
+      new QuillCursors(quill);
     }
 
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);
     return () => clearInterval(interval);
-  }, [authorization]);
+  }, [authorization, quillRef]);
 
   useEffect(() => {
     let timer: any = setTimeout(() => fetchSave(), autoSaveDelay);
@@ -159,11 +142,11 @@ export default function Editor() {
         console.log("Received delta:", data.content);
         const deltaString = data.content;
         const delta = JSON.parse(deltaString);
-
-        yText.applyDelta(delta.ops);
+        const textToApply = delta.ops;
+        applyDeltaSafely(yText, textToApply);
       });
     }
-  }, [socket, currentUserId, text]);
+  }, [socket, currentUserId, text, yText]);
 
   const handleTitleChange = (title: string) => {
     setTitle(title);
@@ -185,9 +168,6 @@ export default function Editor() {
               shared={params.shared ? true : false}
             />
           </div>
-          <button onClick={() => handleGetEditorContent()}>
-            Get Editor Content
-          </button>
         </div>
       </div>
     )
