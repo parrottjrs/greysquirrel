@@ -10,7 +10,6 @@ import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
-import QuillCursors from "quill-cursors";
 
 export default function Editor() {
   const params = useParams();
@@ -29,6 +28,7 @@ export default function Editor() {
   let quillRef = useRef<ReactQuill>(null);
   const yDoc = new Y.Doc();
   const yText = yDoc.getText(text.toString());
+
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
   }, [currentUserId]);
@@ -36,11 +36,11 @@ export default function Editor() {
   const authenticateUser = async () => {
     try {
       const { success, userId } = await authenticate();
-
       if (!success) {
         navigate("/signin");
       }
       setCurrentUserId(userId);
+
       setAuthorization(true);
     } catch (err) {
       console.error(err);
@@ -97,7 +97,9 @@ export default function Editor() {
     setSocket(newSocket);
 
     return () => {
-      newSocket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
     };
   }, []);
 
@@ -107,7 +109,6 @@ export default function Editor() {
       const quill = quillRef.current.getEditor();
       const newBinding = new QuillBinding(yText, quill);
       binding = newBinding;
-      new QuillCursors(quill);
     }
 
     let interval = setInterval(() => refreshToken(), refreshTokenDelay);

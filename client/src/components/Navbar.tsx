@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { STYLES } from "../utils/styles";
 import BellDot from "./BellDot";
 import Bell from "./Bell";
-import AccountCircle from "./AccountCircle";
 import AccountModal from "./AccountModal";
+import { removeHasSignedUp } from "../utils/functions";
 
 interface ChildProps {
   isLoggedIn?: boolean;
@@ -47,7 +47,13 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
           <h1 className={STYLES.NAVBAR_HEADER}>Greysquirrel</h1>
           {!isLoggedIn ? (
             <div className={STYLES.LINK_CONTAINER}>
-              <a href="#/" className={STYLES.BASIC_LINK}>
+              <a
+                href="#/"
+                className={STYLES.BASIC_LINK}
+                onClick={() => {
+                  removeHasSignedUp();
+                }}
+              >
                 About
               </a>
               <a href="#/signin" className={STYLES.STYLIZED_ANCHOR}>

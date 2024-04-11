@@ -80,3 +80,8 @@ export const applyDeltaSafely = (yText: any, delta: any) => {
     console.error("Error applying delta:", error);
   }
 };
+
+export const removeHasSignedUp = () => {
+  // Removes isLoggedIn from local storage. Allows authenticated user to view "about" page after without being redirected.
+  localStorage.removeItem("hasSignedUp");
+};

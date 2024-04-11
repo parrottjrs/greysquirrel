@@ -30,8 +30,6 @@ import {
   strongPassword,
   updateUserInfo,
   usernameExists,
-  userNameFromId,
-  verifyById,
   verifyEmailToken,
 } from "./utils/utils";
 import { sendVerificationEmail, userVerificationInfo } from "./utils/mail";
@@ -234,6 +232,7 @@ app.put(
     }
   }
 );
+
 // app.put("/api/change-password", async (req: AuthRequest, res) => {
 //   try {
 //     if (!req.userId) {
@@ -289,9 +288,11 @@ app.get(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
-      return res
-        .status(200)
-        .json({ success: true, message: "Authorized", userId: req.userId });
+      return res.status(200).json({
+        success: true,
+        message: "Authorized",
+        userId: req.userId,
+      });
     } catch (err) {
       console.error("Authentication error:", err);
       return res

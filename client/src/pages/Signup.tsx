@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { STYLES } from "../utils/styles";
 import Navbar from "../components/Navbar";
-import { AlertCircle } from "lucide-react";
 import ShowPassword from "../components/ShowPasword";
 import ExclamationMark from "../components/ExclamationMark";
 

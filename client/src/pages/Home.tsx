@@ -14,8 +14,8 @@ export default function Home() {
   const navigate = useNavigate();
   const authenticateUser = async () => {
     try {
-      const authorized = await authenticate();
-      if (authorized) {
+      const { success } = await authenticate();
+      if (success) {
         navigate("/documents");
       }
       if (hasSignedUp) {
