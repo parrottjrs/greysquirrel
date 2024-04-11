@@ -15,6 +15,7 @@ import {
   countInvites,
   createDocument,
   createUser,
+  createVerificationToken,
   deleteDocument,
   deleteInviteByInviteId,
   getAllSharedDocs,
@@ -26,13 +27,19 @@ import {
   getUsernames,
   revokeSharedAccess,
   saveDocument,
+  searchForEmail,
   sendInvite,
   strongPassword,
   updateUserInfo,
   usernameExists,
   verifyEmailToken,
 } from "./utils/utils";
-import { sendVerificationEmail, userVerificationInfo } from "./utils/mail";
+import {
+  emailVerificationInfo,
+  sendEmailVerification,
+  sendForgotPasswordVerification,
+} from "./utils/mail";
+import { error } from "console";
 
 const app = express();
 const server = http.createServer(app);
@@ -85,7 +92,7 @@ app.post("/api/signUp", async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: success, message: message });
     }
-    await sendVerificationEmail(username, email, emailToken);
+    await sendEmailVerification(username, email, emailToken);
     const id = await getId(pool, username);
     const access = AccessToken.create(id);
     const refresh = RefreshToken.create(id);
@@ -259,11 +266,11 @@ app.post(
           .status(200)
           .json({ success: false, message: "Authorization Error" });
       }
-      const { username, email, emailToken } = await userVerificationInfo(
+      const { username, email, emailToken } = await emailVerificationInfo(
         pool,
         req.userId
       );
-      const { success, message } = await sendVerificationEmail(
+      const { success, message } = await sendEmailVerification(
         username,
         email,
         emailToken
@@ -277,6 +284,35 @@ app.post(
     }
   }
 );
+
+app.post("/api/forgot-password", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const emailExistsInDatabase = await searchForEmail(pool, email);
+    if (!emailExistsInDatabase) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address. Please enter a valid email address.",
+      });
+    }
+    const createTokenResponse = await createVerificationToken(pool, email);
+    if (!createTokenResponse.success) {
+      return res
+        .status(400)
+        .json({ success: false, message: createTokenResponse.message });
+    }
+    const { success, message } = await sendForgotPasswordVerification(
+      email,
+      createTokenResponse.verificationToken
+    );
+    return res.status(200).json({ success: success, message: message });
+  } catch (err) {
+    console.error("Error sending email:", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+});
 
 app.get(
   "/api/authenticate",

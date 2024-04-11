@@ -327,6 +327,35 @@ export const updateUserInfo = async (
     : { success: false, message: "Could not update user info" };
 };
 
+export const searchForEmail = async (pool: any, email: string) => {
+  const query = `
+SELECT user_name 
+FROM users 
+WHERE email = ?
+`;
+  const [result, _] = await pool.query(query, [email]);
+  return result.length > 0 ? true : false;
+};
+
+export const createVerificationToken = async (pool: any, email: string) => {
+  const verificationToken = randomUUID();
+  const expirationDateMs = Date.now() + 600000; /* 600000 ms = 10 minutes */
+  const values = [verificationToken, email, expirationDateMs];
+  const query = `
+    INSERT INTO verification_tokens (verification_token, email, expiration_date)
+    VALUES (?, ?, ?)
+    `;
+  const [result, _] = await pool.query(query, values);
+
+  return result.affectedRows > 0
+    ? {
+        success: true,
+        message: "Verification token created",
+        verificationToken: verificationToken,
+      }
+    : { success: false, message: "Error creating verification token" };
+};
+
 //Document queries
 
 export const createDocument = async (con: any, userId: number) => {

@@ -1,5 +1,5 @@
-import { randomBytes, randomUUID } from "crypto";
 import * as nodeMailer from "nodemailer";
+import { resolve } from "path";
 
 require("dotenv").config();
 const EMAIL = process.env.EMAIL;
@@ -15,7 +15,7 @@ const mailer = nodeMailer.createTransport({
   },
 });
 
-export const userVerificationInfo = async (pool: any, userId: number) => {
+export const emailVerificationInfo = async (pool: any, userId: number) => {
   const query = `
   SELECT user_name, email, email_token 
   FROM users 
@@ -30,7 +30,7 @@ export const userVerificationInfo = async (pool: any, userId: number) => {
   };
 };
 
-export const sendVerificationEmail = async (
+export const sendEmailVerification = async (
   userName: string,
   userEmail: string,
   emailToken?: string
@@ -44,16 +44,39 @@ export const sendVerificationEmail = async (
     text: `Hello ${userName}! Please verify your email by clicking the link below:\n${CLIENT_URL}/#/verify-email?emailToken=${emailToken}`,
   };
 
-  let success = false;
-  let message = "";
+  return new Promise<{ success: boolean; message: string }>((resolve, reject) =>
+    mailer.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        resolve({ success: false, message: "Email not sent" });
+      } else {
+        resolve({ success: true, message: "Email sent" });
+      }
+    })
+  );
+};
 
-  mailer.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-      (success = false), (message = "Email not sent");
-    } else {
-      (success = true), (message = "Email sent");
-    }
-  });
-  return { success: success, message: message };
+export const sendForgotPasswordVerification = async (
+  userEmail: string,
+  verificationToken?: string
+) => {
+  const mailOptions = {
+    from: `"Security Squirrel" <${EMAIL}>`,
+    to: userEmail,
+    subject: "Confirm password change...",
+    html: `<p>Are you trying to change your Greysquirrel password? If so, Please click the link below 👇</p> 
+      <a href="${CLIENT_URL}/#/forgot-password/${verificationToken}">Change your password</a>`,
+    text: ` Are you trying to change your Greysquirrel password? If so, Please click the link below:\n${CLIENT_URL}/#/forgot-password?verificationToken=${verificationToken}`,
+  };
+
+  return new Promise<{ success: boolean; message: string }>((resolve, reject) =>
+    mailer.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        resolve({ success: false, message: "Email not sent" });
+      } else {
+        resolve({ success: true, message: "Email sent" });
+      }
+    })
+  );
 };
