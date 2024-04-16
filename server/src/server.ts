@@ -12,6 +12,7 @@ import {
   authenticateToken,
   authenticateUser,
   AuthRequest,
+  changePassword,
   countInvites,
   createDocument,
   createUser,
@@ -33,20 +34,18 @@ import {
   updateUserInfo,
   usernameExists,
   verifyEmailToken,
+  verifyForgotPassword,
 } from "./utils/utils";
 import {
   emailVerificationInfo,
   sendEmailVerification,
   sendForgotPasswordVerification,
 } from "./utils/mail";
-import { error } from "console";
 
 const app = express();
 const server = http.createServer(app);
-
 const io = new Server(server);
 const PORT = process.env.PORT || 8000;
-// const wss = new WebSocketServer({ server });
 const TEN_MINUTES = 600000;
 const ONE_DAY = 8.64e7;
 const THIRTY_DAYS = 2.592e9;
@@ -57,6 +56,7 @@ const THIRTY_DAYS = 2.592e9;
 
 app.use(express.json());
 app.use(cookieParser());
+// app.use(express.static(absolutePath));
 
 const pool = mysql.createPool({
   host: "localhost",
@@ -106,7 +106,7 @@ app.post("/api/signUp", async (req, res) => {
       .json({ success: success, message: message });
   } catch (err) {
     console.error("User signup error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "User signup error" });
   }
 });
 
@@ -120,7 +120,6 @@ app.put(
           .status(200)
           .json({ success: false, message: "Authorization error" });
       }
-
       const { emailToken } = req.body;
       const { success, message } = await verifyEmailToken(
         pool,
@@ -134,7 +133,7 @@ app.put(
       return res.status(200).json(response);
     } catch (err) {
       console.error("Verification error:", err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "User verification failed" });
     }
   }
 );
@@ -170,7 +169,7 @@ app.post("/api/signIn", async (req, res) => {
       .json({ message: "Access granted" });
   } catch (err) {
     console.error("Authorization error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error when signing in" });
   }
 });
 
@@ -196,7 +195,7 @@ app.get(
         .json({ success: success, message: message, userInfo: userInfo });
     } catch (err) {
       console.error("Error retreiving user info:", err);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Cannot retreive user info" });
     }
   }
 );
@@ -213,7 +212,6 @@ app.put(
       }
       const { firstName, lastName, username, email, password } = req.body.data;
       const userNameInUse = await usernameExists(pool, req.userId, username);
-
       if (userNameInUse) {
         return res.status(200).json({
           success: false,
@@ -235,26 +233,10 @@ app.put(
       return res.status(200).json({ success: success, message: message });
     } catch (err) {
       console.error("Error updating user info:", err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Cannot update user info" });
     }
   }
 );
-
-// app.put("/api/change-password", async (req: AuthRequest, res) => {
-//   try {
-//     if (!req.userId) {
-//       return res
-//         .status(401)
-//         .json({ success: false, message: "Authorization error" });
-//     }
-//     const { success, message } = await changePassword(pool, req.userId);
-//     const status = success ? 200 : 400;
-//     return res.status(status).json({ success: success, message: message });
-//   } catch (err) {
-//     console.error("Error changing password:", err);
-//     return res.status(500).json({ message: "internal server error" });
-//   }
-// });
 
 app.post(
   "/api/resend-verification-email",
@@ -280,7 +262,7 @@ app.post(
       console.error("Error sending verification email:", err);
       return res
         .status(500)
-        .json({ success: false, message: "Internal server error" });
+        .json({ success: false, message: "Cannot resend email verification" });
     }
   }
 );
@@ -288,31 +270,97 @@ app.post(
 app.post("/api/forgot-password", async (req, res) => {
   try {
     const email = req.body.email;
-    const emailExistsInDatabase = await searchForEmail(pool, email);
-    if (!emailExistsInDatabase) {
+    const searchResult = await searchForEmail(pool, email);
+    if (!searchResult.success) {
       return res.status(400).json({
         success: false,
         message: "Invalid email address. Please enter a valid email address.",
       });
     }
-    const createTokenResponse = await createVerificationToken(pool, email);
+    const userId = searchResult.userId;
+
+    const createTokenResponse = await createVerificationToken(
+      pool,
+      email,
+      userId
+    );
     if (!createTokenResponse.success) {
       return res
         .status(400)
         .json({ success: false, message: createTokenResponse.message });
     }
-    const { success, message } = await sendForgotPasswordVerification(
+    const sendEmailResponse = await sendForgotPasswordVerification(
       email,
       createTokenResponse.verificationToken
     );
-    return res.status(200).json({ success: success, message: message });
+    return res.status(200).json({
+      success: sendEmailResponse.success,
+      message: sendEmailResponse.message,
+    });
   } catch (err) {
     console.error("Error sending email:", err);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Cannot initialize forgot-password process",
+    });
   }
 });
+
+app.get("/api/verify-forgot-password", async (req, res) => {
+  try {
+    const verificationToken = req.body.verificationToken;
+    console.log("verificationToken before request:", verificationToken);
+    const { success, message, userId } = await verifyForgotPassword(
+      pool,
+      verificationToken
+    );
+    if (!success) {
+      return res.status(400).json({ success: success, message: message });
+    }
+    const access = AccessToken.create(userId);
+    const refresh = RefreshToken.create(userId);
+    return res
+      .cookie("accessToken", access, {
+        maxAge: TEN_MINUTES,
+        httpOnly: true,
+      })
+      .cookie("refreshToken", refresh, {
+        maxAge: ONE_DAY,
+        httpOnly: true,
+      })
+      .status(200)
+      .json({ success: success, message: message, userId: userId });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Cannot get verification token" });
+  }
+});
+
+app.put(
+  "/api/change-password",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (!req.userId) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const newPassword = req.body.password;
+      const { success, message } = await changePassword(
+        pool,
+        newPassword,
+        req.userId
+      );
+      const status = success ? 200 : 400;
+      return res.status(status).json({ success: success, message: message });
+    } catch (err) {
+      console.error("Error changing password:", err);
+      return res.status(500).json({ message: "internal server error" });
+    }
+  }
+);
 
 app.get(
   "/api/authenticate",
@@ -333,14 +381,10 @@ app.get(
       console.error("Authentication error:", err);
       return res
         .status(500)
-        .json({ success: false, message: "Internal server error" });
+        .json({ success: false, message: "Authentication failed" });
     }
   }
 );
-
-// app.get("/", (req, res) => {
-//   res.sendFile(`${absolutePath}/index.html`);
-// });
 
 app.post("/api/refresh", async (req, res) => {
   try {
@@ -363,7 +407,7 @@ app.post("/api/refresh", async (req, res) => {
     console.error("Refresh token error", err);
     return res
       .status(500)
-      .json({ success: false, message: "Internal server error" });
+      .json({ success: false, message: "Token refresh failed" });
   }
 });
 
@@ -378,7 +422,7 @@ app.get("/api/logout", async (req, res) => {
     console.error("Logout error:", err);
     return res
       .status(500)
-      .json({ success: false, message: "Internal server error" });
+      .json({ success: false, message: "Error loggin out" });
   }
 });
 
@@ -419,7 +463,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
     console.error("Error creating document:", err);
     return res
       .status(500)
-      .json({ success: false, message: "Internal server error" });
+      .json({ success: false, message: "Unable to create/retreive document" });
   }
 });
 
@@ -440,11 +484,9 @@ app.put("/api/save", authenticateToken, async (req: AuthRequest, res) => {
     console.error("Error saving document:", err);
     return res
       .status(500)
-      .json({ success: false, message: "Internal server error" });
+      .json({ success: false, message: "Error saving document" });
   }
 });
-
-// app.use(express.static(absolutePath));
 
 app.get("/api/documents", authenticateToken, async (req: AuthRequest, res) => {
   try {

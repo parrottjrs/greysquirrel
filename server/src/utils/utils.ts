@@ -312,6 +312,7 @@ export const updateUserInfo = async (
     saltToUpdate,
     userId,
   ];
+
   const query = `
   UPDATE users
   SET first_name = ?, last_name = ?, user_name = ?, email = ?, password = ?, salt = ?
@@ -329,21 +330,27 @@ export const updateUserInfo = async (
 
 export const searchForEmail = async (pool: any, email: string) => {
   const query = `
-SELECT user_name 
-FROM users 
-WHERE email = ?
-`;
+    SELECT user_id
+    FROM users 
+    WHERE email = ?
+  `;
   const [result, _] = await pool.query(query, [email]);
-  return result.length > 0 ? true : false;
+  return result.length > 0
+    ? { success: true, userId: result[0].user_id }
+    : { success: false };
 };
 
-export const createVerificationToken = async (pool: any, email: string) => {
+export const createVerificationToken = async (
+  pool: any,
+  email: string,
+  userId: number
+) => {
   const verificationToken = randomUUID();
   const expirationDateMs = Date.now() + 600000; /* 600000 ms = 10 minutes */
-  const values = [verificationToken, email, expirationDateMs];
+  const values = [verificationToken, email, expirationDateMs, userId];
   const query = `
-    INSERT INTO verification_tokens (verification_token, email, expiration_date)
-    VALUES (?, ?, ?)
+    INSERT INTO verification_tokens (verification_token, email, expiration_date, user_id)
+    VALUES (?, ?, ?, ?)
     `;
   const [result, _] = await pool.query(query, values);
 
@@ -354,6 +361,87 @@ export const createVerificationToken = async (pool: any, email: string) => {
         verificationToken: verificationToken,
       }
     : { success: false, message: "Error creating verification token" };
+};
+
+export const verifyForgotPassword = async (
+  pool: any,
+  verificationToken: string
+) => {
+  const query = `
+  SELECT user_id, expiration_date
+  FROM verification_tokens 
+  WHERE verification_token = ?
+  `;
+  console.log("Verification token before query:", verificationToken);
+  const [result, _] = await pool.query(query, [verificationToken]);
+  if (result.length === 0) {
+    return {
+      success: false,
+      message: "Verification token does not exist. Please restart process.",
+    };
+  }
+  return result[0].expiration_date < Date.now()
+    ? {
+        success: false,
+        message: "Verification token expired. Please restart process",
+      }
+    : {
+        success: true,
+        message: "Verification token authorized. Continue to reset password",
+        userId: result[0].user_id,
+      };
+};
+
+const isSamePassword = async (
+  pool: any,
+  newPassword: string,
+  userId: number
+) => {
+  const { currentPassword, currentSalt } = await passwordSaltFromUserId(
+    pool,
+    userId
+  );
+  const attemptedPassword = pbkdf2Sync(
+    newPassword,
+    currentSalt,
+    10000,
+    64,
+    "sha512"
+  ).toString("base64");
+  return attemptedPassword === currentPassword;
+};
+
+export const changePassword = async (
+  pool: any,
+  newPassword: string,
+  userId: number
+) => {
+  const isReusingPassword = await isSamePassword(pool, newPassword, userId);
+  if (isReusingPassword) {
+    return {
+      success: false,
+      message: "New password can't be the same as a previously used password",
+    };
+  }
+  const newSalt = randomBytes(64).toString("base64");
+  const newHash = pbkdf2Sync(
+    newPassword,
+    newSalt,
+    10000,
+    64,
+    "sha512"
+  ).toString("base64");
+
+  const values = [newSalt, newHash, userId];
+  const query = `
+  UPDATE users
+  SET salt = ?, password = ?
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "Password reset successful" }
+    : { success: false, message: "Password reset failed" };
 };
 
 //Document queries
