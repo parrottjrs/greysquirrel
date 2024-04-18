@@ -186,7 +186,9 @@ export default function Signup() {
             <input
               className={STYLES.FORM_INPUT}
               id={"email"}
-              type="text"
+              type="email"
+              placeholder="yourname@example.com"
+              title="please enter a valid email address"
               {...register("email")}
               autoComplete="off"
               required={true}
@@ -199,7 +201,9 @@ export default function Signup() {
             <input
               className={STYLES.FORM_INPUT}
               id={"emailCheck"}
-              type="text"
+              type="email"
+              placeholder="yourname@example.com"
+              title="please enter a valid email address"
               {...register("emailCheck")}
               autoComplete="off"
               required={true}

@@ -14,6 +14,7 @@ export const theme = {
     paleRose: "#FFC1C1",
     roman: "#DF5E5E",
     silver: "#C4C4C4",
+    taupeGray: "#797777",
     transparent: "#0000",
     vividViolet: "#A4319E",
     white: "#FFF",

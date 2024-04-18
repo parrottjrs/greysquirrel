@@ -286,7 +286,9 @@ export default function Account() {
           {accountUpdated && (
             <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-aeroBlue">
               <CheckMark />
-              <span className="ml-[15px]">Your account has been updated</span>
+              <span className={STYLES.BOLD_GRAY_TEXT}>
+                Your account has been updated
+              </span>
             </div>
           )}
         </div>

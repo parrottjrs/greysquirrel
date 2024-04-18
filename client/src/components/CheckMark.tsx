@@ -3,8 +3,8 @@ import React from "react";
 export default function CheckMark() {
   return (
     <svg
-      width="18"
-      height="14"
+      width="24"
+      height="16.5"
       viewBox="0 0 26 19"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

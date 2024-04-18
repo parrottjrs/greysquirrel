@@ -97,7 +97,7 @@ export default function Signin() {
           >
             <div className="mt-10">
               <label className={STYLES.LABEL} htmlFor={"username"}>
-                Username:
+                Username
               </label>
               <input
                 className={STYLES.FORM_INPUT}
@@ -110,9 +110,18 @@ export default function Signin() {
             </div>
             <div>
               <div className="mt-10">
-                <label className={STYLES.LABEL} htmlFor={"password"}>
-                  Password:
-                </label>
+                <div className="flex flex-row justify-between items-center">
+                  <label className={STYLES.LABEL} htmlFor={"password"}>
+                    Password
+                  </label>
+                  <a
+                    href="#/forgot-password"
+                    className={STYLES.FORGOT_PASSWORD_TEXT}
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+
                 <input
                   className={STYLES.FORM_INPUT}
                   id={"password"}

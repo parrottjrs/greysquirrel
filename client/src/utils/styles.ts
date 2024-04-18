@@ -6,6 +6,7 @@ export const STYLES = {
     "flex h-4 w-60 md:w-[404px] pl-2.5 py-2.5 items-center gap-2.5 border border-nero rounded-xl text-nero font-IBM font-normal",
   INSTRUCTIONS: "-mt-1 font-IBM text-nero text-sm font-medium md:text-base",
   PARAGRAPH: "text-left text-nero text-sm font-IBM md:text-base",
+  BOLD_GRAY_TEXT: "ml-[15px] text-taupeGray font-IBM text-lg font-medium",
   // HOME
   HOME_PARENT_CONTAINER: "h-screen  flex flex-row items-center justify-center",
 
@@ -41,6 +42,7 @@ export const STYLES = {
   REMEMBER_CONTAINER: "w-full mt-16 flex flex-row items-center justify-left",
   REMEMBER_TEXT: "text-nero text-xs md: text-sm font-IBM font-medium",
   CHECK_BOX: "mr-2",
+  FORGOT_PASSWORD_TEXT: "text-vividViolet text-xs font-IBM no-underline",
 
   // SIGNUP
   SIGNUP_PARENT_CONTAINER:

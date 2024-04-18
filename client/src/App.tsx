@@ -10,6 +10,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
 import Notifications from "./pages/Notifications";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export default function App() {
   return (
@@ -23,6 +24,10 @@ export default function App() {
         <Route path="/verify-email/:emailToken?" element={<VerifyEmail />} />
         <Route path="/account" element={<Account />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route
+          path="/forgot-password/:verificationToken?"
+          element={<ForgotPassword />}
+        />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </HashRouter>
