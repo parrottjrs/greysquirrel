@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 
 import http from "http";
 // import WebSocket, { WebSocketServer } from "ws";\
@@ -19,6 +19,7 @@ import {
   createVerificationToken,
   deleteDocument,
   deleteInviteByInviteId,
+  forgotPasswordResponse,
   getAllSharedDocs,
   getDocument,
   getId,
@@ -41,6 +42,7 @@ import {
   sendEmailVerification,
   sendForgotPasswordVerification,
 } from "./utils/mail";
+import { time } from "console";
 
 const app = express();
 const server = http.createServer(app);
@@ -269,34 +271,28 @@ app.post(
 
 app.post("/api/forgot-password", async (req, res) => {
   try {
-    const email = req.body.email;
+    const { email } = req.body;
     const searchResult = await searchForEmail(pool, email);
     if (!searchResult.success) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email address. Please enter a valid email address.",
-      });
+      return forgotPasswordResponse(res);
     }
     const userId = searchResult.userId;
-
+    if (!userId) {
+      return forgotPasswordResponse(res);
+    }
     const createTokenResponse = await createVerificationToken(
       pool,
       email,
       userId
     );
     if (!createTokenResponse.success) {
-      return res
-        .status(400)
-        .json({ success: false, message: createTokenResponse.message });
+      return forgotPasswordResponse(res);
     }
-    const sendEmailResponse = await sendForgotPasswordVerification(
+    await sendForgotPasswordVerification(
       email,
       createTokenResponse.verificationToken
     );
-    return res.status(200).json({
-      success: sendEmailResponse.success,
-      message: sendEmailResponse.message,
-    });
+    return forgotPasswordResponse(res);
   } catch (err) {
     console.error("Error sending email:", err);
     return res.status(500).json({
@@ -306,10 +302,9 @@ app.post("/api/forgot-password", async (req, res) => {
   }
 });
 
-app.get("/api/verify-forgot-password", async (req, res) => {
+app.post("/api/verify-forgot-password", async (req, res) => {
   try {
     const verificationToken = req.body.verificationToken;
-    console.log("verificationToken before request:", verificationToken);
     const { success, message, userId } = await verifyForgotPassword(
       pool,
       verificationToken
@@ -329,7 +324,7 @@ app.get("/api/verify-forgot-password", async (req, res) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ success: success, message: message, userId: userId });
+      .json({ success: success, message: message });
   } catch (err) {
     return res
       .status(500)
@@ -348,6 +343,7 @@ app.put(
           .json({ success: false, message: "Authorization error" });
       }
       const newPassword = req.body.password;
+
       const { success, message } = await changePassword(
         pool,
         newPassword,

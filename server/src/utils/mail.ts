@@ -73,9 +73,17 @@ export const sendForgotPasswordVerification = async (
     mailer.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(error);
-        resolve({ success: false, message: "Email not sent" });
+        resolve({
+          success: true,
+          message:
+            "An email has been sent to the provided address if it exists in our system. Please check your inbox for instructions to reset your password.",
+        });
       } else {
-        resolve({ success: true, message: "Email sent" });
+        resolve({
+          success: true,
+          message:
+            "An email has been sent to the provided address if it exists in our system. Please check your inbox for instructions to reset your password.",
+        });
       }
     })
   );

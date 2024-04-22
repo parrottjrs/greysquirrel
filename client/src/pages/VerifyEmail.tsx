@@ -48,7 +48,7 @@ export default function VerifyEmail() {
     if (emailToken) {
       handleVerification(emailToken);
     }
-  }, []);
+  }, [emailToken]);
 
   return (
     <div>

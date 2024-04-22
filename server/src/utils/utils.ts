@@ -16,6 +16,7 @@ export interface AuthRequest extends Request {
   docId?: number;
   recipient?: string;
   inviteId?: number;
+  password?: string;
 }
 
 //User creation/Authentication handling & queries
@@ -340,6 +341,22 @@ export const searchForEmail = async (pool: any, email: string) => {
     : { success: false };
 };
 
+const getRandomTimeout = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+export const forgotPasswordResponse = async (res: Response<any>) => {
+  const timeout = getRandomTimeout(3000, 6000);
+
+  return setTimeout(() => {
+    res.status(200).json({
+      success: true,
+      message:
+        "An email has been sent to the provided address if it exists in our system. Please check your inbox for instructions to reset your password.",
+    });
+  }, timeout);
+};
+
 export const createVerificationToken = async (
   pool: any,
   email: string,
@@ -363,6 +380,18 @@ export const createVerificationToken = async (
     : { success: false, message: "Error creating verification token" };
 };
 
+const deleteVerificationToken = async (
+  pool: any,
+  verificationToken: string
+) => {
+  const query = `
+  DELETE FROM verification_tokens
+  WHERE verification_token = ?
+  `;
+  const [result, _] = await pool.query(query, [verificationToken]);
+  return result.affectedrows === 0 ? false : true;
+};
+
 export const verifyForgotPassword = async (
   pool: any,
   verificationToken: string
@@ -379,6 +408,10 @@ export const verifyForgotPassword = async (
       success: false,
       message: "Verification token does not exist. Please restart process.",
     };
+  }
+  const deleted = await deleteVerificationToken(pool, verificationToken);
+  if (!deleted) {
+    return { success: false, message: "Error deleting verification token" };
   }
   return result[0].expiration_date < Date.now()
     ? {
