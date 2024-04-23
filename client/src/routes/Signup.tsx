@@ -1,10 +1,22 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { STYLES } from "../utils/styles";
 import Navbar from "../components/Navbar";
 import ShowPassword from "../components/ShowPasword";
 import ExclamationMark from "../components/ExclamationMark";
+import {
+  ALERT_DIV,
+  ALERT_TEXT,
+  FLEX_COL_CENTER,
+  FORM_INPUT_FIELD,
+  GENERIC_HEADER,
+  INPUT_FIELD_GAP,
+  INPUT_FIELD_LABEL,
+  INSTRUCTIONS,
+  MD_VIOLET_TEXT,
+  SIGNUP_BUTTON,
+  SMALL_DIVIDER,
+} from "../utils/styles/GeneralStyles";
 
 type FormData = {
   username: string;
@@ -123,46 +135,44 @@ export default function Signup() {
   return (
     <div>
       <Navbar />
-      <div className={STYLES.SIGNUP_PARENT_CONTAINER}>
-        <h1 className={`${STYLES.WELCOME_HEADER} mt-24`}>Let's Get Started</h1>
-        <p className={STYLES.INSTRUCTIONS}>
-          Join Greysquirrel by creating an account
-        </p>
+      <div className="m-auto mb-24 w-[404px] flex flex-col items-center justify-center">
+        <h1 className={`${GENERIC_HEADER} mt-24`}>Let's Get Started</h1>
+        <p className={INSTRUCTIONS}>Join Greysquirrel by creating an account</p>
         <form
-          className={STYLES.FLEX_COL_CENTER}
+          className={FLEX_COL_CENTER}
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
         >
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"firstName"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"firstName"}>
               First Name
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"firstName"}
               {...register("firstName")}
               autoComplete="off"
               required={true}
             />
           </div>
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"lastName"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"lastName"}>
               Last Name
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"lastName"}
               {...register("lastName")}
               autoComplete="off"
               required={true}
             />
           </div>
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"username"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"username"}>
               Username
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"username"}
               type="text"
               {...register("username")}
@@ -170,21 +180,21 @@ export default function Signup() {
               required={true}
             />
             {userExists && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>Username is already taken.</p>
+                <p className={ALERT_TEXT}>Username is already taken.</p>
               </div>
             )}
           </div>
 
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"email"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"email"}>
               Email
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"email"}
               type="email"
               placeholder="yourname@example.com"
@@ -194,12 +204,12 @@ export default function Signup() {
               required={true}
             />
           </div>
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"emailCheck"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"emailCheck"}>
               Confirm your email
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"emailCheck"}
               type="email"
               placeholder="yourname@example.com"
@@ -209,21 +219,21 @@ export default function Signup() {
               required={true}
             />
             {emailsDontMatch && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>Emails must match.</p>
+                <p className={ALERT_TEXT}>Emails must match.</p>
               </div>
             )}
           </div>
 
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"password"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
               Password
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"password"}
               type={!show ? "password" : "text"}
               {...register("password")}
@@ -232,11 +242,11 @@ export default function Signup() {
             />
             <ShowPassword onClick={handleChange} show={show} />
             {weakPassword && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2 -mt-8">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>
+                <p className={ALERT_TEXT}>
                   Password must be at least{" "}
                   <span className="font-medium">8 characters</span> and have at
                   least{" "}
@@ -251,11 +261,11 @@ export default function Signup() {
           </div>
 
           <div className="mt-24">
-            <label className={STYLES.LABEL} htmlFor={"passCheck"}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"passCheck"}>
               Confirm your password
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={FORM_INPUT_FIELD}
               id={"passCheck"}
               type={!show ? "password" : "text"}
               {...register("passCheck")}
@@ -263,25 +273,25 @@ export default function Signup() {
               required={true}
             />
             {passwordsDontMatch && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
+                <p className={ALERT_TEXT}>Passwords must match.</p>
               </div>
             )}
           </div>
 
-          <button className={STYLES.SIGNUP_BUTTON} type="submit" value="submit">
+          <button className={SIGNUP_BUTTON} type="submit" value="submit">
             Sign up
           </button>
-          <div className={STYLES.SIGN_IN_DIVIDER} />
+          <div className={SMALL_DIVIDER} />
         </form>
         <div>
-          <label className={STYLES.LABEL} htmlFor="signin">
+          <label className={INPUT_FIELD_LABEL} htmlFor="signin">
             Have an account?
           </label>
-          <a className={STYLES.VIOLET_TEXT} id="signin" href="#/signin">
+          <a className={MD_VIOLET_TEXT} id="signin" href="#/signin">
             Sign in here!
           </a>
         </div>

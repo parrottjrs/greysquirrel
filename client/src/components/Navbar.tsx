@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import BellDot from "./BellDot";
 import Bell from "./Bell";
 import AccountModal from "./AccountModal";
 import { removeHasSignedUp } from "../utils/functions";
+import {
+  BASIC_LINK,
+  LINK_CONTAINER,
+  NAVBAR_CHILD_CONTAINER,
+  NAVBAR_PARENT_CONTAINER,
+  NAVBAR_TITLE_TEXT,
+} from "../utils/styles/NavbarStyles";
+import { STYLIZED_ANCHOR_GREEN } from "../utils/styles/GeneralStyles";
 
 interface ChildProps {
   isLoggedIn?: boolean;
@@ -41,28 +49,28 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
   }, [pendingInvites]);
 
   return (
-    <header className="z-10 h-18 w-full md:h-16 flex flex-row items-center bg-white justify-between p-1 fixed inset-0">
+    <header className={NAVBAR_PARENT_CONTAINER}>
       <div className="w-full">
-        <nav className="justify-between md:flex md:w-auto px-7" id="navbar">
-          <h1 className={STYLES.NAVBAR_HEADER}>Greysquirrel</h1>
+        <nav className={NAVBAR_CHILD_CONTAINER} id="navbar">
+          <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
           {!isLoggedIn ? (
-            <div className={STYLES.LINK_CONTAINER}>
+            <div className={LINK_CONTAINER}>
               <a
                 href="#/"
-                className={STYLES.BASIC_LINK}
+                className={BASIC_LINK}
                 onClick={() => {
                   removeHasSignedUp();
                 }}
               >
                 About
               </a>
-              <a href="#/signin" className={STYLES.STYLIZED_ANCHOR}>
+              <a href="#/signin" className={STYLIZED_ANCHOR_GREEN}>
                 Sign in
               </a>
             </div>
           ) : (
-            <div className={STYLES.LINK_CONTAINER}>
-              <a href="#/documents" className={STYLES.BASIC_LINK}>
+            <div className={LINK_CONTAINER}>
+              <a href="#/documents" className={BASIC_LINK}>
                 Documents
               </a>
               <a aria-label="notifications" href="#/notifications">

@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles";
 import Navbar from "../components/Navbar";
 import InvitesSent from "../components/InvitesSent";
 import InvitesRecieved from "../components/InvitesReceived";
 import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
+import {
+  GENERIC_HEADER,
+  PARENT_CONTAINER,
+} from "../utils/styles/GeneralStyles";
+import {
+  DOCUMENTS_SWITCH_OFF,
+  DOCUMENTS_SWITCH_ON,
+} from "../utils/styles/DocPageStyles";
 
 export interface Invite {
   invite_id: number;
@@ -56,14 +63,14 @@ export default function Notifications() {
     authorization && (
       <div>
         <Navbar isLoggedIn={true} page={"notifications"} />
-        <div className={STYLES.DOCUMENTS_CONTAINER}>
-          <h1 className={`${STYLES.WELCOME_HEADER} mb-14`}>Notifications</h1>
+        <div className={PARENT_CONTAINER}>
+          <h1 className={`${GENERIC_HEADER} mb-14`}>Notifications</h1>
           <div>
             <button
               className={
                 notifications === "shared"
-                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
-                  : STYLES.DOCUMENTS_SWITCH
+                  ? DOCUMENTS_SWITCH_ON
+                  : DOCUMENTS_SWITCH_OFF
               }
               onClick={() => setNotifications("shared")}
             >
@@ -72,8 +79,8 @@ export default function Notifications() {
             <button
               className={
                 notifications === "pending"
-                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
-                  : STYLES.DOCUMENTS_SWITCH
+                  ? DOCUMENTS_SWITCH_ON
+                  : DOCUMENTS_SWITCH_OFF
               }
               onClick={() => setNotifications("pending")}
             >

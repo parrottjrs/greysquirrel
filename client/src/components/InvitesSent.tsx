@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import {
+  CANCEL_BUTTON,
+  SENT_PARENT_CONTAINER,
+} from "../utils/styles/InvitesStyles";
 
 type Invite = {
   invite_id: number;
@@ -58,16 +62,13 @@ export default function InvitesSent() {
   return sharedInvites.map((invite: Invite) => {
     const { invite_id, recipient_name, title } = invite;
     return (
-      <div
-        className="relative flex flex-col justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
-        key={invite_id}
-      >
+      <div className={SENT_PARENT_CONTAINER} key={invite_id}>
         <p>
           You shared "{title}" with {recipient_name}.
         </p>
         <div className="flex flex-row">
           <button
-            className="border-0 bg-transparent text-vividViolet "
+            className={CANCEL_BUTTON}
             onClick={() => handleDelete(invite_id)}
           >
             Cancel invite

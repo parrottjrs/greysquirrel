@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { STYLES } from "../utils/styles";
 import { AlertCircle } from "lucide-react";
 import ShowPassword from "../components/ShowPasword";
 import { authenticate } from "../utils/functions";
 import Navbar from "../components/Navbar";
+import {
+  ALERT_DIV,
+  ALERT_TEXT,
+  FLEX_COL_CENTER,
+  FORM_INPUT_FIELD,
+  INPUT_FIELD_GAP,
+  INPUT_FIELD_LABEL,
+  INSTRUCTIONS,
+  LOGIN_BUTTON,
+  MD_VIOLET_TEXT,
+  SMALL_DIVIDER,
+  SM_VIOLET_TEXT,
+} from "../utils/styles/GeneralStyles";
 
 type FormData = {
   username: string;
@@ -83,24 +95,26 @@ export default function Signin() {
   return (
     <div>
       <Navbar />
-      <div className={STYLES.SIGNIN_PARENT_CONTAINER}>
-        <h1 className={STYLES.SIGNIN_HEADER}>Welcome Back!</h1>
+      <div className="md:h-screen md:mt-18 flex flex-col items-center justify-center">
+        <h1 className="mb-0 text-left text-nero text-xl font-IBM font-medium md:text-3xl">
+          Welcome Back!
+        </h1>
 
-        <p className={STYLES.INSTRUCTIONS}>
+        <p className={INSTRUCTIONS}>
           Enter your credentials to access your account
         </p>
         <div>
           <form
-            className={STYLES.FLEX_COL_CENTER}
+            className={FLEX_COL_CENTER}
             onSubmit={handleSubmit(onSubmit)}
             tabIndex={0}
           >
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"username"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"username"}>
                 Username
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"username"}
                 type="text"
                 {...register("username")}
@@ -109,21 +123,18 @@ export default function Signin() {
               />
             </div>
             <div>
-              <div className="mt-10">
+              <div className={INPUT_FIELD_GAP}>
                 <div className="flex flex-row justify-between items-center">
-                  <label className={STYLES.LABEL} htmlFor={"password"}>
+                  <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
                     Password
                   </label>
-                  <a
-                    href="#/forgot-password"
-                    className={STYLES.FORGOT_PASSWORD_TEXT}
-                  >
+                  <a href="#/forgot-password" className={SM_VIOLET_TEXT}>
                     Forgot password?
                   </a>
                 </div>
 
                 <input
-                  className={STYLES.FORM_INPUT}
+                  className={FORM_INPUT_FIELD}
                   id={"password"}
                   type={!show ? "password" : "text"}
                   {...register("password")}
@@ -135,40 +146,39 @@ export default function Signin() {
               <ShowPassword onClick={handleShow} show={show} />
 
               {change && (
-                <div className={STYLES.ALERT_DIV}>
-                  <AlertCircle className={STYLES.ALERT_CIRCLE} />
-                  <p className={STYLES.ALERT_TEXT}>
+                <div className={ALERT_DIV}>
+                  <AlertCircle className="h-4 w-4 text-roman pointer-events-none" />
+                  <p className={ALERT_TEXT}>
                     Authentication failed. Please try again.
                   </p>
                 </div>
               )}
             </div>
-            <div className={STYLES.REMEMBER_CONTAINER}>
+            <div className="w-full mt-16 flex flex-row items-center justify-left">
               <input
                 id="remember"
                 type="checkbox"
-                className={STYLES.CHECK_BOX}
+                className="mr-2"
                 {...register("remember")}
               />
-              <label className={STYLES.REMEMBER_TEXT} htmlFor="remember">
+              <label
+                className="text-nero text-xs md: text-sm font-IBM font-medium"
+                htmlFor="remember"
+              >
                 Remember me for 30 days
               </label>
             </div>
-            <button
-              className={STYLES.LOGIN_BUTTON}
-              type="submit"
-              value="Log In"
-            >
+            <button className={LOGIN_BUTTON} type="submit" value="Log In">
               Sign in
             </button>
           </form>
-          <div className={STYLES.SIGN_IN_DIVIDER} />
+          <div className={SMALL_DIVIDER} />
         </div>
         <div>
-          <label className={STYLES.LABEL} aria-label="signup">
+          <label className={INPUT_FIELD_LABEL} aria-label="signup">
             Don't have an account?
           </label>
-          <a className={STYLES.VIOLET_TEXT} id="signup" href="#/signup">
+          <a className={MD_VIOLET_TEXT} id="signup" href="#/signup">
             Sign up here!
           </a>
         </div>

@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles";
 import { clipText, formatDate } from "../utils/functions";
+import {
+  ACCEPT_BUTTON,
+  DATE_SHARED_TEXT,
+  DECLINE_BUTTON,
+  NOTIFICATION_TEXT,
+  RECIEVED_PARENT_CONTAINER,
+} from "../utils/styles/InvitesStyles";
 
 export interface Invite {
   invite_id: number;
@@ -106,21 +112,16 @@ export default function InvitesRecieved() {
 
     const newTitle = title ? clipText(title, "title") : "Untitled";
     return (
-      <div
-        className="relative flex flex-col justify-between h-24 w-3/4 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
-        key={invite_id}
-      >
-        <p className="text-nero font-sans mt-1">
+      <div className={RECIEVED_PARENT_CONTAINER} key={invite_id}>
+        <p className={NOTIFICATION_TEXT}>
           <span className="underline">{sender_name}</span> shared "{newTitle}"
           with you.
         </p>
-        <p className="text-boulder text-sm font-sans md:text-lg mt-0">
-          Date shared: {formattedShareDate}
-        </p>
+        <p className={DATE_SHARED_TEXT}>Date shared: {formattedShareDate}</p>
         <div className="flex flex-row ">
           <button
             aria-label="accept-invitation"
-            className="border-0 bg-transparent text-nero font-sans mr-2"
+            className={ACCEPT_BUTTON}
             onClick={() =>
               handleAccept(invite_id, doc_id, sender_id, recipient_id)
             }
@@ -129,7 +130,7 @@ export default function InvitesRecieved() {
           </button>
           <button
             aria-label="decline-invitation"
-            className="border-0 bg-transparent text-roman font-sans"
+            className={DECLINE_BUTTON}
             onClick={() => handleDelete(invite_id)}
           >
             decline

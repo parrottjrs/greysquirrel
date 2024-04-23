@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import { applyDeltaSafely, authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
-import CustomQuill from "../components/CustomQuill";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
+import CustomQuillEditor from "../components/CustomQuillEditor";
+import { MOUSEOUT_DIV } from "../utils/styles/GeneralStyles";
 
 export default function Editor() {
   const params = useParams();
@@ -155,11 +156,11 @@ export default function Editor() {
 
   return (
     authorization && (
-      <div className={STYLES.MOUSEOUT_DIV} onMouseLeave={fetchSave}>
+      <div className={MOUSEOUT_DIV} onMouseLeave={fetchSave}>
         <Navbar isLoggedIn={true} />
         <div className="mt-24 w-[51.75rem]">
           <div onBlur={() => fetchSave()}>
-            <CustomQuill
+            <CustomQuillEditor
               quillRef={quillRef}
               text={text}
               title={title}

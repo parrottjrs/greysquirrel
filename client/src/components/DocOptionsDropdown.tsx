@@ -1,15 +1,18 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import React, { useState } from "react";
-import { STYLES } from "../utils/styles";
 import ShareModal from "./ShareModal";
 import {
   DocumentOptionsProps,
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
+import {
+  DOC_OPTIONS_CONTAINER,
+  OPTIONS_TEXT,
+} from "../utils/styles/DocPageStyles";
 
-export default function DocumentOptionsDropdown({
+export default function DocOptionsDropdown({
   docId,
   title,
   ownerId,
@@ -71,7 +74,7 @@ export default function DocumentOptionsDropdown({
             setShow(false);
           }}
         >
-          <div className="relative left-28 bottom-10 p-2 pb-3 h-12 w-28 border-solid border rounded-lg">
+          <div className={DOC_OPTIONS_CONTAINER}>
             <DropdownMenu.Item>
               <ShareModal docId={docId} title={title} />
             </DropdownMenu.Item>
@@ -80,7 +83,7 @@ export default function DocumentOptionsDropdown({
 
             <DropdownMenu.Item>
               <button
-                className={STYLES.OPTIONS_TEXT}
+                className={OPTIONS_TEXT}
                 onClick={() => {
                   !shared
                     ? handleDelete(docId)

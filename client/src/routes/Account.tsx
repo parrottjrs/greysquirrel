@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import LogoutButton from "../components/LogoutButton";
 import Navbar from "../components/Navbar";
 import { AlertCircle } from "lucide-react";
@@ -9,6 +9,21 @@ import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 import ExclamationMark from "../components/ExclamationMark";
 import CheckMark from "../components/CheckMark";
+import {
+  ACCOUNT_FORM_CONTAINER,
+  SUBMIT_SUCCESS_CONTAINER,
+} from "../utils/styles/AccountStyles";
+import {
+  ALERT_DIV,
+  ALERT_TEXT,
+  BOLD_GRAY_TEXT,
+  FLEX_COL_CENTER,
+  FORM_INPUT_FIELD,
+  GENERIC_HEADER,
+  INPUT_FIELD_LABEL,
+  INPUT_FIELD_GAP,
+  FORM_SUBMIT,
+} from "../utils/styles/GeneralStyles";
 
 type FormData = {
   username: string;
@@ -158,64 +173,62 @@ export default function Account() {
     authorization && (
       <div>
         <Navbar isLoggedIn={true} />
-        <div className={STYLES.ACCOUNT_FORM_CONTAINER}>
-          <h1 className={STYLES.WELCOME_HEADER}>My Account</h1>
+        <div className={ACCOUNT_FORM_CONTAINER}>
+          <h1 className={GENERIC_HEADER}>My Account</h1>
           <form
-            className={STYLES.FLEX_COL_CENTER}
+            className={FLEX_COL_CENTER}
             onSubmit={handleSubmit(onSubmit)}
             autoComplete="off"
           >
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"firstName"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"firstName"}>
                 First Name
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"firstName"}
                 {...register("firstName")}
                 autoComplete="off"
               />
             </div>
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"lastName"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"lastName"}>
                 Last Name
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"lastName"}
                 {...register("lastName")}
                 autoComplete="off"
               />
             </div>
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"username"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"username"}>
                 Username
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"username"}
                 type="text"
                 {...register("username")}
                 autoComplete="off"
               />
               {userExists && (
-                <div className={STYLES.ALERT_DIV}>
+                <div className={ALERT_DIV}>
                   <span className="mr-2">
                     <ExclamationMark />
                   </span>
-                  <p className={STYLES.ALERT_TEXT}>
-                    Username is already taken.
-                  </p>
+                  <p className={ALERT_TEXT}>Username is already taken.</p>
                 </div>
               )}
             </div>
 
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"email"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"email"}>
                 Email
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"email"}
                 type="text"
                 {...register("email")}
@@ -223,12 +236,12 @@ export default function Account() {
               />
             </div>
 
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"password"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
                 Password
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"password"}
                 type={!show ? "password" : "text"}
                 {...register("password")}
@@ -236,11 +249,11 @@ export default function Account() {
               />
               <ShowPassword onClick={handleChange} show={show} />
               {weakPassword && (
-                <div className={STYLES.ALERT_DIV}>
+                <div className={ALERT_DIV}>
                   <span className="mr-2 -mt-8">
                     <ExclamationMark />
                   </span>
-                  <p className={STYLES.ALERT_TEXT}>
+                  <p className={ALERT_TEXT}>
                     Password must be at least{" "}
                     <span className="font-medium">8 characters</span> and have
                     at least{" "}
@@ -254,39 +267,35 @@ export default function Account() {
               )}
             </div>
 
-            <div className="mt-10">
-              <label className={STYLES.LABEL} htmlFor={"passCheck"}>
+            <div className={INPUT_FIELD_GAP}>
+              <label className={INPUT_FIELD_LABEL} htmlFor={"passCheck"}>
                 Confirm password
               </label>
               <input
-                className={STYLES.FORM_INPUT}
+                className={FORM_INPUT_FIELD}
                 id={"passCheck"}
                 type={!show ? "password" : "text"}
                 {...register("passCheck")}
                 autoComplete="off"
               />
               {passwordsDontMatch && (
-                <div className={STYLES.ALERT_DIV}>
+                <div className={ALERT_DIV}>
                   <span className="mr-2">
                     <ExclamationMark />
                   </span>
-                  <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
+                  <p className={ALERT_TEXT}>Passwords must match.</p>
                 </div>
               )}
             </div>
 
-            <button
-              className="mt-12 mb-12 w-full h-9 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-xl border-0"
-              type="submit"
-              value="submit"
-            >
+            <button className={FORM_SUBMIT} type="submit" value="submit">
               Update information
             </button>
           </form>
           {accountUpdated && (
-            <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-aeroBlue">
+            <div className={SUBMIT_SUCCESS_CONTAINER}>
               <CheckMark />
-              <span className={STYLES.BOLD_GRAY_TEXT}>
+              <span className={BOLD_GRAY_TEXT}>
                 Your account has been updated
               </span>
             </div>

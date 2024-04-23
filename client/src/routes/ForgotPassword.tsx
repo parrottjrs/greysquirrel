@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { STYLES } from "../utils/styles";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import CheckMark from "../components/CheckMark";
 import ShowPassword from "../components/ShowPasword";
 import ExclamationMark from "../components/ExclamationMark";
+import {
+  ALERT_DIV,
+  ALERT_TEXT,
+  BOLD_GRAY_TEXT,
+  FLEX_COL_CENTER,
+  FORM_SUBMIT,
+  INPUT_FIELD_GAP,
+  INPUT_FIELD_LABEL,
+  SM_VIOLET_TEXT,
+} from "../utils/styles/GeneralStyles";
+import {
+  PASS_RESET_HEADER,
+  RESET_INPUT_FIELD,
+  RESET_PARENT_CONTAINER,
+} from "../utils/styles/ForgotPasswordStyles";
 
 interface EmailFormData {
   email: string;
@@ -35,15 +49,13 @@ const VerifyAccount = () => {
     fetchForgotPassword(data.email);
   };
   return (
-    <div className="w-[403px] m-auto mt-32 flex flex-col items-center justify-center">
-      <h1 className="text-[32px] text-nero font-IBM font-medium text-center">
-        Verify your account
-      </h1>
+    <div className={RESET_PARENT_CONTAINER}>
+      <h1 className={PASS_RESET_HEADER}>Verify your account</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-10">
           <label htmlFor="email"></label>
           <input
-            className={STYLES.FORM_INPUT}
+            className={RESET_INPUT_FIELD}
             id="email"
             type="email"
             placeholder="yourname@example.com"
@@ -69,7 +81,7 @@ const VerifyAccount = () => {
       ) : (
         <div className="flex flex-row justify-center  items-center w-full px-2 py-1 border border-solid rounded-[0.88rem] border-aeroBlue">
           <CheckMark />
-          <span className={STYLES.BOLD_GRAY_TEXT}>
+          <span className={BOLD_GRAY_TEXT}>
             If the email you provided exists, an email will be sent to that
             address
           </span>
@@ -147,22 +159,20 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-[403px] m-auto mt-32 flex flex-col items-center justify-center">
-      <h1 className="text-[32px] text-nero font-IBM font-medium text-center">
-        Reset your password
-      </h1>
+    <div className={RESET_PARENT_CONTAINER}>
+      <h1 className={PASS_RESET_HEADER}>Reset your password</h1>
       <div className="m-auto w-[404px] flex flex-col items-center justify-center">
         <form
-          className={STYLES.FLEX_COL_CENTER}
+          className={FLEX_COL_CENTER}
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
         >
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"password"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
               Password
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={RESET_INPUT_FIELD}
               id={"password"}
               type={!show ? "password" : "text"}
               {...register("password")}
@@ -170,11 +180,11 @@ const ResetPassword = () => {
             />
             <ShowPassword onClick={handleChange} show={show} />
             {weakPassword && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2 -mt-8">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>
+                <p className={ALERT_TEXT}>
                   Password must be at least{" "}
                   <span className="font-medium">8 characters</span> and have at
                   least{" "}
@@ -187,50 +197,46 @@ const ResetPassword = () => {
               </div>
             )}
           </div>
-          <div className="mt-10">
-            <label className={STYLES.LABEL} htmlFor={"passCheck"}>
+          <div className={INPUT_FIELD_GAP}>
+            <label className={INPUT_FIELD_LABEL} htmlFor={"passCheck"}>
               Confirm password
             </label>
             <input
-              className={STYLES.FORM_INPUT}
+              className={RESET_INPUT_FIELD}
               id={"passwordCheck"}
               type={!show ? "password" : "text"}
               {...register("passwordCheck")}
               autoComplete="off"
             />
             {passwordsDontMatch && (
-              <div className={STYLES.ALERT_DIV}>
+              <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
                 </span>
-                <p className={STYLES.ALERT_TEXT}>Passwords must match.</p>
+                <p className={ALERT_TEXT}>Passwords must match.</p>
               </div>
             )}
           </div>
-          <button
-            className="mt-12 mb-12 w-full h-9 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-xl border-0"
-            type="submit"
-            value="submit"
-          >
+          <button className={FORM_SUBMIT} type="submit" value="submit">
             Change password
           </button>
         </form>
         {accountUpdated && (
           <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-aeroBlue">
             <CheckMark />
-            <span className={STYLES.BOLD_GRAY_TEXT}>
-              Your password has been changed!{" "}
-              <a href="#/documents" className={STYLES.FORGOT_PASSWORD_TEXT}>
+            <span className={BOLD_GRAY_TEXT}>
+              Your password has been changed!
+              <a href="#/documents" className={SM_VIOLET_TEXT}>
                 Visit your documents
               </a>
             </span>
           </div>
         )}
         {passwordChangeFailed && (
-          <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-aeroBlue">
+          <div className="flex flex-row justify-center w-[385px] py-[0.56rem] px-[19px] border border-solid rounded-[0.88rem] border-crimson">
             <ExclamationMark />
-            <span className={STYLES.BOLD_GRAY_TEXT}>
-              Password change failed. Please try again.
+            <span className={BOLD_GRAY_TEXT}>
+              Password change failed. Please restart the process.
             </span>
           </div>
         )}

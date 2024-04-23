@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
-import { STYLES } from "../utils/styles";
+import { useForm } from "react-hook-form";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "./Link";
+import {
+  SHARE_BUTTON_TEXT,
+  SHARE_HEADER,
+  SHARE_INPUT_FIELD,
+  SHARE_MODAL_CONTAINER,
+} from "../utils/styles/InvitesStyles";
+import {
+  INSTRUCTIONS,
+  SMALL_GREEN_BUTTON,
+} from "../utils/styles/GeneralStyles";
 
 interface FormData {
   recipientName: string;
@@ -102,31 +111,29 @@ export default function ShareModal({ type, docId, title }: ChildProps) {
     <DropdownMenu.Root open={open ? true : false}>
       <DropdownMenu.Trigger asChild onClick={() => setOpen(true)}>
         {type === "button" ? (
-          <button className="bg-transparent py-[0.56rem] px-[1.19rem] gap-[0.83rem] border border-solid border-nero rounded-[0.88rem] font-IBM text-xl font-medium">
+          <button className={SHARE_BUTTON_TEXT}>
             <Link />
             <span className="ml-[0.83rem]">Share</span>
           </button>
         ) : (
-          <button className={STYLES.OPTIONS_TEXT}>Share</button>
+          <button className={SHARE_BUTTON_TEXT}>Share</button>
         )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="fixed flex flex-col items-left -top-24 right-36 max-h-60 w-96 p-4 pr-10 drop-shadow-2xl rounded-lg bg-white"
+          className={SHARE_MODAL_CONTAINER}
           onInteractOutside={() => {
             setOpen(false);
           }}
         >
-          <h2 className={`${STYLES.DOC_HEADER} pb-4`}>
+          <h2 className={SHARE_HEADER}>
             Share "{title ? title : "Untitled Document"}"
           </h2>
           {shareAttempted ? (
             <div className="flex flex-col">
-              <span className={STYLES.INSTRUCTIONS}>
-                {inviteResponseText()}
-              </span>
+              <span className={INSTRUCTIONS}>{inviteResponseText()}</span>
               <button
-                className={STYLES.CREATE_BUTTON}
+                className={SMALL_GREEN_BUTTON}
                 onClick={() => {
                   resetInviteStates();
                 }}
@@ -136,13 +143,13 @@ export default function ShareModal({ type, docId, title }: ChildProps) {
             </div>
           ) : (
             <div>
-              <span className={STYLES.INSTRUCTIONS}>
+              <span className={INSTRUCTIONS}>
                 Enter your friend/colleague's username
               </span>
               <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
                 <div>
                   <input
-                    className={STYLES.FORM_INPUT}
+                    className={SHARE_INPUT_FIELD}
                     id="titleInput"
                     type="text"
                     {...register("recipientName")}
@@ -153,11 +160,11 @@ export default function ShareModal({ type, docId, title }: ChildProps) {
                   {doesNotExist && <p>User doesn't exist!</p>}
                 </div>
                 <div className="flex flex-row justify-between">
-                  <button className={STYLES.CREATE_BUTTON} type="submit">
+                  <button className={SMALL_GREEN_BUTTON} type="submit">
                     Share
                   </button>
                   <button
-                    className={STYLES.CREATE_BUTTON}
+                    className={SMALL_GREEN_BUTTON}
                     onClick={() => setOpen(false)}
                   >
                     Cancel

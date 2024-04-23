@@ -1,4 +1,4 @@
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 
 export default function NotFound() {
   return (
@@ -14,7 +14,7 @@ export default function NotFound() {
           <p className="text-nero font-sans text-base text-2xl mt-8">
             Oops, the page you are looking for does not exist
           </p>
-          <p className={`${STYLES.PARAGRAPH} mt-8 mb-12`}>
+          <p className="text-left text-nero text-sm font-IBM md:text-base mt-8 mb-12">
             You may want to head back to the home page
           </p>
           <a

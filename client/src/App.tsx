@@ -1,16 +1,16 @@
 import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-import Editor from "./pages/Editor";
-import Signup from "./pages/Signup";
-import Documents from "./pages/Documents";
-import NotFound from "./pages/404";
-import Signin from "./pages/Signin";
-import VerifyEmail from "./pages/VerifyEmail";
-import Home from "./pages/Home";
-import Account from "./pages/Account";
-import Notifications from "./pages/Notifications";
-import ForgotPassword from "./pages/ForgotPassword";
+import Editor from "./routes/Editor";
+import Signup from "./routes/Signup";
+import Documents from "./routes/Documents";
+import NotFound from "./routes/404";
+import Signin from "./routes/Signin";
+import VerifyEmail from "./routes/VerifyEmail";
+import Home from "./routes/Home";
+import Account from "./routes/Account";
+import Notifications from "./routes/Notifications";
+import ForgotPassword from "./routes/ForgotPassword";
 
 export default function App() {
   return (

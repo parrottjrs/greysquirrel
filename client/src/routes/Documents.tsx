@@ -5,8 +5,16 @@ import DocumentsGrid from "../components/DocumentsGrid";
 import SharedDocumentsGrid from "../components/SharedDocumentsGrid";
 import { authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
-import { STYLES } from "../utils/styles";
 import { SharedDocument, UserDocument } from "../utils/customTypes";
+import {
+  GENERIC_HEADER,
+  PARENT_CONTAINER,
+  SMALL_GREEN_BUTTON,
+} from "../utils/styles/GeneralStyles";
+import {
+  DOCUMENTS_SWITCH_OFF,
+  DOCUMENTS_SWITCH_ON,
+} from "../utils/styles/DocPageStyles";
 
 // export interface Document {
 //   doc_id?: number;
@@ -109,19 +117,17 @@ export default function Documents() {
       <div>
         <Navbar isLoggedIn={true} />
         <LogoutButton />
-        <div className={STYLES.DOCUMENTS_CONTAINER}>
+        <div className={PARENT_CONTAINER}>
           <div className="flex flex-row items-center justify-between">
-            <h1 className={`${STYLES.WELCOME_HEADER} mb-10`}>Documents</h1>
-            <button className={STYLES.CREATE_BUTTON} onClick={handleClick}>
+            <h1 className={`${GENERIC_HEADER} mb-10`}>Documents</h1>
+            <button className={SMALL_GREEN_BUTTON} onClick={handleClick}>
               New Document
             </button>
           </div>
           <div>
             <button
               className={
-                showOwnedDocuments
-                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
-                  : STYLES.DOCUMENTS_SWITCH
+                showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
               }
               onClick={() => setShowOwnedDocuments(true)}
             >
@@ -129,9 +135,7 @@ export default function Documents() {
             </button>
             <button
               className={
-                !showOwnedDocuments
-                  ? STYLES.DOCUMENTS_SWITCH_SELECTED
-                  : STYLES.DOCUMENTS_SWITCH
+                !showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
               }
               onClick={() => setShowOwnedDocuments(false)}
             >

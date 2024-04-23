@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
-import { STYLES } from "../utils/styles";
+import { STYLES } from "../utils/styles/styles";
 import { FileText } from "lucide-react";
-import DocumentOptionsDropdown from "./DocumentOptionsDropdown";
+import DocumentOptionsDropdown from "./DocOptionsDropdown";
 import { SharedDocument, SharedDocumentsGridProps } from "../utils/customTypes";
+import {
+  DOC_HEADER,
+  DOC_PREVIEW,
+  FULLSIZE_INVIS_ANCHOR,
+  SHARED_BY_TEXT,
+  SHARED_DOC_ITEM,
+} from "../utils/styles/DocPageStyles";
+import Page from "./Page";
 
 // interface SharedDocument {
 //   doc_id?: number;
@@ -57,20 +65,14 @@ export default function SharedDocumentsGrid({
     const newContent = content ? clipText(cleanContent, "content") : "";
 
     return (
-      <div
-        className="relative flex flex-row justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden"
-        key={doc_id}
-      >
-        <a
-          className="no-underline text-nero"
-          href={`#/editor/${doc_id}/shared`}
-        >
+      <div className={SHARED_DOC_ITEM} key={doc_id}>
+        <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}/shared`}>
           <div className="flex flex-row relative mr-4 ">
-            <FileText className={STYLES.DOCUMENT_ICON} />
+            <Page />
             <div className="flex flex-col">
-              <h2 className={STYLES.DOC_HEADER}>{newTitle}</h2>
-              <p className={STYLES.PREVIEW}>{newContent}</p>
-              <p className="text-sm text-dustyGray">Shared by: {owner_name}</p>
+              <h2 className={DOC_HEADER}>{newTitle}</h2>
+              <p className={DOC_PREVIEW}>{newContent}</p>
+              <p className={SHARED_BY_TEXT}>Shared by: {owner_name}</p>
             </div>
           </div>
         </a>
