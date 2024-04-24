@@ -6,7 +6,7 @@ import {
   DECLINE_BUTTON,
   NOTIFICATION_TEXT,
   RECIEVED_PARENT_CONTAINER,
-} from "../utils/styles/InvitesStyles";
+} from "../styles/InvitesStyles";
 
 export interface Invite {
   invite_id: number;

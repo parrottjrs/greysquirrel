@@ -4,14 +4,11 @@ import InvitesSent from "../components/InvitesSent";
 import InvitesRecieved from "../components/InvitesReceived";
 import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
-import {
-  GENERIC_HEADER,
-  PARENT_CONTAINER,
-} from "../utils/styles/GeneralStyles";
+import { GENERIC_HEADER, PARENT_CONTAINER } from "../styles/GeneralStyles";
 import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
-} from "../utils/styles/DocPageStyles";
+} from "../styles/DocPageStyles";
 
 export interface Invite {
   invite_id: number;

@@ -7,10 +7,7 @@ import {
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
-import {
-  DOC_OPTIONS_CONTAINER,
-  OPTIONS_TEXT,
-} from "../utils/styles/DocPageStyles";
+import { DOC_OPTIONS_CONTAINER, OPTIONS_TEXT } from "../styles/DocPageStyles";
 
 export default function DocOptionsDropdown({
   docId,

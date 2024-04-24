@@ -6,9 +6,9 @@ export const NAVBAR_CHILD_CONTAINER = "justify-between md:flex md:w-auto px-7";
 export const LINK_CONTAINER = "flex flex-row items-center space-x-8";
 
 export const NAVBAR_TITLE_TEXT =
-  "text-center text-nero text-md font-IBM font-medium md:text-2xl";
+  "text-left md:text-center text-nero font-IBM font-medium text-[42px]";
 
 export const NAVBAR_TEXT =
-  "mt-1 text-center text-nero text-sm font-IBM font-medium";
+  "mt-1 md:text-center text-nero text-xl font-IBM font-medium";
 
 export const BASIC_LINK = "text-nero font-IBM font-medium no-underline";

@@ -13,7 +13,7 @@ import {
   FULLSIZE_INVIS_ANCHOR,
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
-} from "../utils/styles/DocPageStyles";
+} from "../styles/DocPageStyles";
 
 export default function DocumentsGrid({
   documents,

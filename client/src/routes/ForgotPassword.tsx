@@ -14,12 +14,12 @@ import {
   INPUT_FIELD_GAP,
   INPUT_FIELD_LABEL,
   SM_VIOLET_TEXT,
-} from "../utils/styles/GeneralStyles";
+} from "../styles/GeneralStyles";
 import {
   PASS_RESET_HEADER,
   RESET_INPUT_FIELD,
   RESET_PARENT_CONTAINER,
-} from "../utils/styles/ForgotPasswordStyles";
+} from "../styles/ForgotPasswordStyles";
 
 interface EmailFormData {
   email: string;

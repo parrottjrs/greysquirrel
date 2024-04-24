@@ -40,8 +40,8 @@ export const sendEmailVerification = async (
     to: userEmail,
     subject: "Verify your email...",
     html: `<p>Hello 👋 ${userName}! Please verify your email by clicking the link below 👇</p> 
-      <a href="${CLIENT_URL}/#/verify-email/${emailToken}">Verify Your Email</a>`,
-    text: `Hello ${userName}! Please verify your email by clicking the link below:\n${CLIENT_URL}/#/verify-email?emailToken=${emailToken}`,
+      <a href="${CLIENT_URL}/#/verify-account/${emailToken}">Verify Your Email</a>`,
+    text: `Hello ${userName}! Please verify your email by clicking the link below:\n${CLIENT_URL}/#/verify-account?emailToken=${emailToken}`,
   };
 
   return new Promise<{ success: boolean; message: string }>((resolve, reject) =>

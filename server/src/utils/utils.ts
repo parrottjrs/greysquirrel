@@ -140,9 +140,7 @@ const getEmailToken = async (pool: any, userId: number) => {
   const [result, _] = await pool.query(query, [userId]);
   const parsedResult = JSON.parse(JSON.stringify(result));
   const emailToken = parsedResult[0].email_token;
-  return result.length > 0
-    ? { success: true, existingEmailToken: emailToken }
-    : { success: false, message: "Failed to retreive emailToken" };
+  return emailToken;
 };
 
 export const verifyEmailToken = async (
@@ -150,13 +148,10 @@ export const verifyEmailToken = async (
   userId: number,
   emailToken: string
 ) => {
-  const { success, message, existingEmailToken } = await getEmailToken(
-    pool,
-    userId
-  );
+  const existingEmailToken = await getEmailToken(pool, userId);
 
-  if (!success) {
-    return { success: success, message: message };
+  if (existingEmailToken === null || existingEmailToken === undefined) {
+    return { success: false, message: "Failed to retreive emailToken" };
   }
   if (existingEmailToken !== emailToken) {
     return { success: false, message: "Tokens do not match." };
@@ -401,7 +396,6 @@ export const verifyForgotPassword = async (
   FROM verification_tokens 
   WHERE verification_token = ?
   `;
-  console.log("Verification token before query:", verificationToken);
   const [result, _] = await pool.query(query, [verificationToken]);
   if (result.length === 0) {
     return {

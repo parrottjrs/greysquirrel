@@ -42,3 +42,11 @@ export interface QuillProps {
   onTitleChange: (title: string) => void;
   shared: boolean;
 }
+
+export interface VerifyAccountProps {
+  verified: boolean;
+  sent: boolean;
+  sendNewToken: () => Promise<void>;
+  tokenExpired: boolean;
+  createDocument: () => Promise<void>;
+}

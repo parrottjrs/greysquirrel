@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
+import { useMediaQuery } from "react-responsive";
 import BellDot from "./BellDot";
 import Bell from "./Bell";
 import AccountModal from "./AccountModal";
@@ -10,8 +10,8 @@ import {
   NAVBAR_CHILD_CONTAINER,
   NAVBAR_PARENT_CONTAINER,
   NAVBAR_TITLE_TEXT,
-} from "../utils/styles/NavbarStyles";
-import { STYLIZED_ANCHOR_GREEN } from "../utils/styles/GeneralStyles";
+} from "../styles/NavbarStyles";
+import { STYLIZED_ANCHOR_GREEN } from "../styles/GeneralStyles";
 
 interface ChildProps {
   isLoggedIn?: boolean;
@@ -21,7 +21,6 @@ interface ChildProps {
 export default function Navbar({ isLoggedIn, page }: ChildProps) {
   const invitesRefreshDelay = 900000;
   const [pendingInvites, setPendingInvites] = useState(false);
-
   const countInvites = async () => {
     try {
       const response = await fetch("/api/count-invites");

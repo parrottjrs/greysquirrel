@@ -259,7 +259,7 @@ app.post(
         email,
         emailToken
       );
-      return res.status(200).json({ sucess: success, message: message });
+      return res.status(200).json({ success: success, message: message });
     } catch (err) {
       console.error("Error sending verification email:", err);
       return res
@@ -305,6 +305,7 @@ app.post("/api/forgot-password", async (req, res) => {
 app.post("/api/verify-forgot-password", async (req, res) => {
   try {
     const verificationToken = req.body.verificationToken;
+
     const { success, message, userId } = await verifyForgotPassword(
       pool,
       verificationToken

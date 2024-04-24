@@ -3,6 +3,9 @@
 export const STYLIZED_ANCHOR_GREEN =
   "py-1.5 px-4 bg-aeroBlue font-IBM font-medium text-sm text-base text-nero no-underline border-0 rounded-xl";
 
+export const STYLIZED_ANCHOR_GREEN_MOBILE =
+  "w-[358px] h-[41px] pt-4 text-center bg-aeroBlue font-IBM font-medium text-[18px]  text-base text-nero no-underline border-0 rounded-[14px]";
+
 // buttons
 
 export const SMALL_GREEN_BUTTON =
@@ -14,8 +17,8 @@ export const FORM_SUBMIT =
 export const TRANSPARENT_BUTTON =
   "p-0 bg-transparent border-none text-nero text-sm font-IBM md:text-lg no-underline";
 
-export const LOGIN_BUTTON =
-  "mt-3 mb-8 px-20 md:px-44 py-1 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
+export const GREEN_BUTTON_STRETCH =
+  "w-[358px] h-[45px] mt-[35px] md:mt-3 mb-8 px-20 md:px-44 py-1 text-nero text-[18px] font-IBM font-medium bg-aeroBlue gap-2.5 rounded-[10px] border-0";
 
 export const SIGNUP_BUTTON =
   "mt-12 mb-12 px-20 md:px-44 py-1 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
@@ -23,13 +26,12 @@ export const SIGNUP_BUTTON =
 //text
 
 export const INSTRUCTIONS =
-  "-mt-1 font-IBM text-nero text-sm font-medium md:text-base";
+  "mt-[15px] md: -mt-1 font-IBM text-nero text-[16px] font-medium md:text-base";
 
-export const GENERIC_HEADER =
-  "text-nero text-xl font-IBM font-medium md:text-3xl";
+export const GENERIC_HEADER = "text-nero text-[32px] font-IBM font-medium";
 
 export const INPUT_FIELD_LABEL =
-  "text-center text-nero text-sm font-IBM font-medium md:text-base";
+  "text-center text-nero text-[16px] font-IBM font-medium md:text-base";
 
 export const ALERT_TEXT =
   "w-[24rem] max-w-[384px] text-roman text-xs font-IBM leading-4 md:text-sm ";
@@ -37,13 +39,14 @@ export const ALERT_TEXT =
 export const BOLD_GRAY_TEXT =
   "ml-[15px] text-taupeGray font-IBM text-lg font-medium";
 
-export const SM_VIOLET_TEXT = "text-vividViolet text-xs font-IBM no-underline";
+export const SM_VIOLET_TEXT =
+  "text-vividViolet text-[12px] font-IBM no-underline";
 
 export const MD_VIOLET_TEXT =
-  "ml-2 text-vividViolet text-sm font-IBM font-medium no-underline md: text-base ";
+  "ml-2 text-vividViolet text-[14px] font-IBM font-medium no-underline md: text-base ";
 
 export const GENERIC_PARAGRAPH =
-  "text-left text-nero text-sm font-IBM md:text-base";
+  "text-left text-nero text-[18px] font-IBM md:text-base";
 
 // containers
 
@@ -52,12 +55,17 @@ export const PARENT_CONTAINER =
 
 export const FLEX_COL_CENTER = "flex flex-col items-center";
 
-export const ALERT_DIV = "-mt-2 -mb-10 w-60 md: w-[404px] flex items-center";
+export const FLEX_COL_CENTER_MOBILE =
+  "flex flex-col items-center mx-[32px] mt-[47px] mb-[47px]";
+
+export const FLEX_COL_LEFT = "w-[358px] flex flex-col items-start";
+export const ALERT_DIV =
+  "mt-[8px] md:-mt-2 -mb-10 w-60 w-[358px] md: w-[404px] flex items-center";
 
 // input field
 
 export const FORM_INPUT_FIELD =
-  "flex h-4 w-60 md:w-[404px] pl-2.5 py-2.5 items-center gap-2.5 border border-nero rounded-xl text-nero font-IBM font-normal";
+  "mt-2 pl-2.5 md:py-2.5 box-border flex h-[45px] w-[358px] md:w-[404px]  items-left md:items-center border border-nero rounded-[10px] text-nero text-[16px] font-IBM font-normal placeholder:text-alto placeholder:font-medium";
 
 // spacing
 

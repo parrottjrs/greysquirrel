@@ -24,12 +24,7 @@ export default function AccountModal() {
             setOpen(false);
           }}
         >
-          <a
-            href="#/account"
-            className="relative p-2 pb-3 top-8 right-6 h-12 w-28 border-solid border rounded-lg"
-          >
-            Edit Profile
-          </a>
+          <a href="#/account">Edit Profile</a>
           <LogoutButton />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

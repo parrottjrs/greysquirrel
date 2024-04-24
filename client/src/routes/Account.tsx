@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { STYLES } from "../utils/styles/styles";
-import LogoutButton from "../components/LogoutButton";
 import Navbar from "../components/Navbar";
-import { AlertCircle } from "lucide-react";
 import ShowPassword from "../components/ShowPasword";
 import { useForm } from "react-hook-form";
 import { authenticate, refresh } from "../utils/functions";
@@ -12,7 +9,7 @@ import CheckMark from "../components/CheckMark";
 import {
   ACCOUNT_FORM_CONTAINER,
   SUBMIT_SUCCESS_CONTAINER,
-} from "../utils/styles/AccountStyles";
+} from "../styles/AccountStyles";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -23,7 +20,7 @@ import {
   INPUT_FIELD_LABEL,
   INPUT_FIELD_GAP,
   FORM_SUBMIT,
-} from "../utils/styles/GeneralStyles";
+} from "../styles/GeneralStyles";
 
 type FormData = {
   username: string;

@@ -10,25 +10,11 @@ import {
   GENERIC_HEADER,
   PARENT_CONTAINER,
   SMALL_GREEN_BUTTON,
-} from "../utils/styles/GeneralStyles";
+} from "../styles/GeneralStyles";
 import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
-} from "../utils/styles/DocPageStyles";
-
-// export interface Document {
-//   doc_id?: number;
-//   title?: string;
-//   content?: string;
-//   authorizedUsers: string[];
-//   last_edit: string;
-// }
-// interface SharedDocument {
-//   doc_id?: number;
-//   title?: string;
-//   content?: string;
-//   owner: { owner_id?: number; owner_name?: string };
-// }
+} from "../styles/DocPageStyles";
 
 export default function Documents() {
   const refreshTokenDelay = 540000; //nine minutes;

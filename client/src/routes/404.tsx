@@ -1,5 +1,3 @@
-import { STYLES } from "../utils/styles/styles";
-
 export default function NotFound() {
   return (
     <div>

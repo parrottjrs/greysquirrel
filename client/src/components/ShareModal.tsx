@@ -7,11 +7,8 @@ import {
   SHARE_HEADER,
   SHARE_INPUT_FIELD,
   SHARE_MODAL_CONTAINER,
-} from "../utils/styles/InvitesStyles";
-import {
-  INSTRUCTIONS,
-  SMALL_GREEN_BUTTON,
-} from "../utils/styles/GeneralStyles";
+} from "../styles/InvitesStyles";
+import { INSTRUCTIONS, SMALL_GREEN_BUTTON } from "../styles/GeneralStyles";
 
 interface FormData {
   recipientName: string;

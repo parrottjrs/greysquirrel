@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { STYLES } from "../utils/styles/styles";
 import { applyDeltaSafely, authenticate, refresh } from "../utils/functions";
 import Navbar from "../components/Navbar";
 import { Socket, io } from "socket.io-client";
@@ -10,7 +9,7 @@ import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
 import CustomQuillEditor from "../components/CustomQuillEditor";
-import { MOUSEOUT_DIV } from "../utils/styles/GeneralStyles";
+import { MOUSEOUT_DIV } from "../styles/GeneralStyles";
 
 export default function Editor() {
   const params = useParams();
@@ -141,7 +140,6 @@ export default function Editor() {
         if (data.userId === currentUserIdRef.current) {
           return;
         }
-        console.log("Received delta:", data.content);
         const deltaString = data.content;
         const delta = JSON.parse(deltaString);
         const textToApply = delta.ops;

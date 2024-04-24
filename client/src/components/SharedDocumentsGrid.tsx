@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
-import { STYLES } from "../utils/styles/styles";
-import { FileText } from "lucide-react";
 import DocumentOptionsDropdown from "./DocOptionsDropdown";
 import { SharedDocument, SharedDocumentsGridProps } from "../utils/customTypes";
 import {
@@ -10,7 +8,7 @@ import {
   FULLSIZE_INVIS_ANCHOR,
   SHARED_BY_TEXT,
   SHARED_DOC_ITEM,
-} from "../utils/styles/DocPageStyles";
+} from "../styles/DocPageStyles";
 import Page from "./Page";
 
 // interface SharedDocument {

@@ -7,7 +7,7 @@ import {
   CLICKABLE_TITLE,
   EDITOR_PARENT_CONTAINER,
   TITLE_INPUT_FIELD,
-} from "../utils/styles/CustomQuillEditorStyles";
+} from "../styles/CustomQuillEditorStyles";
 
 export default function CustomQuillEditor({
   quillRef,

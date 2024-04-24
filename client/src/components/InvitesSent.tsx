@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  CANCEL_BUTTON,
-  SENT_PARENT_CONTAINER,
-} from "../utils/styles/InvitesStyles";
+import { CANCEL_BUTTON, SENT_PARENT_CONTAINER } from "../styles/InvitesStyles";
 
 type Invite = {
   invite_id: number;
