@@ -18,9 +18,10 @@ import {
   SMALL_DIVIDER,
   SM_VIOLET_TEXT,
 } from "../styles/GeneralStyles";
-import { Breakpoints } from "../hooks/breakpoints";
+
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import ExclamationMark from "../components/ExclamationMark";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
 type FormData = {
   username: string;
@@ -29,7 +30,7 @@ type FormData = {
 };
 
 export default function Signin() {
-  const { isMobile, isTablet, isBigScreen } = Breakpoints();
+  const { isMobile, isTablet, isBigScreen } = useBreakpoints();
   const [change, setChange] = useState(false);
   const [show, setShow] = useState(false);
   const { register, handleSubmit } = useForm({

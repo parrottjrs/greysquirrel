@@ -1,28 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import {
-  ALERT_DIV,
-  ALERT_TEXT,
-  FLEX_COL_CENTER,
-  FLEX_COL_CENTER_MOBILE,
-  FLEX_COL_LEFT,
-  GENERIC_HEADER,
-  GENERIC_PARAGRAPH,
-  GREEN_BUTTON_STRETCH,
-  INSTRUCTIONS,
-  SMALL_GREEN_BUTTON,
-  STYLIZED_ANCHOR_GREEN,
-  STYLIZED_ANCHOR_GREEN_MOBILE,
-} from "../styles/GeneralStyles";
-import { Breakpoints } from "../hooks/breakpoints";
-import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
-import ExclamationMark from "../components/ExclamationMark";
 import VerifyAccountMobile from "../components/VerifyAccountMobile";
 import HomeDesktop from "../components/HomeDesktop";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import VerifyAccountDesktop from "../components/VerifyAccountDesktop";
 
 export default function VerifyAccount() {
-  const { isMobile } = Breakpoints();
+  const { isMobile } = useBreakpoints();
   const navigate = useNavigate();
   const params = useParams();
   let emailToken = params.emailToken;
@@ -90,7 +75,7 @@ export default function VerifyAccount() {
   };
 
   return (
-    <div>
+    <>
       {isMobile && (
         <VerifyAccountMobile
           verified={verified}
@@ -101,11 +86,17 @@ export default function VerifyAccount() {
         />
       )}
       {!isMobile && (
-        <div>
+        <>
           <Navbar />
-          <HomeDesktop />
-        </div>
+          <VerifyAccountDesktop
+            verified={verified}
+            sent={sent}
+            sendNewToken={sendNewEmailToken}
+            tokenExpired={tokenExpired}
+            createDocument={handleClick}
+          />
+        </>
       )}
-    </div>
+    </>
   );
 }

@@ -19,8 +19,9 @@ import {
   SIGNUP_BUTTON,
   SMALL_DIVIDER,
 } from "../styles/GeneralStyles";
-import { Breakpoints } from "../hooks/breakpoints";
+
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
 type FormData = {
   username: string;
@@ -33,7 +34,7 @@ type FormData = {
 };
 
 export default function Signup() {
-  const { isMobile } = Breakpoints();
+  const { isMobile } = useBreakpoints();
   const [show, setShow] = useState(false);
   const [weakPassword, setWeakPassword] = useState(false);
   const [userExists, setUserExists] = useState(false);
