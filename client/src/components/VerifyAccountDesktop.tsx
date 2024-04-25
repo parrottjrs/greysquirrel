@@ -1,5 +1,4 @@
 import React from "react";
-import { VerifyAccountProps } from "../utils/customTypes";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -8,17 +7,19 @@ import {
   GENERIC_PARAGRAPH,
   GREEN_BUTTON_STRETCH,
   SMALL_GREEN_BUTTON,
-  STYLIZED_ANCHOR_GREEN,
 } from "../styles/GeneralStyles";
 import ExclamationMark from "./ExclamationMark";
+import { useVerifyAccountManagement } from "../hooks/useVerifyAccountManagement";
 
-export default function VerifyAccountDesktop({
-  verified,
-  sent,
-  sendNewToken,
-  tokenExpired,
-  createDocument,
-}: VerifyAccountProps) {
+export default function VerifyAccountDesktop() {
+  const {
+    verified,
+    sent,
+    sendNewEmailToken,
+    tokenIsExpired,
+    handleCreateDocument,
+  } = useVerifyAccountManagement();
+
   return (
     <div className={"mt-32 flex flex-row items-center justify-center"}>
       {!verified ? (
@@ -29,10 +30,10 @@ export default function VerifyAccountDesktop({
             shortly. Please check your spam folder if you haven't received it.
           </p>
           <div className={FLEX_COL_CENTER}>
-            <button className={SMALL_GREEN_BUTTON} onClick={sendNewToken}>
+            <button className={SMALL_GREEN_BUTTON} onClick={sendNewEmailToken}>
               Send a new link
             </button>
-            {tokenExpired && (
+            {tokenIsExpired && (
               <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
@@ -57,7 +58,10 @@ export default function VerifyAccountDesktop({
           <p className="text-nero text-lg font-medium text-center mb-8">
             Click the link below to create your first document.
           </p>
-          <button className={GREEN_BUTTON_STRETCH} onClick={createDocument}>
+          <button
+            className={GREEN_BUTTON_STRETCH}
+            onClick={handleCreateDocument}
+          >
             Create a document
           </button>
         </div>

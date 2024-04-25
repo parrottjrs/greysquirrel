@@ -5,5 +5,5 @@ import DocumentsMobile from "../components/DocumentsMobile";
 
 export default function Documents() {
   const { isMobile } = useBreakpoints();
-  return <>{isMobile ? <DocumentsMobile /> : <DocumentsDesktop />}</>;
+  return isMobile ? <DocumentsMobile /> : <DocumentsDesktop />;
 }

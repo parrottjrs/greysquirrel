@@ -13,15 +13,16 @@ import {
 } from "../styles/GeneralStyles";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import ExclamationMark from "./ExclamationMark";
-import { VerifyAccountProps } from "../utils/customTypes";
+import { useVerifyAccountManagement } from "../hooks/useVerifyAccountManagement";
 
-export default function VerifyAccountMobile({
-  verified,
-  sent,
-  sendNewToken,
-  tokenExpired,
-  createDocument,
-}: VerifyAccountProps) {
+export default function VerifyAccountMobile() {
+  const {
+    verified,
+    sent,
+    sendNewEmailToken,
+    tokenIsExpired,
+    handleCreateDocument,
+  } = useVerifyAccountManagement();
   return (
     <div className={FLEX_COL_CENTER_MOBILE}>
       {!verified ? (
@@ -33,10 +34,13 @@ export default function VerifyAccountMobile({
             shortly. Please check your spam folder if you haven't received it.
           </p>
           <div className={FLEX_COL_CENTER}>
-            <button className={GREEN_BUTTON_STRETCH} onClick={sendNewToken}>
+            <button
+              className={GREEN_BUTTON_STRETCH}
+              onClick={sendNewEmailToken}
+            >
               Send a new link
             </button>
-            {tokenExpired && (
+            {tokenIsExpired && (
               <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />
@@ -65,7 +69,10 @@ export default function VerifyAccountMobile({
             <p className={GENERIC_PARAGRAPH}>
               Click the link below to create your first document.
             </p>
-            <button className={GREEN_BUTTON_STRETCH} onClick={createDocument}>
+            <button
+              className={GREEN_BUTTON_STRETCH}
+              onClick={handleCreateDocument}
+            >
               Create a document
             </button>
           </div>

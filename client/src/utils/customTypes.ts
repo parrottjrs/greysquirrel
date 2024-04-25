@@ -50,3 +50,19 @@ export interface VerifyAccountProps {
   tokenExpired: boolean;
   createDocument: () => Promise<void>;
 }
+
+export interface SigninFormData {
+  username: string;
+  password: string;
+  remember: boolean;
+}
+
+export interface SignupFormData {
+  username: string;
+  email: string;
+  emailCheck: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  passCheck: string;
+}

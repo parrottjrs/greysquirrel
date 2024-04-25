@@ -19,7 +19,7 @@ export default function HomeDesktop() {
           matters.
         </p>
         <a href="#/signup" className={STYLIZED_ANCHOR_GREEN}>
-          Create a document
+          Get started
         </a>
       </div>
       <img src={squirrel} className="w-72 h-72" />

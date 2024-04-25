@@ -14,7 +14,7 @@ export default function HomeMobile() {
       </div>
       <img src={squirrel} className="ml-6 mb-10 mt-10 w-64 h-64" />
       <a href="#/signup" className={STYLIZED_ANCHOR_GREEN_MOBILE}>
-        Create a document
+        Get started
       </a>
       <div className="w-[358px] mt-6">
         <h1 className="text-nero text-[24px] font-IBM font-medium">

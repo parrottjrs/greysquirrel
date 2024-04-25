@@ -6,44 +6,18 @@ import HomeMobile from "../components/HomeMobile";
 import Navbar from "../components/Navbar";
 import HomeDesktop from "../components/HomeDesktop";
 import { useBreakpoints } from "../hooks/useBreakpoints";
+import { useAuthentication } from "../hooks/useAuthentication";
 
 export default function Home() {
   const { isMobile } = useBreakpoints();
-  const hasSignedUp =
-    JSON.parse(JSON.stringify(localStorage.getItem("hasSignedUp"))) === "true"
-      ? true
-      : false;
+  useAuthentication();
 
-  const navigate = useNavigate();
-
-  const authenticateUser = async () => {
-    try {
-      const { success } = await authenticate();
-      if (success) {
-        navigate("/documents");
-      }
-      if (hasSignedUp) {
-        navigate("/signIn");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    authenticateUser();
-  }, []);
-
-  return (
+  return !isMobile ? (
     <>
-      {isMobile ? (
-        <HomeMobile />
-      ) : (
-        <>
-          <Navbar />
-          <HomeDesktop />
-        </>
-      )}
+      <Navbar />
+      <HomeDesktop />
     </>
+  ) : (
+    <HomeMobile />
   );
 }
