@@ -8,7 +8,11 @@ import {
   SHARE_INPUT_FIELD,
   SHARE_MODAL_CONTAINER,
 } from "../styles/InvitesStyles";
-import { INSTRUCTIONS, SMALL_GREEN_BUTTON } from "../styles/GeneralStyles";
+import {
+  INSTRUCTIONS,
+  SMALL_GREEN_BUTTON,
+  TRANSPARENT_BUTTON_NORMAL,
+} from "../styles/GeneralStyles";
 
 interface FormData {
   recipientName: string;
@@ -113,7 +117,7 @@ export default function ShareModal({ type, docId, title }: ChildProps) {
             <span className="ml-[0.83rem]">Share</span>
           </button>
         ) : (
-          <button className={SHARE_BUTTON_TEXT}>Share</button>
+          <button className={TRANSPARENT_BUTTON_NORMAL}>Share</button>
         )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>

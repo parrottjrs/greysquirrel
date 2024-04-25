@@ -1,7 +1,4 @@
 import React, { useEffect } from "react";
-import { authenticate } from "../utils/functions";
-import { useNavigate } from "react-router-dom";
-
 import HomeMobile from "../components/HomeMobile";
 import Navbar from "../components/Navbar";
 import HomeDesktop from "../components/HomeDesktop";

@@ -14,4 +14,10 @@ export const NAVBAR_TEXT =
 export const BASIC_LINK = "text-nero font-IBM font-medium no-underline";
 
 export const MOBILE_LINK_CONTAINER =
-  "absolute -top-[65px] -right-[110px] px-[33px] py-[39px]  box-border flex flex-col gap-[37px] justify-start w-[280px] h-[600px] bg-aeroBlue";
+  "fixed -top-[47px] -right-[110px] px-[33px] py-[39px]  box-border flex flex-col gap-[37px] justify-start w-[280px] h-[797px] bg-aeroBlue";
+
+export const MOBILE_NAVBAR_ANCHOR =
+  "p-0 text-black text-[18px] w-[68px] h-[27px] font-IBM font-medium  no-underline";
+
+export const NAVBAR_BUTTON_BLACK =
+  "p-0 bg-transparent border-none text-nero text-[18px] w-[68px] h-[27px] font-IBM font-medium no-underline";

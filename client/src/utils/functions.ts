@@ -39,7 +39,7 @@ export const authenticate = async () => {
   }
 };
 
-export const clipText = (text: any, type: string) => {
+export const clipText = (text: any, type: string, isMobile?: boolean) => {
   let maxLength = 0;
   let maxWords = 0;
   switch (type) {
@@ -49,13 +49,13 @@ export const clipText = (text: any, type: string) => {
       break;
     case "content":
       maxLength = 150;
-      maxWords = 35;
+      maxWords = isMobile ? 14 : 35;
       break;
     default:
       break;
   }
   if (text.length <= maxLength) {
-    return text;
+    return text + "...";
   }
   const split = text.split(" ");
   const sliced = split.slice(0, maxWords);

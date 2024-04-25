@@ -7,7 +7,11 @@ import {
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
-import { DOC_OPTIONS_CONTAINER, OPTIONS_TEXT } from "../styles/DocPageStyles";
+import { DOC_OPTIONS_CONTAINER } from "../styles/DocPageStyles";
+import {
+  TRANSPARENT_BUTTON_BOLD,
+  TRANSPARENT_BUTTON_NORMAL,
+} from "../styles/GeneralStyles";
 
 export default function DocOptionsDropdown({
   docId,
@@ -76,11 +80,11 @@ export default function DocOptionsDropdown({
               <ShareModal docId={docId} title={title} />
             </DropdownMenu.Item>
 
-            {/* TODO: Rename function */}
+            {/* TODO: Rename document function */}
 
             <DropdownMenu.Item>
               <button
-                className={OPTIONS_TEXT}
+                className={TRANSPARENT_BUTTON_NORMAL}
                 onClick={() => {
                   !shared
                     ? handleDelete(docId)

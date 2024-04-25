@@ -8,6 +8,7 @@ export const theme = {
     aeroBlue: "#C2E9D2",
     alto: "#D9D9D9",
     boulder: "#797878",
+    black: "#000000",
     dustyGray: "#999999",
     gallery: "#ECECEC",
     nero: "#1D1D1D",

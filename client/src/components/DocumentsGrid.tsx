@@ -11,44 +11,18 @@ import {
   DOC_HEADER,
   DOC_PREVIEW,
   FULLSIZE_INVIS_ANCHOR,
+  GRID_INTERIOR,
+  ICONS_CONTAINER,
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
 export default function DocumentsGrid({
   documents,
   setDocuments,
 }: DocumentsGridProps) {
-  const fetchRevoke = async (docId: number, authorizedUserName: string) => {
-    try {
-      await fetch("api/shared-docs", {
-        method: "DELETE",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          docId: docId,
-          authorizedUserName: authorizedUserName,
-        }),
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleRevoke = async (docId: any, userToRevoke: string) => {
-    await fetchRevoke(docId, userToRevoke);
-    setDocuments((previousDocuments) =>
-      previousDocuments.map((document: UserDocument) =>
-        document.doc_id === docId
-          ? {
-              ...document,
-              authorizedUsers: document.authorizedUsers.filter(
-                (authorizedUser: string) => authorizedUser !== userToRevoke
-              ),
-            }
-          : document
-      )
-    );
-  };
+  const { isMobile } = useBreakpoints();
 
   return documents.map((document: UserDocument) => {
     const { title, doc_id, content, authorizedUsers, last_edit } = document;
@@ -59,38 +33,42 @@ export default function DocumentsGrid({
       ? sanitize(content, { allowedTags: [], allowedAttributes: {} })
       : null;
 
-    const newContent = content ? clipText(cleanContent, "content") : "";
+    const newContent = content
+      ? clipText(cleanContent, "content", isMobile)
+      : "";
 
     const formattedEditDate = formatDate(last_edit);
     return (
       <div className={DOCUMENT_GRID_ITEM} key={doc_id}>
-        <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>
-          <div className="flex flex-row w-full">
-            <Page />
-            <div className="flex flex-col w-full">
-              <h2 className={DOC_HEADER}>{!title ? "Untitled" : newTitle}</h2>
-              <p className={DOC_PREVIEW}>{newContent}</p>
-              <div className={DETAILS_CONTAINER}>
-                <span className={LAST_UPDATE_TEXT}>
-                  Last updated: {formattedEditDate}
-                </span>
-                {authorizedUsers.length > 0 ? (
-                  <div>
-                    <span className={SHARED_TEXT}>Shared</span>
-                    <CheckMark />
-                  </div>
-                ) : (
-                  false
-                )}
-              </div>
-            </div>
+        <div className={GRID_INTERIOR}>
+          <div className={ICONS_CONTAINER}>
+            <a href={`#/editor/${doc_id}`}>
+              <Page isMobile={isMobile} />
+            </a>
+            <DocOptionsDropdown
+              docId={doc_id}
+              title={title}
+              handleDocs={setDocuments}
+            />
           </div>
-        </a>
-        <DocOptionsDropdown
-          docId={doc_id}
-          title={title}
-          handleDocs={setDocuments}
-        />
+          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>
+            <h2 className={DOC_HEADER}>{!title ? "Untitled" : newTitle}</h2>
+            <p className={DOC_PREVIEW}>{newContent}</p>
+            <div className={DETAILS_CONTAINER}>
+              <span className={LAST_UPDATE_TEXT}>
+                Last updated: {formattedEditDate}
+              </span>
+              {authorizedUsers.length > 0 ? (
+                <div className="mt-[8px] md:mt-0">
+                  <span className={SHARED_TEXT}>Shared</span>
+                  <CheckMark />
+                </div>
+              ) : (
+                false
+              )}
+            </div>
+          </a>
+        </div>
       </div>
     );
   });

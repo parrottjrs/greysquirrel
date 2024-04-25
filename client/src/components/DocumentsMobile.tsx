@@ -1,12 +1,9 @@
 import React from "react";
-import {
-  GENERIC_HEADER,
-  PARENT_CONTAINER,
-  SMALL_GREEN_BUTTON,
-} from "../styles/GeneralStyles";
+import { FLEX_COL_LEFT, GENERIC_PARAGRAPH } from "../styles/GeneralStyles";
 import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
+  NEW_DOC_MOBILE,
 } from "../styles/DocPageStyles";
 import DocumentsGrid from "./DocumentsGrid";
 import SharedDocumentsGrid from "./SharedDocumentsGrid";
@@ -26,19 +23,19 @@ export default function DocumentsMobile() {
   } = useDocumentManagement();
   return (
     authorization && (
-      <div>
+      <div className="mx-[16px] my-[47px]">
         <MobileNavbar />
-        <div className={PARENT_CONTAINER}>
-          <div className="flex flex-row items-center justify-between">
-            <h1 className={`${GENERIC_HEADER} mb-10`}>Documents</h1>
-            <button
-              className={SMALL_GREEN_BUTTON}
-              onClick={handleCreateDocument}
-            >
+        <div className={`${FLEX_COL_LEFT} gap-[52px]`}>
+          <div className="flex flex-col items-left mt-[20px] gap-[25px]">
+            <h1 className="mb-0 text-nero text-[42px] font-IBM font-medium">
+              My Documents
+            </h1>
+            <button className={NEW_DOC_MOBILE} onClick={handleCreateDocument}>
               New Document
             </button>
           </div>
-          <div>
+
+          <div className="flex flex row gap-[16px]">
             <button
               className={
                 showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
@@ -53,9 +50,11 @@ export default function DocumentsMobile() {
               }
               onClick={() => setShowOwnedDocuments(false)}
             >
-              Shared Documents
+              Shared with me
             </button>
           </div>
+
+          <span className={`${GENERIC_PARAGRAPH} -mb-[30px]`}>Files</span>
           {showOwnedDocuments ? (
             <DocumentsGrid documents={documents} setDocuments={setDocuments} />
           ) : (

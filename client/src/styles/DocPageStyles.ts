@@ -1,15 +1,18 @@
 // for docs route
 
 export const DOCUMENTS_SWITCH_ON =
-  "w-36 mr-4 p-2 text-white text-sm font-IBM font-medium bg-nero gap-2.5 rounded-xl border border-solid border-nero";
+  "w-[171px] h-[45px] px-[10px] py-[9px] text-white text-[18px] font-IBM font-medium bg-nero gap-2.5 rounded-[14px] border border-solid border-nero md: w-[168px]";
 
 export const DOCUMENTS_SWITCH_OFF =
-  "w-36 mr-4 p-2 text-nero text-sm font-IBM font-medium bg-white gap-2.5 rounded-xl border border-black border-solid";
+  "box-border w-[171px] h-[45px] px-[10px] py-[9px] text-nero text-[18px] font-IBM font-medium bg-white rounded-xl border border-black border-solid md: w-[168px]";
+
+export const NEW_DOC_MOBILE =
+  "w-[358px] h-[45px]  text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
 
 // for  Document Options Dropdown
 
 export const DOC_OPTIONS_CONTAINER =
-  "relative left-28 bottom-10 p-2 pb-3 h-12 w-28 border-solid border rounded-lg";
+  "border-box flex flex-col items-left gap-[24px] h-[84px] w-[96px] py-[24px] px-[13px] relative right-[18px] top-[8px] md:top-[0px] md:left-28 md:bottom-10 bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-lg";
 
 export const OPTIONS_TEXT =
   "p-0 bg-transparent border-none text-nero text-sm font-IBM md:text-lg no-underline";
@@ -17,27 +20,23 @@ export const OPTIONS_TEXT =
 // for user owned doc grid
 
 export const DOCUMENT_GRID_ITEM =
-  "flex flex-row justify-between h-30 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden w-full";
+  "box-border flex flex-row justify-between h-[297px]  p-[22px] w-[358px] md:w-[584px] lg:w-[828px] md:h-[273px] lg:h-[212px] border-solid border border-dustyGray rounded-[14px]";
+
+export const GRID_INTERIOR = "flex  flex-col items-left gap-[4px] md: flex-row";
+
+export const ICONS_CONTAINER =
+  "h-[43px] flex flex-row justify-between items-center";
 
 export const FULLSIZE_INVIS_ANCHOR = "no-underline text-nero w-full h-full";
 
-export const DOC_HEADER =
-  "m-0 text-nero text-sm font-IBM font-medium md:text-2xl";
+export const DOC_HEADER = "m-0 text-nero text-[24px] font-IBM font-medium";
 
 export const DOC_PREVIEW =
-  "w-9/10 mt-1 text-left text-nero text-sm font-IBM break-words md:text-base";
+  "w-[314px] h-[81px] text-left text-nero text-[18px] font-IBM break-words ";
 
 export const DETAILS_CONTAINER =
-  "flex flex-row justify-between items-center w-full";
+  "flex flex-col md:flex-row items-left md:justify-between  md:items-center w-full";
 
-export const LAST_UPDATE_TEXT =
-  "text-boulder text-sm font-sans md:text-lg mt-0";
+export const LAST_UPDATE_TEXT = "text-boulder text-[18px] font-IBM";
 
-export const SHARED_TEXT = "text-boulder text-sm font-sans md:text-lg mr-2";
-
-// for shared docs grid
-
-export const SHARED_DOC_ITEM =
-  "flex flex-row justify-between h-30 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden w-full";
-
-export const SHARED_BY_TEXT = "text-sm text-dustyGray";
+export const SHARED_TEXT = "text-boulder text-[18px] font-IBM mr-2";

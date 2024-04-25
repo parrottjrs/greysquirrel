@@ -6,8 +6,6 @@ export const STYLIZED_ANCHOR_GREEN =
 export const STYLIZED_ANCHOR_GREEN_MOBILE =
   "w-[358px] h-[41px] pt-4 text-center bg-aeroBlue font-IBM font-medium text-[18px]  text-base text-nero no-underline border-0 rounded-[14px]";
 
-export const MOBILE_NAVBAR_ANCHOR =
-  "p-0 text-nero text-[18px] w-[68px] h-[27px] font-IBM font-medium  no-underline";
 // buttons
 
 export const SMALL_GREEN_BUTTON =
@@ -16,11 +14,14 @@ export const SMALL_GREEN_BUTTON =
 export const FORM_SUBMIT =
   "mt-12 mb-12 w-full h-9 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
 
-export const TRANSPARENT_BUTTON =
+export const TRANSPARENT_BUTTON_NORMAL =
+  "p-0 bg-transparent border-none text-nero text-[18px] w-[68px] h-[27px] font-IBM no-underline";
+
+export const TRANSPARENT_BUTTON_BOLD =
   "p-0 bg-transparent border-none text-nero text-[18px] w-[68px] h-[27px] font-IBM font-medium no-underline";
 
 export const GREEN_BUTTON_STRETCH =
-  "w-[358px] h-[45px] mt-[35px] md:mt-3 mb-8 px-20 md:px-44 py-1 text-nero text-[18px] font-IBM font-medium bg-aeroBlue gap-2.5 rounded-[10px] border-0";
+  "w-[358px] h-[45px] mt-[35px] px-20 md:mt-3 mb-8  md:px-44 py-1 text-nero text-[18px] font-IBM font-medium bg-aeroBlue gap-2.5 rounded-[10px] border-0";
 
 export const SIGNUP_BUTTON =
   "mt-12 mb-12 px-20 md:px-44 py-1 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
@@ -61,6 +62,7 @@ export const FLEX_COL_CENTER_MOBILE =
   "flex flex-col items-center mx-[32px] mt-[47px] mb-[47px]";
 
 export const FLEX_COL_LEFT = "w-[358px] flex flex-col items-start";
+
 export const ALERT_DIV =
   "mt-[8px] md:-mt-2 -mb-10 w-60 w-[358px] md: w-[404px] flex items-center";
 

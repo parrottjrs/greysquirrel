@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import {
   MOBILE_LINK_CONTAINER,
+  MOBILE_NAVBAR_ANCHOR,
+  NAVBAR_BUTTON_BLACK,
   NAVBAR_TITLE_TEXT,
 } from "../styles/NavbarStyles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import MobileNavTrigger from "./MobileNavTrigger";
 import { useLogout } from "../hooks/useLogout";
-import {
-  MOBILE_NAVBAR_ANCHOR,
-  TRANSPARENT_BUTTON,
-} from "../styles/GeneralStyles";
+import { TRANSPARENT_BUTTON_BOLD } from "../styles/GeneralStyles";
 
 export default function MobileNavbar() {
   const { handleLogout } = useLogout();
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="px-[23px] flex flex-row justify-between items-center">
+    <div className=" flex flex-row justify-between items-center">
       <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
       <DropdownMenu.Root open={open ? true : false}>
         <DropdownMenu.Trigger
@@ -55,7 +54,7 @@ export default function MobileNavbar() {
               >
                 Edit Profile
               </a>
-              <button className={TRANSPARENT_BUTTON} onClick={handleLogout}>
+              <button className={NAVBAR_BUTTON_BLACK} onClick={handleLogout}>
                 Sign out
               </button>
             </div>

@@ -1,8 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import React, { useState } from "react";
 import AccountCircle from "./AccountCircle";
-import LogoutButton from "./LogoutButton";
-import { TRANSPARENT_BUTTON } from "../styles/GeneralStyles";
+import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
 import { useLogout } from "../hooks/useLogout";
 
 export default function AccountModal() {
@@ -28,7 +27,7 @@ export default function AccountModal() {
           }}
         >
           <a href="#/account">Edit Profile</a>
-          <button className={TRANSPARENT_BUTTON} onClick={handleLogout}>
+          <button className={TRANSPARENT_BUTTON_NORMAL} onClick={handleLogout}>
             Sign out
           </button>
         </DropdownMenu.Content>

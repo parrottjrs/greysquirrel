@@ -1,10 +1,15 @@
 import React from "react";
 
-export default function Page() {
+interface PageProps {
+  isMobile?: boolean;
+}
+export default function Page({ isMobile }: PageProps) {
+  const pageWidth = isMobile ? "40" : "60";
+  const pageHeight = isMobile ? "40" : "60";
   return (
     <svg
-      width="60"
-      height="60"
+      width={pageWidth}
+      height={pageHeight}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
