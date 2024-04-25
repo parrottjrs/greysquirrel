@@ -11,6 +11,7 @@ import {
 import DocumentsGrid from "./DocumentsGrid";
 import SharedDocumentsGrid from "./SharedDocumentsGrid";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
+import MobileNavbar from "./MobileNavbar";
 
 export default function DocumentsMobile() {
   const {
@@ -24,41 +25,47 @@ export default function DocumentsMobile() {
     handleCreateDocument,
   } = useDocumentManagement();
   return (
-    <div>
-      <div className={PARENT_CONTAINER}>
-        <div className="flex flex-row items-center justify-between">
-          <h1 className={`${GENERIC_HEADER} mb-10`}>Documents</h1>
-          <button className={SMALL_GREEN_BUTTON} onClick={handleCreateDocument}>
-            New Document
-          </button>
+    authorization && (
+      <div>
+        <MobileNavbar />
+        <div className={PARENT_CONTAINER}>
+          <div className="flex flex-row items-center justify-between">
+            <h1 className={`${GENERIC_HEADER} mb-10`}>Documents</h1>
+            <button
+              className={SMALL_GREEN_BUTTON}
+              onClick={handleCreateDocument}
+            >
+              New Document
+            </button>
+          </div>
+          <div>
+            <button
+              className={
+                showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
+              }
+              onClick={() => setShowOwnedDocuments(true)}
+            >
+              My Documents
+            </button>
+            <button
+              className={
+                !showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
+              }
+              onClick={() => setShowOwnedDocuments(false)}
+            >
+              Shared Documents
+            </button>
+          </div>
+          {showOwnedDocuments ? (
+            <DocumentsGrid documents={documents} setDocuments={setDocuments} />
+          ) : (
+            <SharedDocumentsGrid
+              sharedDocuments={sharedDocuments}
+              setSharedDocuments={setSharedDocuments}
+            />
+          )}
         </div>
-        <div>
-          <button
-            className={
-              showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
-            }
-            onClick={() => setShowOwnedDocuments(true)}
-          >
-            My Documents
-          </button>
-          <button
-            className={
-              !showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
-            }
-            onClick={() => setShowOwnedDocuments(false)}
-          >
-            Shared Documents
-          </button>
-        </div>
-        {showOwnedDocuments ? (
-          <DocumentsGrid documents={documents} setDocuments={setDocuments} />
-        ) : (
-          <SharedDocumentsGrid
-            sharedDocuments={sharedDocuments}
-            setSharedDocuments={setSharedDocuments}
-          />
-        )}
       </div>
-    </div>
+    )
   );
 }

@@ -12,3 +12,6 @@ export const NAVBAR_TEXT =
   "mt-1 md:text-center text-nero text-xl font-IBM font-medium";
 
 export const BASIC_LINK = "text-nero font-IBM font-medium no-underline";
+
+export const MOBILE_LINK_CONTAINER =
+  "absolute -top-[65px] -right-[110px] px-[33px] py-[39px]  box-border flex flex-col gap-[37px] justify-start w-[280px] h-[600px] bg-aeroBlue";

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function LogoutButton() {
+export const useLogout = () => {
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -17,12 +17,5 @@ export default function LogoutButton() {
     logout();
   };
 
-  return (
-    <button
-      className="p-0 border-0 bg-transparent text-nero font-sans text-base"
-      onClick={handleLogout}
-    >
-      Sign out
-    </button>
-  );
-}
+  return { handleLogout };
+};
