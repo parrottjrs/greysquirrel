@@ -87,11 +87,6 @@ export default function DocOptionsDropdown({
                 >
                   Share
                 </button>
-                {/* <ShareModal
-                docId={docId}
-                title={title}
-                authorizedUsers={authorizedUsers}
-              /> */}
               </DropdownMenu.Item>
 
               {/* TODO: Rename document function */}

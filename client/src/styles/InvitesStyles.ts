@@ -31,7 +31,7 @@ export const SHARE_ATTEMPTED_CONTAINER =
 export const SHARE_HEADER = "m-0 text-nero text-[24px] font-IBM font-normal";
 
 export const SHARE_INPUT_FIELD =
-  "box-border h-[45px] w-[296px] mt-[4px] md:w-[404px] pl-[10px] px-[10px] border border-nero rounded-[10px] text-nero font-IBM placeholder:text-alto placeholder:text:16px placeholder:font-medium";
+  "box-border h-[45px] w-[296px] mt-[4px] md:w-[404px] pl-[10px] px-[10px] border-solid border-nero rounded-[10px] text-nero font-IBM placeholder:text-alto placeholder:text:16px placeholder:font-medium";
 
 export const SHARE_BUTTON_GREEN =
-  "w-[296px] h-[45px] rounded-[14px] text-nero text-[18px] font-IBM font-500 border-none bg-aeroBlue";
+  "w-[296px] h-[45px] rounded-[14px] text-nero text-[18px] font-IBM font-medium border-none bg-aeroBlue";

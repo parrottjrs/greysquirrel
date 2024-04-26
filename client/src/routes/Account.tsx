@@ -292,7 +292,7 @@ export default function Account() {
           {accountUpdated && (
             <div className={SUBMIT_SUCCESS_CONTAINER}>
               <CheckMark />
-              <span className={BOLD_GRAY_TEXT}>
+              <span className={`${BOLD_GRAY_TEXT} ml-[15px]`}>
                 Your account has been updated
               </span>
             </div>

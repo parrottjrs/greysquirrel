@@ -67,3 +67,14 @@ export interface SignupFormData {
   password: string;
   passCheck: string;
 }
+
+export interface EmailFormData {
+  email: string;
+}
+export interface PasswordFormData {
+  password: string;
+  passwordCheck: string;
+}
+export interface ForgotPasswordProps {
+  isMobile: boolean;
+}

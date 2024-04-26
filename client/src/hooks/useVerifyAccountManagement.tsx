@@ -51,7 +51,7 @@ export const useVerifyAccountManagement = () => {
   const fetchCreate = async () => {
     const response = await fetch("/api/create", {
       method: "POST",
-      headers: { "content-type": "application /json" },
+      headers: { "content-type": "application/json" },
     });
     const json = await response.json();
     return json.docId;
