@@ -49,6 +49,7 @@ export default function DocumentsGrid({
               docId={doc_id}
               title={title}
               handleDocs={setDocuments}
+              authorizedUsers={authorizedUsers}
             />
           </div>
           <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>

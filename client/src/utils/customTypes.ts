@@ -31,6 +31,7 @@ export interface DocumentOptionsProps {
     | React.Dispatch<React.SetStateAction<UserDocument[]>>
     | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
   shared?: boolean;
+  authorizedUsers?: string[];
 }
 
 export interface QuillProps {

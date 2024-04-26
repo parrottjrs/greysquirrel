@@ -29,12 +29,12 @@ export const SIGNUP_BUTTON =
 //text
 
 export const INSTRUCTIONS =
-  "mt-[15px] md: -mt-1 font-IBM text-nero text-[16px] font-medium md:text-base";
+  "mt-[15px] md: -mt-1 font-IBM text-nero text-[16px] font-medium";
 
 export const GENERIC_HEADER = "text-nero text-[32px] font-IBM font-medium";
 
 export const INPUT_FIELD_LABEL =
-  "text-center text-nero text-[16px] font-IBM font-medium md:text-base";
+  "text-center text-nero text-[16px] font-IBM font-medium";
 
 export const ALERT_TEXT =
   "w-[24rem] max-w-[384px] text-roman text-xs font-IBM leading-4 md:text-sm ";
@@ -48,8 +48,10 @@ export const SM_VIOLET_TEXT =
 export const MD_VIOLET_TEXT =
   "ml-2 text-vividViolet text-[14px] font-IBM font-medium no-underline  ";
 
-export const GENERIC_PARAGRAPH =
-  "text-left text-nero text-[18px] font-IBM md:text-base";
+export const GENERIC_PARAGRAPH = "text-left text-nero text-[18px] font-IBM";
+
+export const BOLD_TEXT_BLACK =
+  "text-left text-nero text-[18px] font-IBM font-500";
 
 // containers
 
@@ -69,7 +71,7 @@ export const ALERT_DIV =
 // input field
 
 export const FORM_INPUT_FIELD =
-  "mt-2 pl-2.5 md:py-2.5 box-border flex h-[45px] w-[358px] md:w-[404px]  items-left md:items-center border border-nero rounded-[10px] text-nero text-[16px] font-IBM font-normal placeholder:text-alto placeholder:font-medium";
+  "mt-2 pl-2.5 md:py-2.5 box-border flex h-[45px] w-[358px] md:w-[404px]  items-left md:items-center border border-nero rounded-[10px] text-nero text-[16px] font-IBM font-normal placeholder:text-alto placeholder:text:16px placeholder:font-medium";
 
 // spacing
 

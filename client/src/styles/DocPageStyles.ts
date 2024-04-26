@@ -12,7 +12,7 @@ export const NEW_DOC_MOBILE =
 // for  Document Options Dropdown
 
 export const DOC_OPTIONS_CONTAINER =
-  "border-box flex flex-col items-left gap-[24px] h-[84px] w-[96px] py-[24px] px-[13px] relative right-[18px] top-[8px] md:top-[0px] md:left-28 md:bottom-10 bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-lg";
+  "border-box flex flex-col items-left gap-[24px] h-[84px] w-[96px] py-[24px] px-[13px] relative right-[18px] top-[8px] md:top-[0px] md:left-28 md:bottom-10 bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const OPTIONS_TEXT =
   "p-0 bg-transparent border-none text-nero text-sm font-IBM md:text-lg no-underline";

@@ -63,6 +63,19 @@ export const clipText = (text: any, type: string, isMobile?: boolean) => {
   return joined + "...";
 };
 
+export const clipTitleForInvite = (text: any, isMobile?: boolean) => {
+  const maxLength = 20;
+  const maxWords = isMobile ? 3 : 4;
+
+  if (text.length <= maxLength) {
+    return text + "...";
+  }
+  const split = text.split(" ");
+  const sliced = split.slice(0, maxWords);
+  const joined = sliced.join(" ");
+  return joined + "...";
+};
+
 export const formatDate = (date: string) => {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",

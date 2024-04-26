@@ -23,10 +23,12 @@ export const SHARE_BUTTON_TEXT =
   "bg-transparent py-[0.56rem] px-[1.19rem] gap-[0.83rem] border border-solid border-nero rounded-[0.88rem] font-IBM text-xl font-medium";
 
 export const SHARE_MODAL_CONTAINER =
-  "fixed flex flex-col items-left -top-24 right-36 max-h-60 w-96 p-4 pr-10 drop-shadow-2xl rounded-lg bg-white";
+  "box-border fixed flex flex-col  w-[358px] h-[428px] -top-[200px] -left-[280px] md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
-export const SHARE_HEADER =
-  "m-0 text-nero text-sm font-IBM font-medium md:text-2xl pb-4";
+export const SHARE_HEADER = "m-0 text-nero text-[24px] font-IBM font-normal";
 
 export const SHARE_INPUT_FIELD =
-  "flex h-4 w-60 md:w-[404px] pl-2.5 py-2.5 items-center gap-2.5 border border-nero rounded-xl text-nero font-IBM font-normal";
+  "box-border h-[45px] w-[296px] mt-[4px] md:w-[404px] pl-[10px] px-[10px] border border-nero rounded-[10px] text-nero font-IBM placeholder:text-alto placeholder:text:16px placeholder:font-medium";
+
+export const SHARE_BUTTON_GREEN =
+  "w-[296px] h-[45px] rounded-[14px] text-nero text-[18px] font-IBM font-500 border-none bg-aeroBlue";

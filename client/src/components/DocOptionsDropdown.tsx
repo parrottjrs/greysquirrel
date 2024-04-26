@@ -8,10 +8,7 @@ import {
   UserDocument,
 } from "../utils/customTypes";
 import { DOC_OPTIONS_CONTAINER } from "../styles/DocPageStyles";
-import {
-  TRANSPARENT_BUTTON_BOLD,
-  TRANSPARENT_BUTTON_NORMAL,
-} from "../styles/GeneralStyles";
+import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
 
 export default function DocOptionsDropdown({
   docId,
@@ -19,6 +16,7 @@ export default function DocOptionsDropdown({
   ownerId,
   handleDocs,
   shared,
+  authorizedUsers,
 }: DocumentOptionsProps) {
   const [show, setShow] = useState(false);
 
@@ -77,7 +75,11 @@ export default function DocOptionsDropdown({
         >
           <div className={DOC_OPTIONS_CONTAINER}>
             <DropdownMenu.Item>
-              <ShareModal docId={docId} title={title} />
+              <ShareModal
+                docId={docId}
+                title={title}
+                authorizedUsers={authorizedUsers}
+              />
             </DropdownMenu.Item>
 
             {/* TODO: Rename document function */}

@@ -3,16 +3,20 @@ import { useForm } from "react-hook-form";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "./Link";
 import {
+  SHARE_BUTTON_GREEN,
   SHARE_BUTTON_TEXT,
   SHARE_HEADER,
   SHARE_INPUT_FIELD,
   SHARE_MODAL_CONTAINER,
 } from "../styles/InvitesStyles";
 import {
-  INSTRUCTIONS,
-  SMALL_GREEN_BUTTON,
+  BOLD_TEXT_BLACK,
+  GENERIC_PARAGRAPH,
+  INPUT_FIELD_LABEL,
   TRANSPARENT_BUTTON_NORMAL,
 } from "../styles/GeneralStyles";
+import { clipTitleForInvite } from "../utils/functions";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
 interface FormData {
   recipientName: string;
@@ -21,14 +25,28 @@ interface ChildProps {
   docId: any;
   title?: string;
   type?: string;
+  authorizedUsers?: string[];
 }
-export default function ShareModal({ type, docId, title }: ChildProps) {
+const AuthorizedUsersList = ({ authorizedUsers }: any) => {
+  if (authorizedUsers) {
+    return authorizedUsers.map((user: string) => {
+      return <span className={GENERIC_PARAGRAPH}>{user}</span>;
+    });
+  }
+};
+
+export default function ShareModal({
+  type,
+  docId,
+  title,
+  authorizedUsers,
+}: ChildProps) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       recipientName: "",
     },
   });
-
+  const { isMobile } = useBreakpoints();
   const [shareAttempted, setShareAttempted] = useState(false);
   const [sent, setSent] = useState(false);
   const [open, setOpen] = useState(false);
@@ -127,53 +145,54 @@ export default function ShareModal({ type, docId, title }: ChildProps) {
             setOpen(false);
           }}
         >
-          <h2 className={SHARE_HEADER}>
-            Share "{title ? title : "Untitled Document"}"
-          </h2>
-          {shareAttempted ? (
-            <div className="flex flex-col">
-              <span className={INSTRUCTIONS}>{inviteResponseText()}</span>
-              <button
-                className={SMALL_GREEN_BUTTON}
-                onClick={() => {
-                  resetInviteStates();
-                }}
+          <div className="flex flex-col items-left w-[296px] h-[362px] gap-[29px]">
+            <h1 className={SHARE_HEADER}>
+              Share "
+              {title
+                ? clipTitleForInvite(title, isMobile)
+                : "Untitled Document"}
+              "
+            </h1>
+            {!shareAttempted ? (
+              <form
+                className="flex flex-col gap-[29px]"
+                onSubmit={handleSubmit(handleInvite)}
+                autoComplete="off"
               >
-                OK
-              </button>
-            </div>
-          ) : (
-            <div>
-              <span className={INSTRUCTIONS}>
-                Enter your friend/colleague's username
-              </span>
-              <form onSubmit={handleSubmit(handleInvite)} autoComplete="off">
-                <div>
+                <div className="h-[69px]">
+                  <label htmlFor="shareInput" className={INPUT_FIELD_LABEL}>
+                    Enter username {/*TODO: "add email address or username"*/}
+                  </label>
                   <input
                     className={SHARE_INPUT_FIELD}
-                    id="titleInput"
+                    id="shareInput"
                     type="text"
+                    placeholder="Share your file"
                     {...register("recipientName")}
                     autoComplete="off"
                     value={shareInput}
                     onChange={(e) => handleChange(e.target.value)}
                   />
-                  {doesNotExist && <p>User doesn't exist!</p>}
                 </div>
-                <div className="flex flex-row justify-between">
-                  <button className={SMALL_GREEN_BUTTON} type="submit">
+                <div className="flex flex-col items-left gap-[10px]">
+                  <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
+                  <AuthorizedUsersList authorizedUsers={authorizedUsers} />
+                </div>
+                <div className="flex flex-col gap-[16px]">
+                  <button className={SHARE_BUTTON_GREEN} type="submit">
                     Share
                   </button>
+
                   <button
-                    className={SMALL_GREEN_BUTTON}
+                    className={SHARE_BUTTON_GREEN}
                     onClick={() => setOpen(false)}
                   >
                     Cancel
                   </button>
                 </div>
               </form>
-            </div>
-          )}
+            ) : null}
+          </div>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
