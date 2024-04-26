@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import Link from "./Link";
 import {
+  SHARE_ATTEMPTED_CONTAINER,
   SHARE_BUTTON_GREEN,
-  SHARE_BUTTON_TEXT,
   SHARE_HEADER,
   SHARE_INPUT_FIELD,
   SHARE_MODAL_CONTAINER,
@@ -13,10 +11,10 @@ import {
   BOLD_TEXT_BLACK,
   GENERIC_PARAGRAPH,
   INPUT_FIELD_LABEL,
-  TRANSPARENT_BUTTON_NORMAL,
 } from "../styles/GeneralStyles";
 import { clipTitleForInvite } from "../utils/functions";
 import { useBreakpoints } from "../hooks/useBreakpoints";
+import AccountCircle from "./AccountCircle";
 
 interface FormData {
   recipientName: string;
@@ -26,20 +24,29 @@ interface ChildProps {
   title?: string;
   type?: string;
   authorizedUsers?: string[];
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const AuthorizedUsersList = ({ authorizedUsers }: any) => {
   if (authorizedUsers) {
     return authorizedUsers.map((user: string) => {
-      return <span className={GENERIC_PARAGRAPH}>{user}</span>;
+      const key = authorizedUsers.indexOf(user);
+      return (
+        <div key={key} className="flex flex-row gap-[15px]">
+          <AccountCircle />
+          <span className={GENERIC_PARAGRAPH}>{user}</span>
+        </div>
+      );
     });
   }
 };
 
 export default function ShareModal({
-  type,
   docId,
   title,
   authorizedUsers,
+  open,
+  setOpen,
 }: ChildProps) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -49,12 +56,11 @@ export default function ShareModal({
   const { isMobile } = useBreakpoints();
   const [shareAttempted, setShareAttempted] = useState(false);
   const [sent, setSent] = useState(false);
-  const [open, setOpen] = useState(false);
   const [doesNotExist, setDoesNotExist] = useState(false);
   const [alreadyShared, setAlreadyShared] = useState(false);
   const [inviteFailed, setInviteFailed] = useState(false);
   const [shareInput, setShareInput] = useState("");
-
+  const modalRef = useRef<HTMLDialogElement>(null);
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
     try {
       const response = await fetch("/api/invite", {
@@ -126,75 +132,86 @@ export default function ShareModal({
     }
   };
 
-  return (
-    <DropdownMenu.Root open={open ? true : false}>
-      <DropdownMenu.Trigger asChild onClick={() => setOpen(true)}>
-        {type === "button" ? (
-          <button className={SHARE_BUTTON_TEXT}>
-            <Link />
-            <span className="ml-[0.83rem]">Share</span>
-          </button>
-        ) : (
-          <button className={TRANSPARENT_BUTTON_NORMAL}>Share</button>
-        )}
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className={SHARE_MODAL_CONTAINER}
-          onInteractOutside={() => {
-            setOpen(false);
-          }}
-        >
-          <div className="flex flex-col items-left w-[296px] h-[362px] gap-[29px]">
-            <h1 className={SHARE_HEADER}>
-              Share "
-              {title
-                ? clipTitleForInvite(title, isMobile)
-                : "Untitled Document"}
-              "
-            </h1>
-            {!shareAttempted ? (
-              <form
-                className="flex flex-col gap-[29px]"
-                onSubmit={handleSubmit(handleInvite)}
-                autoComplete="off"
-              >
-                <div className="h-[69px]">
-                  <label htmlFor="shareInput" className={INPUT_FIELD_LABEL}>
-                    Enter username {/*TODO: "add email address or username"*/}
-                  </label>
-                  <input
-                    className={SHARE_INPUT_FIELD}
-                    id="shareInput"
-                    type="text"
-                    placeholder="Share your file"
-                    {...register("recipientName")}
-                    autoComplete="off"
-                    value={shareInput}
-                    onChange={(e) => handleChange(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col items-left gap-[10px]">
-                  <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
-                  <AuthorizedUsersList authorizedUsers={authorizedUsers} />
-                </div>
-                <div className="flex flex-col gap-[16px]">
-                  <button className={SHARE_BUTTON_GREEN} type="submit">
-                    Share
-                  </button>
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [setOpen]);
 
-                  <button
-                    className={SHARE_BUTTON_GREEN}
-                    onClick={() => setOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : null}
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <dialog
+      ref={modalRef}
+      className={
+        !shareAttempted ? SHARE_MODAL_CONTAINER : SHARE_ATTEMPTED_CONTAINER
+      }
+    >
+      <div className="flex flex-col items-left w-[296px] h-[362px] gap-[29px]">
+        <h1 className={SHARE_HEADER}>
+          Share "
+          {title ? clipTitleForInvite(title, isMobile) : "Untitled Document"}"
+        </h1>
+        {!shareAttempted ? (
+          <form
+            className="flex flex-col gap-[29px]"
+            onSubmit={handleSubmit(handleInvite)}
+            autoComplete="off"
+          >
+            <div className="h-[69px]">
+              <label htmlFor="shareInput" className={INPUT_FIELD_LABEL}>
+                Enter username {/*TODO: "add email address or username"*/}
+              </label>
+              <input
+                className={SHARE_INPUT_FIELD}
+                id="shareInput"
+                type="text"
+                placeholder="Share your file"
+                {...register("recipientName")}
+                autoComplete="off"
+                value={shareInput}
+                onChange={(e) => handleChange(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col items-left gap-[10px]">
+              <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
+              <AuthorizedUsersList authorizedUsers={authorizedUsers} />
+            </div>
+            <div className="flex flex-col gap-[16px]">
+              <button className={SHARE_BUTTON_GREEN} type="submit">
+                Share
+              </button>
+
+              <button
+                className={SHARE_BUTTON_GREEN}
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="flex flex-col gap-[10px]">
+            <span className={GENERIC_PARAGRAPH}>{inviteResponseText()}</span>
+            <button
+              className={SHARE_BUTTON_GREEN}
+              onClick={() => {
+                resetInviteStates();
+              }}
+            >
+              OK
+            </button>
           </div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+        )}
+      </div>
+    </dialog>
   );
 }

@@ -19,7 +19,7 @@ export default function DocOptionsDropdown({
   authorizedUsers,
 }: DocumentOptionsProps) {
   const [show, setShow] = useState(false);
-
+  const [showShareModal, setShowShareModal] = useState(false);
   const fetchDelete = async (id: any) => {
     try {
       await fetch("api/documents", {
@@ -62,44 +62,66 @@ export default function DocOptionsDropdown({
     });
   };
 
+  const handleShareModal = () => {
+    setShow(false);
+    setShowShareModal(true);
+  };
+
   return (
-    <DropdownMenu.Root open={show ? true : false}>
-      <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
-        <MoreVertical size={43} />
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          onInteractOutside={() => {
-            setShow(false);
-          }}
-        >
-          <div className={DOC_OPTIONS_CONTAINER}>
-            <DropdownMenu.Item>
-              <ShareModal
+    <>
+      <DropdownMenu.Root open={show ? true : false}>
+        <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
+          <MoreVertical size={43} />
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            onInteractOutside={() => {
+              setShow(false);
+            }}
+          >
+            <div className={DOC_OPTIONS_CONTAINER}>
+              <DropdownMenu.Item>
+                <button
+                  className={TRANSPARENT_BUTTON_NORMAL}
+                  onClick={handleShareModal}
+                >
+                  Share
+                </button>
+                {/* <ShareModal
                 docId={docId}
                 title={title}
                 authorizedUsers={authorizedUsers}
-              />
-            </DropdownMenu.Item>
+              /> */}
+              </DropdownMenu.Item>
 
-            {/* TODO: Rename document function */}
+              {/* TODO: Rename document function */}
 
-            <DropdownMenu.Item>
-              <button
-                className={TRANSPARENT_BUTTON_NORMAL}
-                onClick={() => {
-                  !shared
-                    ? handleDelete(docId)
-                    : handleDeleteShared(docId, ownerId);
-                }}
-              >
-                Delete
-                {/* TODO: "move to trash" function */}
-              </button>
-            </DropdownMenu.Item>
-          </div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+              <DropdownMenu.Item>
+                <button
+                  className={TRANSPARENT_BUTTON_NORMAL}
+                  onClick={() => {
+                    !shared
+                      ? handleDelete(docId)
+                      : handleDeleteShared(docId, ownerId);
+                  }}
+                >
+                  Delete
+                  {/* TODO: "move to trash" function */}
+                </button>
+              </DropdownMenu.Item>
+            </div>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+      {showShareModal && (
+        <ShareModal
+          docId={docId}
+          title={title}
+          authorizedUsers={authorizedUsers}
+          open={showShareModal}
+          setOpen={setShowShareModal}
+        />
+      )}
+    </>
   );
 }

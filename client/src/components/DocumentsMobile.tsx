@@ -1,5 +1,5 @@
 import React from "react";
-import { FLEX_COL_LEFT, GENERIC_PARAGRAPH } from "../styles/GeneralStyles";
+import { GENERIC_PARAGRAPH } from "../styles/GeneralStyles";
 import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
@@ -25,7 +25,7 @@ export default function DocumentsMobile() {
     authorization && (
       <div className="mx-[16px] my-[47px]">
         <MobileNavbar />
-        <div className={`${FLEX_COL_LEFT} gap-[52px]`}>
+        <div className="flex flex-col items-center mx-[32px] mt-[47px] gap-[52px]">
           <div className="flex flex-col items-left mt-[20px] gap-[25px]">
             <h1 className="mb-0 text-nero text-[42px] font-IBM font-medium">
               My Documents
@@ -54,7 +54,10 @@ export default function DocumentsMobile() {
             </button>
           </div>
 
-          <span className={`${GENERIC_PARAGRAPH} -mb-[30px]`}>Files</span>
+          <span className={`${GENERIC_PARAGRAPH} -mb-[30px] self-start`}>
+            Files
+          </span>
+
           {showOwnedDocuments ? (
             <DocumentsGrid documents={documents} setDocuments={setDocuments} />
           ) : (
