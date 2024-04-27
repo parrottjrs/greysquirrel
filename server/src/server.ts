@@ -21,6 +21,7 @@ import {
   deleteInviteByInviteId,
   forgotPasswordResponse,
   getAllSharedDocs,
+  getAuthorizedUsers,
   getDocument,
   getId,
   getInvitesReceived,
@@ -795,6 +796,43 @@ app.delete(
         success: false,
         message: "Error removing access to shared-document",
       });
+    }
+  }
+);
+
+app.get(
+  "/api/authorized-users",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Authorization error" });
+      }
+      if (typeof req.query.docId === "string") {
+        const docId = req.query.docId;
+        const { success, message, authorizedUsers } = await getAuthorizedUsers(
+          pool,
+          req.userId,
+          docId
+        );
+        if (!success) {
+          return res.status(400).json({ success: success, message: message });
+        }
+        return res
+          .status(200)
+          .json({
+            success: success,
+            message: message,
+            authorizedUsers: authorizedUsers,
+          });
+      }
+    } catch (err) {
+      console.error("Error retreiving authorized users:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error retreiving authorized users" });
     }
   }
 );

@@ -98,3 +98,19 @@ export const removeHasSignedUp = () => {
   // Removes isLoggedIn from local storage. Allows authenticated user to view "about" page after without being redirected.
   localStorage.removeItem("hasSignedUp");
 };
+
+export const fetchAuthorizedUsers = async (docId: any) => {
+  if (!docId) {
+    return null;
+  }
+  try {
+    const response = await fetch(`/api/authorized-users?docId=${docId}`);
+    const json = await response.json();
+    if (!json.success) {
+      return null;
+    }
+    return json.authorizedUsers;
+  } catch (err) {
+    console.error({ message: "Error retreiving authorized users" });
+  }
+};

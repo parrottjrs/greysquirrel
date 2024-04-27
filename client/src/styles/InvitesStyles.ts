@@ -20,13 +20,13 @@ export const CANCEL_BUTTON = "border-0 bg-transparent text-vividViolet ";
 // share modal
 
 export const SHARE_BUTTON_TEXT =
-  "bg-transparent py-[0.56rem] px-[1.19rem] gap-[0.83rem] border border-solid border-nero rounded-[0.88rem] font-IBM text-xl font-medium";
+  "h-[45px] w-[171px] py-[9px] px-[19px] gap-[15px]  font-IBM text-[18px] font-medium border border-solid border-nero rounded-[14px] bg-transparent ";
 
 export const SHARE_MODAL_CONTAINER =
-  "box-border border-none flex flex-col w-[358px] h-[428px]   md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+  "absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] h-[428px]   md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_ATTEMPTED_CONTAINER =
-  "box-border border-none flex flex-col  w-[358px] h-[240px]  md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+  "absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col  w-[358px] h-[240px]  md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_HEADER = "m-0 text-nero text-[24px] font-IBM font-normal";
 
@@ -35,3 +35,6 @@ export const SHARE_INPUT_FIELD =
 
 export const SHARE_BUTTON_GREEN =
   "w-[296px] h-[45px] rounded-[14px] text-nero text-[18px] font-IBM font-medium border-none bg-aeroBlue";
+
+export const SHARE_BUTTON_WHITE =
+  "w-[171px] h-[45px] px-[9px] py-[19px] border-solid border-nero border-[1px] ";

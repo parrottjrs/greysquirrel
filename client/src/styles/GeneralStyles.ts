@@ -63,7 +63,7 @@ export const PARENT_CONTAINER =
 export const FLEX_COL_CENTER = "flex flex-col items-center";
 
 export const FLEX_COL_CENTER_MOBILE =
-  "flex flex-col items-center mx-[16px] my-[47px]";
+  "flex flex-col items-center w-[358px] mx-[16px] my-[47px]";
 
 export const FLEX_COL_LEFT = "w-[358px] flex flex-col items-start";
 
@@ -76,7 +76,7 @@ export const SUCCESS_CONTAINER =
 // input field
 
 export const FORM_INPUT_FIELD =
-  "mt-2 pl-2.5 md:py-2.5 box-border flex h-[45px] w-[358px] md:w-[404px]  items-left md:items-center border-solid border-[1px] border-nero rounded-[10px] text-nero text-[16px] font-IBM font-normal  placeholder:text-alto placeholder:text:16px placeholder:font-medium";
+  "mt-2 pl-2.5 md:py-2.5 box-border flex h-[45px] w-[358px] md:w-[404px]  items-left md:items-center border-solid border-[1px] border-nero rounded-[10px] text-nero text-[16px] font-IBM font-normal  placeholder:text-alto placeholder:text-[16px] placeholder:font-medium focus:outline-none border-[2px]";
 
 // spacing
 
@@ -86,5 +86,4 @@ export const SMALL_DIVIDER = "mb-12 w-full h-px bg-nero";
 
 // auto save div for editor
 
-export const MOUSEOUT_DIV =
-  "w-screen h-screen flex flex-col font-IBM content-center flex-wrap";
+export const MOUSEOUT_DIV = "w-screen h-screend";

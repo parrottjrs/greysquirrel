@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { PasswordFormData } from "../utils/customTypes";
-import { useForm } from "react-hook-form";
 import {
   ALERT_DIV,
   ALERT_TEXT,

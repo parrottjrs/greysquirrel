@@ -615,6 +615,38 @@ export const saveDocument = async (
       };
 };
 
+export const getAuthorizedUsers = async (
+  pool: any,
+  userId: number,
+  docId: any
+) => {
+  const values = [userId, docId];
+  const query = `
+  SELECT u.user_name
+  FROM shared_docs s
+  LEFT JOIN users u ON s.authorized_user = u.user_id
+  WHERE s.owner_id = ? AND s.doc_id = ?
+  `;
+
+  const [result, _] = await pool.query(query, values);
+  if (result.length < 0) {
+    return {
+      success: false,
+      message: "No authorized users",
+      authoutizedUsers: null,
+    };
+  }
+
+  const authorizedUserList = result.map((user: { user_name: string }) => {
+    return user.user_name;
+  });
+
+  return {
+    success: true,
+    message: "Authorized users retreived",
+    authorizedUsers: authorizedUserList,
+  };
+};
 const deleteSharedDoc = async (pool: any, docId: number, ownerId: number) => {
   const deleteSharedQuery = `
   DELETE FROM shared_docs

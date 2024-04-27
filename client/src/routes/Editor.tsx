@@ -2,24 +2,35 @@ import React, { useEffect, useRef, useState } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { applyDeltaSafely, authenticate, refresh } from "../utils/functions";
+import {
+  applyDeltaSafely,
+  authenticate,
+  fetchAuthorizedUsers,
+  refresh,
+} from "../utils/functions";
 import Navbar from "../components/Navbar";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
 import CustomQuillEditor from "../components/CustomQuillEditor";
-import { MOUSEOUT_DIV } from "../styles/GeneralStyles";
+import { FLEX_COL_CENTER_MOBILE, MOUSEOUT_DIV } from "../styles/GeneralStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import MobileNavbar from "../components/MobileNavbar";
+import ShareModal from "../components/ShareModal";
 
 export default function Editor() {
+  const { isMobile } = useBreakpoints();
   const params = useParams();
   const [docId] = useState(params.docId);
   const WS_URL = "ws://192.168.2.102:3000";
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
+  const [showShareModal, setShowShareModal] = useState(false);
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
+  const [authorizedUsers, setAuthorizedUsers] = useState<string[]>([]);
   const [authorization, setAuthorization] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -103,8 +114,14 @@ export default function Editor() {
     };
   }, []);
 
+  const handleFetchAuthorizedUsers = async () => {
+    const authorizedList = await fetchAuthorizedUsers(docId);
+    setAuthorizedUsers(authorizedList);
+  };
+
   useEffect(() => {
     fetchContent();
+    handleFetchAuthorizedUsers();
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
       const newBinding = new QuillBinding(yText, quill);
@@ -151,12 +168,15 @@ export default function Editor() {
   const handleTitleChange = (title: string) => {
     setTitle(title);
   };
-
+  const handleShareModal = () => {
+    setShowShareModal(true);
+  };
   return (
     authorization && (
       <div className={MOUSEOUT_DIV} onMouseLeave={fetchSave}>
-        <Navbar isLoggedIn={true} />
-        <div className="mt-24 w-[51.75rem]">
+        <div className={FLEX_COL_CENTER_MOBILE}>
+          {isMobile ? <MobileNavbar /> : <Navbar isLoggedIn={true} />}
+
           <div onBlur={() => fetchSave()}>
             <CustomQuillEditor
               quillRef={quillRef}
@@ -165,10 +185,19 @@ export default function Editor() {
               docId={docId}
               onTextChange={handleTextChange}
               onTitleChange={handleTitleChange}
-              shared={params.shared ? true : false}
+              handleShareModal={handleShareModal}
             />
           </div>
         </div>
+        {showShareModal && (
+          <ShareModal
+            docId={docId}
+            title={title}
+            authorizedUsers={authorizedUsers}
+            open={showShareModal}
+            setOpen={setShowShareModal}
+          />
+        )}
       </div>
     )
   );

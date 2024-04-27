@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
-import ShareModal from "./ShareModal";
 import { QuillProps } from "../utils/customTypes";
 import CustomQuillToolbar from "./CustomQuillToolbar";
+import Link from "./Link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { CLICKABLE_TITLE } from "../styles/CustomQuillEditorStyles";
+import { SHARE_BUTTON_TEXT } from "../styles/InvitesStyles";
 import {
-  CLICKABLE_TITLE,
-  EDITOR_PARENT_CONTAINER,
-  TITLE_INPUT_FIELD,
-} from "../styles/CustomQuillEditorStyles";
+  FLEX_COL_CENTER_MOBILE,
+  FLEX_COL_LEFT,
+  FORM_INPUT_FIELD,
+} from "../styles/GeneralStyles";
 
 export default function CustomQuillEditor({
   quillRef,
   text,
   title,
-  docId,
   onTextChange,
   onTitleChange,
-  shared,
+  handleShareModal,
 }: QuillProps) {
   const [editing, setEditing] = useState(false);
 
@@ -30,37 +32,50 @@ export default function CustomQuillEditor({
   };
 
   return (
-    <div className="w-full">
-      <div className={EDITOR_PARENT_CONTAINER}>
-        <CustomQuillToolbar />
-        {!shared && <ShareModal type="button" docId={docId} title={title} />}
-      </div>
-      <span>
-        {editing || title === "" ? (
-          <input
-            className={TITLE_INPUT_FIELD}
-            type="text"
-            defaultValue={title ? title : "Untitled Document"}
-            autoFocus={true}
-            onBlur={(e) => {
-              handleTitleBlur(e.target.value);
-            }}
-          />
-        ) : (
-          <div onClick={handleTitleClick} className={CLICKABLE_TITLE}>
-            {title}
+    <div className={`${FLEX_COL_CENTER_MOBILE}`}>
+      <div className={`${FLEX_COL_LEFT} gap-[60px]`}>
+        <a
+          href="#/documents"
+          className="text-[18px] text-nero font-medium no-underline"
+        >
+          <div className="flex flex row items-center gap-[8px]">
+            <ArrowBackIcon /> <span>back to documents</span>
           </div>
-        )}
-      </span>
-      <ReactQuill
-        ref={quillRef}
-        className="react-quill"
-        value={text}
-        onChange={onTextChange}
-        preserveWhitespace={true}
-        modules={CustomQuillEditor.modules}
-        placeholder={"Enter text here..."}
-      />
+        </a>
+        <div className="flex flex-col items-start gap-[30px]">
+          <CustomQuillToolbar />
+          <button className={SHARE_BUTTON_TEXT} onClick={handleShareModal}>
+            <Link /> Share
+          </button>
+        </div>
+        <div>
+          {editing || title === "" ? (
+            <input
+              className={`${FORM_INPUT_FIELD} mb-[29px]`}
+              type="text"
+              defaultValue={title ? title : "Untitled Document"}
+              autoFocus={true}
+              onBlur={(e) => {
+                handleTitleBlur(e.target.value);
+              }}
+            />
+          ) : (
+            <span onClick={handleTitleClick} className={CLICKABLE_TITLE}>
+              {title}
+            </span>
+          )}
+
+          <ReactQuill
+            ref={quillRef}
+            className="mt-[29px] react-quill"
+            value={text}
+            onChange={onTextChange}
+            preserveWhitespace={true}
+            modules={CustomQuillEditor.modules}
+            placeholder={"Enter text here..."}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { fetchAuthorizedUsers } from "./functions";
 export interface UserDocument {
   doc_id?: number;
   title?: string;
@@ -41,7 +42,8 @@ export interface QuillProps {
   docId: string | undefined;
   onTextChange: (text: string, delta: any, source: any) => void;
   onTitleChange: (title: string) => void;
-  shared: boolean;
+  authorizedUsers?: string[];
+  handleShareModal: () => void;
 }
 
 export interface VerifyAccountProps {

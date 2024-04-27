@@ -27,22 +27,16 @@ button {
   font-family: "IBM Plex Sans", sans-serif;
   color: #1d1d1d;
   font-size: 18px;
-  padding: 0px !important;
+  padding: 0 !important;
+}
+
+.ql-editor::placeholder {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal !important;
 }
 
 .ql-container {
   border: none !important;
-}
-
-.ql-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background-color: #ececec;
-  border-radius: 14px;
-  border: none !important;
-  width: 26rem;
 }
 
 .ql-picker-label {
@@ -50,4 +44,18 @@ button {
   font-weight: 400;
   font-size: 18px;
   color: #1d1d1d;
+}
+
+.ql-toolbar {
+  background-color: #ececec;
+  border-radius: 14px;
+  border: none !important;
+  width: 26rem;
+}
+
+@media (max-width: 390px) {
+  .ql-toolbar {
+    width: 358px !important;
+    height: 46px !important;
+  }
 }
