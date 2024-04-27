@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ForgotPasswordProps, PasswordFormData } from "../utils/customTypes";
+import { PasswordFormData } from "../utils/customTypes";
 import { useForm } from "react-hook-form";
 import {
   ALERT_DIV,
@@ -20,73 +20,22 @@ import ShowPassword from "./ShowPasword";
 import ExclamationMark from "./ExclamationMark";
 import CheckMark from "./CheckMark";
 import { RESET_FAILURE_CONTAINER } from "../styles/ForgotPasswordStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import { usePasswordChangeManagement } from "../hooks/usePasswordChangeManagement";
 
-export const PasswordReset = ({ isMobile }: ForgotPasswordProps) => {
-  const [show, setShow] = useState(false);
-  const [weakPassword, setWeakPassword] = useState(false);
-  const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
-  const [accountUpdated, setAccountUpdated] = useState(false);
-  const [passwordChangeFailed, setPasswordChangeFailed] = useState(false);
-  const { register, handleSubmit } = useForm({
-    defaultValues: { password: "", passwordCheck: "" },
-  });
-
-  const fetchchangePassword = async (password: string) => {
-    const response = await fetch("/api/change-password", {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ password: password }),
-    });
-
-    if (!response.ok) {
-      setPasswordChangeFailed(true);
-    }
-    setPasswordChangeFailed(false);
-    setAccountUpdated(true);
-  };
-
-  const checkPasswordRestrictions = (password: string) => {
-    const restrictions =
-      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    const strongPassword = restrictions.test(password);
-    strongPassword ? setWeakPassword(false) : setWeakPassword(true);
-    return strongPassword;
-  };
-
-  const doPasswordsMatch = (passwordOne: string, passwordTwo: string) => {
-    const passwordsMatch = passwordOne === passwordTwo;
-    passwordsMatch ? setPasswordsDontMatch(false) : setPasswordsDontMatch(true);
-    return passwordsMatch;
-  };
-
-  const checkUserEntry = (passwordOne: string, passwordTwo: string) => {
-    const strongPassword = checkPasswordRestrictions(passwordOne);
-    const passwordsMatch = doPasswordsMatch(passwordOne, passwordTwo);
-    if (!strongPassword || !passwordsMatch) {
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = () => {
-    setShow(!show);
-  };
-
-  const handleUpdate = (data: PasswordFormData) => {
-    const { password, passwordCheck } = data;
-
-    const userEntryOK = checkUserEntry(password, passwordCheck);
-
-    if (userEntryOK) {
-      fetchchangePassword(password);
-    }
-  };
-
-  const onSubmit = (data: PasswordFormData) => {
-    handleUpdate(data);
-  };
+export const PasswordReset = () => {
+  const { isMobile } = useBreakpoints();
+  const {
+    handleSubmit,
+    onSubmit,
+    showPass,
+    handleShowPass,
+    register,
+    passIsWeak,
+    passMatch,
+    updateSuccess,
+    passChangeFailed,
+  } = usePasswordChangeManagement();
 
   return (
     <div className={FLEX_COL_CENTER_MOBILE}>
@@ -102,12 +51,12 @@ export const PasswordReset = ({ isMobile }: ForgotPasswordProps) => {
             <input
               className={FORM_INPUT_FIELD}
               id={"password"}
-              type={!show ? "password" : "text"}
+              type={!showPass ? "password" : "text"}
               {...register("password")}
               autoComplete="off"
             />
-            <ShowPassword onClick={handleChange} show={show} />
-            {weakPassword && (
+            <ShowPassword onClick={handleShowPass} show={showPass} />
+            {passIsWeak && (
               <div className={ALERT_DIV}>
                 <span className="mr-2 -mt-8">
                   <ExclamationMark />
@@ -132,11 +81,11 @@ export const PasswordReset = ({ isMobile }: ForgotPasswordProps) => {
             <input
               className={FORM_INPUT_FIELD}
               id={"passwordCheck"}
-              type={!show ? "password" : "text"}
+              type={!showPass ? "password" : "text"}
               {...register("passwordCheck")}
               autoComplete="off"
             />
-            {passwordsDontMatch && (
+            {!passMatch && (
               <div className={`${ALERT_DIV} -mt-[5px]`}>
                 <span className="mr-2">
                   <ExclamationMark />
@@ -154,7 +103,7 @@ export const PasswordReset = ({ isMobile }: ForgotPasswordProps) => {
           </button>
         </form>
 
-        {accountUpdated && (
+        {updateSuccess && (
           <div className={`${FLEX_COL_CENTER} gap-[10px]`}>
             <div className={SUCCESS_CONTAINER}>
               <CheckMark />
@@ -165,7 +114,7 @@ export const PasswordReset = ({ isMobile }: ForgotPasswordProps) => {
             </a>
           </div>
         )}
-        {passwordChangeFailed && (
+        {passChangeFailed && (
           <div className={RESET_FAILURE_CONTAINER}>
             <ExclamationMark />
             <span className={BOLD_GRAY_TEXT}>

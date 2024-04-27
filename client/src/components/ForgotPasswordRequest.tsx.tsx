@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EmailFormData, ForgotPasswordProps } from "../utils/customTypes";
+import { EmailFormData } from "../utils/customTypes";
 import { useForm } from "react-hook-form";
 import {
   BOLD_GRAY_TEXT,
@@ -14,10 +14,12 @@ import {
   SUCCESS_CONTAINER,
 } from "../styles/GeneralStyles";
 import CheckMark from "./CheckMark";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
-export const ForgotPasswordRequest = ({ isMobile }: ForgotPasswordProps) => {
+export const ForgotPasswordRequest = () => {
+  const { isMobile } = useBreakpoints();
   const [emailSent, setEmailSent] = useState(false);
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       email: "",
     },
@@ -34,7 +36,9 @@ export const ForgotPasswordRequest = ({ isMobile }: ForgotPasswordProps) => {
 
   const onSubmit = (data: EmailFormData) => {
     fetchForgotPassword(data.email);
+    reset();
   };
+
   return (
     <div className={`${FLEX_COL_CENTER_MOBILE} gap-[46px]`}>
       <div className={FLEX_COL_LEFT}>

@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { clipTitleForInvite } from "../utils/functions";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import AccountCircle from "./AccountCircle";
+import { ShareFormData, ShareModalProps } from "../utils/customTypes";
 import {
   SHARE_ATTEMPTED_CONTAINER,
   SHARE_BUTTON_GREEN,
@@ -12,21 +16,7 @@ import {
   GENERIC_PARAGRAPH,
   INPUT_FIELD_LABEL,
 } from "../styles/GeneralStyles";
-import { clipTitleForInvite } from "../utils/functions";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import AccountCircle from "./AccountCircle";
 
-interface FormData {
-  recipientName: string;
-}
-interface ChildProps {
-  docId: any;
-  title?: string;
-  type?: string;
-  authorizedUsers?: string[];
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
 const AuthorizedUsersList = ({ authorizedUsers }: any) => {
   if (authorizedUsers) {
     return authorizedUsers.map((user: string) => {
@@ -47,8 +37,8 @@ export default function ShareModal({
   authorizedUsers,
   open,
   setOpen,
-}: ChildProps) {
-  const { register, handleSubmit } = useForm({
+}: ShareModalProps) {
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       recipientName: "",
     },
@@ -61,6 +51,7 @@ export default function ShareModal({
   const [inviteFailed, setInviteFailed] = useState(false);
   const [shareInput, setShareInput] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
+
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
     try {
       const response = await fetch("/api/invite", {
@@ -108,13 +99,14 @@ export default function ShareModal({
     setShareInput(value);
   };
 
-  const handleInvite = async (data: FormData) => {
+  const handleInvite = async (data: ShareFormData) => {
     if (!data.recipientName) {
       setShareInput("");
       return null;
     }
     await fetchInvite(docId, data.recipientName);
     setShareInput("");
+    reset();
   };
 
   const inviteResponseText = () => {

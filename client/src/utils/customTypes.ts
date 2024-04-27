@@ -75,6 +75,16 @@ export interface PasswordFormData {
   password: string;
   passwordCheck: string;
 }
-export interface ForgotPasswordProps {
-  isMobile: boolean;
+
+export interface ShareFormData {
+  recipientName: string;
+}
+
+export interface ShareModalProps {
+  docId: any;
+  title?: string;
+  type?: string;
+  authorizedUsers?: string[];
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
