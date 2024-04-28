@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { authenticate } from "../utils/functions";
 import { useEffect } from "react";
 
-export const useAuthentication = () => {
+export const useQuickAuth = () => {
   const navigate = useNavigate();
   const hasSignedUp =
     JSON.parse(JSON.stringify(localStorage.getItem("hasSignedUp"))) === "true";

@@ -8,14 +8,19 @@ export const NOTIFICATION_TEXT = "text-nero font-sans mt-1";
 export const DATE_SHARED_TEXT =
   "text-boulder text-sm font-sans md:text-lg mt-0";
 
-export const DECLINE_BUTTON = "border-0 bg-transparent text-roman font-sans";
-
-export const ACCEPT_BUTTON = "border-0 bg-transparent text-nero font-sans mr-2";
+export const GREEN_BUTTON =
+  "flex items-center justify-center w-[149px] h-[45px] px-[9px] py-[19px] border-none rounded-[14px] bg-aeroBlue text-[18px] font-IBM font-medium";
 
 export const SENT_PARENT_CONTAINER =
   "relative flex flex-col justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden";
 
-export const CANCEL_BUTTON = "border-0 bg-transparent text-vividViolet ";
+export const PENDING_INVITE =
+  "box-border flex flex-col h-[194px] items-start w-[358px] p-[22px] gap-[20px] md:w-[584px] lg:w-[828px] md:h-[273px] lg:h-[212px] border-solid border border-dustyGray rounded-[14px]";
+
+export const SHARE_DATE_TEXT = "text-boulder font-IBM text-[18px]";
+
+export const RED_BUTTON =
+  "flex items-center justify-center w-[149px] h-[45px] px-[9px] py-[19px] border-none rounded-[14px] bg-lightCoral text-[18px] font-IBM font-medium";
 
 // share modal
 

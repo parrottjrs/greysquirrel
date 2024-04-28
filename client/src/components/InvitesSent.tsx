@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { CANCEL_BUTTON, SENT_PARENT_CONTAINER } from "../styles/InvitesStyles";
-
-type Invite = {
-  invite_id: number;
-  doc_id: number;
-  sender_id: number;
-  recipient_name: string;
-  recipient_id: number;
-  title: string;
-};
+import {
+  PENDING_INVITE,
+  RED_BUTTON,
+  SHARE_DATE_TEXT,
+} from "../styles/InvitesStyles";
+import { clipText, formatDate } from "../utils/functions";
+import { BOLD_TEXT_BLACK } from "../styles/GeneralStyles";
+import { Invite } from "../utils/customTypes";
 
 export default function InvitesSent() {
   const [sharedInvites, setSharedInvites] = useState<Invite[]>([]);
@@ -57,20 +55,21 @@ export default function InvitesSent() {
   }, []);
 
   return sharedInvites.map((invite: Invite) => {
-    const { invite_id, recipient_name, title } = invite;
+    const { invite_id, recipient_name, title, share_date } = invite;
+    const formattedShareDate = formatDate(share_date);
+    const newTitle = title ? clipText(title, "title") : "Untitled";
     return (
-      <div className={SENT_PARENT_CONTAINER} key={invite_id}>
-        <p>
-          You shared "{title}" with {recipient_name}.
+      <div className={PENDING_INVITE} key={invite_id}>
+        <p className={`${BOLD_TEXT_BLACK} m-0`}>
+          You shared "{newTitle}" with {recipient_name}.
         </p>
-        <div className="flex flex-row">
-          <button
-            className={CANCEL_BUTTON}
-            onClick={() => handleDelete(invite_id)}
-          >
-            Cancel invite
-          </button>
-        </div>
+
+        <button className={RED_BUTTON} onClick={() => handleDelete(invite_id)}>
+          Cancel
+        </button>
+        <p className={`${SHARE_DATE_TEXT} m-0`}>
+          Date shared: {formattedShareDate}{" "}
+        </p>
       </div>
     );
   });

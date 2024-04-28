@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import SigninMobile from "../components/SigninMobile";
 import SigninDesktop from "../components/SigninDesktop";

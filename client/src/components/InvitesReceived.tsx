@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { clipText, formatDate } from "../utils/functions";
 import {
-  ACCEPT_BUTTON,
-  DATE_SHARED_TEXT,
-  DECLINE_BUTTON,
-  NOTIFICATION_TEXT,
-  RECIEVED_PARENT_CONTAINER,
+  GREEN_BUTTON,
+  PENDING_INVITE,
+  RED_BUTTON,
+  SHARE_DATE_TEXT,
 } from "../styles/InvitesStyles";
-
-export interface Invite {
-  invite_id: number;
-  doc_id: number;
-  sender_id: number;
-  sender_name: string;
-  recipient_id: number;
-  title: string;
-  share_date: string;
-}
+import { BOLD_TEXT_BLACK } from "../styles/GeneralStyles";
+import { Invite } from "../utils/customTypes";
 
 export default function InvitesRecieved() {
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -112,16 +103,18 @@ export default function InvitesRecieved() {
 
     const newTitle = title ? clipText(title, "title") : "Untitled";
     return (
-      <div className={RECIEVED_PARENT_CONTAINER} key={invite_id}>
-        <p className={NOTIFICATION_TEXT}>
+      <div className={PENDING_INVITE} key={invite_id}>
+        <p className={`${BOLD_TEXT_BLACK} m-0`}>
           <span className="underline">{sender_name}</span> shared "{newTitle}"
           with you.
         </p>
-        <p className={DATE_SHARED_TEXT}>Date shared: {formattedShareDate}</p>
-        <div className="flex flex-row ">
+        <p className={`${SHARE_DATE_TEXT} m-0`}>
+          Date shared: {formattedShareDate}
+        </p>
+        <div className="flex flex-row gap-[15px]">
           <button
             aria-label="accept-invitation"
-            className={ACCEPT_BUTTON}
+            className={GREEN_BUTTON}
             onClick={() =>
               handleAccept(invite_id, doc_id, sender_id, recipient_id)
             }
@@ -130,7 +123,7 @@ export default function InvitesRecieved() {
           </button>
           <button
             aria-label="decline-invitation"
-            className={DECLINE_BUTTON}
+            className={RED_BUTTON}
             onClick={() => handleDelete(invite_id)}
           >
             decline

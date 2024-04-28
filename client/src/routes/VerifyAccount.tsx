@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import VerifyAccountMobile from "../components/VerifyAccountMobile";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import VerifyAccountDesktop from "../components/VerifyAccountDesktop";

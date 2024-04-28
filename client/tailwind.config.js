@@ -12,7 +12,7 @@ export const theme = {
     dustyGray: "#999999",
     gallery: "#ECECEC",
     nero: "#1D1D1D",
-    paleRose: "#FFC1C1",
+    lightCoral: "#FFC1C1",
     roman: "#DF5E5E",
     silver: "#C4C4C4",
     taupeGray: "#797777",

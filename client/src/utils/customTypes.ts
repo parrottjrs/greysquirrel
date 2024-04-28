@@ -91,3 +91,23 @@ export interface ShareModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface AccountChangeData {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  passCheck: string;
+}
+
+export interface Invite {
+  invite_id: number;
+  doc_id: number;
+  sender_id: number;
+  sender_name: string;
+  recipient_id: number;
+  title: string;
+  share_date: string;
+  recipient_name?: string;
+}
