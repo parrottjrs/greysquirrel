@@ -5,10 +5,12 @@ import {
   GENERIC_PARAGRAPH,
   STYLIZED_ANCHOR_GREEN,
 } from "../styles/GeneralStyles";
+import Navbar from "./Navbar";
 
 export default function HomeDesktop() {
   return (
     <div className="h-screen  flex flex-row items-center justify-center">
+      <Navbar />
       <div className="w-96 mr-28">
         <h1 className={GENERIC_HEADER}>Welcome to Greysquirrel</h1>
         <p className={GENERIC_PARAGRAPH}>

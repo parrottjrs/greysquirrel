@@ -15,6 +15,7 @@ import {
 } from "../styles/GeneralStyles";
 import CheckMark from "./CheckMark";
 import { useBreakpoints } from "../hooks/useBreakpoints";
+import Navbar from "./Navbar";
 
 export const ForgotPasswordRequest = () => {
   const { isMobile } = useBreakpoints();
@@ -41,6 +42,7 @@ export const ForgotPasswordRequest = () => {
 
   return (
     <div className={`${FLEX_COL_CENTER_MOBILE} gap-[46px]`}>
+      {!isMobile && <Navbar />}
       <div className={FLEX_COL_LEFT}>
         {isMobile && <h1 className={GENERIC_HEADER}>Greysquirrel</h1>}
         <h1 className={GENERIC_HEADER}>Verify your account</h1>

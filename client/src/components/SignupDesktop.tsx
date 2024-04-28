@@ -15,6 +15,7 @@ import {
 } from "../styles/GeneralStyles";
 import ExclamationMark from "./ExclamationMark";
 import ShowPassword from "./ShowPasword";
+import Navbar from "./Navbar";
 
 export default function SignupDesktop() {
   const {
@@ -35,6 +36,7 @@ export default function SignupDesktop() {
         "m-auto mb-24 w-[404px] flex flex-col items-center justify-center"
       }
     >
+      <Navbar />
       <h1 className={`${GENERIC_HEADER} mt-24`}>Let's Get Started</h1>
       <p className={INSTRUCTIONS}>Join Greysquirrel by creating an account</p>
       <form

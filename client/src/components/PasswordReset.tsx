@@ -19,6 +19,7 @@ import CheckMark from "./CheckMark";
 import { RESET_FAILURE_CONTAINER } from "../styles/ForgotPasswordStyles";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import { usePasswordChangeManagement } from "../hooks/usePasswordChangeManagement";
+import Navbar from "./Navbar";
 
 export const PasswordReset = () => {
   const { isMobile } = useBreakpoints();
@@ -36,6 +37,7 @@ export const PasswordReset = () => {
 
   return (
     <div className={FLEX_COL_CENTER_MOBILE}>
+      {!isMobile && <Navbar />}
       <div className={FLEX_COL_LEFT}>
         {isMobile && <h1 className={GENERIC_HEADER}>Greysquirrel</h1>}
         <h1 className={GENERIC_HEADER}>Reset your password</h1>

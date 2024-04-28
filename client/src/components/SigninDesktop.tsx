@@ -15,6 +15,7 @@ import {
 } from "../styles/GeneralStyles";
 import ShowPassword from "./ShowPasword";
 import ExclamationMark from "./ExclamationMark";
+import Navbar from "./Navbar";
 
 export default function SigninDesktop() {
   const {
@@ -28,6 +29,7 @@ export default function SigninDesktop() {
 
   return (
     <div className="md:h-screen md:mt-18 flex flex-col items-center md:justify-center">
+      <Navbar />
       <h1 className="mb-0 text-left text-nero text-xl font-IBM font-medium md:text-3xl">
         Welcome Back!
       </h1>

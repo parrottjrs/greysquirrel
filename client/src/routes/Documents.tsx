@@ -1,4 +1,3 @@
-import React from "react";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import DocumentsDesktop from "../components/DocumentsDesktop";
 import DocumentsMobile from "../components/DocumentsMobile";

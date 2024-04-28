@@ -50,7 +50,7 @@ export default function MobileNavbar() {
               <a
                 className={`${MOBILE_NAVBAR_ANCHOR} w-[94px]`}
                 aria-label="edit-profile"
-                href="/account"
+                href="#/account"
               >
                 Edit Profile
               </a>
