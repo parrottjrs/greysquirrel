@@ -13,13 +13,13 @@ import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
-import CustomQuillEditor from "../components/CustomQuillEditor";
+import CustomQuill from "./CustomQuill";
 import { FLEX_COL_CENTER_MOBILE, MOUSEOUT_DIV } from "../styles/GeneralStyles";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import MobileNavbar from "../components/MobileNavbar";
 import ShareModal from "../components/ShareModal";
 
-export default function Editor() {
+export const Editor = () => {
   const { isMobile } = useBreakpoints();
   const params = useParams();
   const [docId] = useState(params.docId);
@@ -183,7 +183,7 @@ export default function Editor() {
           {isMobile ? <MobileNavbar /> : <Navbar isLoggedIn={true} />}
 
           <div onBlur={() => fetchSave()}>
-            <CustomQuillEditor
+            <CustomQuill
               quillRef={quillRef}
               text={text}
               title={title}
@@ -207,4 +207,4 @@ export default function Editor() {
       </div>
     )
   );
-}
+};

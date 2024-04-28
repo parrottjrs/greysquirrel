@@ -41,7 +41,7 @@ export default function SharedDocumentsGrid({
       <div className={DOCUMENT_GRID_ITEM} key={doc_id}>
         <div className={GRID_INTERIOR}>
           <div className={ICONS_CONTAINER}>
-            <a href={`#/editor/${doc_id}/shared`}>
+            <a href={`#/edit/${doc_id}`}>
               <Page isMobile={isMobile} />
             </a>
             <DocumentOptionsDropdown
@@ -51,7 +51,7 @@ export default function SharedDocumentsGrid({
               shared={true}
             />
           </div>
-          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>
+          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/edit/${doc_id}`}>
             <h2 className={DOC_HEADER}>{newTitle}</h2>
             <p className={DOC_PREVIEW}>{newContent}</p>
             <p className={SHARED_TEXT}>Shared by: {owner_name}</p>

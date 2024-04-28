@@ -9,20 +9,20 @@ import {
   SMALL_GREEN_BUTTON,
 } from "../styles/GeneralStyles";
 import ExclamationMark from "./ExclamationMark";
-import { useVerifyAccountManagement } from "../hooks/useVerifyAccountManagement";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
 
 export default function VerifyAccountDesktop() {
   const {
-    verified,
+    accountIsVerified,
     sent,
     sendNewEmailToken,
     tokenIsExpired,
     handleCreateDocument,
-  } = useVerifyAccountManagement();
+  } = useEmailTokenManagement();
 
   return (
     <div className={"mt-32 flex flex-row items-center justify-center"}>
-      {!verified ? (
+      {!accountIsVerified ? (
         <div className={`${FLEX_COL_CENTER} w-96`}>
           <h1 className={GENERIC_HEADER}>Verify your account</h1>
           <p className="text-nero text-lg font-medium text-center">

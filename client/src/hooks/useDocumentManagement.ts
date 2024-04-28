@@ -71,7 +71,7 @@ export const useDocumentManagement = () => {
 
   const handleCreateDocument = async () => {
     const id = await fetchCreate();
-    navigate(`/editor/${id}`);
+    navigate(`/edit/${id}`);
   };
 
   useEffect(() => {

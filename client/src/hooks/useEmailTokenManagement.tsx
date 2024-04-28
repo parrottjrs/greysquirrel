@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export const useVerifyAccountManagement = () => {
+export const useEmailTokenManagement = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [verified, setVerified] = useState(false);
+  const [accountIsVerified, setAccountIsVerified] = useState(false);
+  const [resetIsVerified, setResetIsVerified] = useState(false);
   const [tokenIsExpired, setTokenIsExpired] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -22,7 +23,7 @@ export const useVerifyAccountManagement = () => {
       setTokenIsExpired(true);
     }
     setTokenIsExpired(false);
-    setVerified(true);
+    setAccountIsVerified(true);
   };
 
   const handleVerification = async () => {
@@ -65,11 +66,36 @@ export const useVerifyAccountManagement = () => {
 
   const handleCreateDocument = async () => {
     const id = await fetchCreate();
-    navigate(`/editor/${id}`);
+    navigate(`/edit/${id}`);
   };
 
+  useEffect(() => {
+    if (params.verificationToken) {
+      const verifyUser = async () => {
+        const response = await fetch("/api/verify-forgot-password", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ verificationToken: params.verificationToken }),
+        });
+        const json = await response.json();
+
+        if (!json.success) {
+          return false;
+        }
+        setResetIsVerified(true);
+      };
+      verifyUser();
+    }
+  }, [params.verificationToken]);
+  console.log(
+    "emailToken:",
+    params.emailToken,
+    "passwordToken:",
+    params.verificationToken
+  );
   return {
-    verified,
+    accountIsVerified,
+    resetIsVerified,
     sent,
     sendNewEmailToken,
     tokenIsExpired,

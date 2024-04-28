@@ -13,19 +13,19 @@ import {
 } from "../styles/GeneralStyles";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import ExclamationMark from "./ExclamationMark";
-import { useVerifyAccountManagement } from "../hooks/useVerifyAccountManagement";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
 
 export default function VerifyAccountMobile() {
   const {
-    verified,
+    accountIsVerified,
     sent,
     sendNewEmailToken,
     tokenIsExpired,
     handleCreateDocument,
-  } = useVerifyAccountManagement();
+  } = useEmailTokenManagement();
   return (
     <div className={FLEX_COL_CENTER_MOBILE}>
-      {!verified ? (
+      {!accountIsVerified ? (
         <div className={FLEX_COL_LEFT}>
           <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
           <h2 className={GENERIC_HEADER}>Verify your account</h2>

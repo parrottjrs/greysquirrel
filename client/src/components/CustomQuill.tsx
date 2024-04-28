@@ -6,13 +6,9 @@ import CustomQuillToolbar from "./CustomQuillToolbar";
 import { ArrowBack, Link } from "@mui/icons-material";
 import { CLICKABLE_TITLE } from "../styles/CustomQuillEditorStyles";
 import { SHARE_BUTTON_TEXT } from "../styles/InvitesStyles";
-import {
-  FLEX_COL_CENTER_MOBILE,
-  FLEX_COL_LEFT,
-  FORM_INPUT_FIELD,
-} from "../styles/GeneralStyles";
+import { FLEX_COL_LEFT, FORM_INPUT_FIELD } from "../styles/GeneralStyles";
 
-export default function CustomQuillEditor({
+export default function CustomQuill({
   quillRef,
   text,
   title,
@@ -76,7 +72,7 @@ export default function CustomQuillEditor({
           value={text}
           onChange={onTextChange}
           preserveWhitespace={true}
-          modules={CustomQuillEditor.modules}
+          modules={CustomQuill.modules}
           placeholder={"Enter text here..."}
         />
       </div>
@@ -84,7 +80,7 @@ export default function CustomQuillEditor({
   );
 }
 
-CustomQuillEditor.modules = {
+CustomQuill.modules = {
   toolbar: {
     container: "#toolbar",
   },

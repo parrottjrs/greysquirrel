@@ -42,7 +42,7 @@ export default function DocumentsGrid({
       <div className={DOCUMENT_GRID_ITEM} key={doc_id}>
         <div className={GRID_INTERIOR}>
           <div className={ICONS_CONTAINER}>
-            <a href={`#/editor/${doc_id}`}>
+            <a href={`#/edit/${doc_id}`}>
               <Page isMobile={isMobile} />
             </a>
             <DocOptionsDropdown
@@ -52,7 +52,7 @@ export default function DocumentsGrid({
               authorizedUsers={authorizedUsers}
             />
           </div>
-          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>
+          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/edit/${doc_id}`}>
             <h2 className={DOC_HEADER}>{!title ? "Untitled" : newTitle}</h2>
             <p className={DOC_PREVIEW}>{newContent}</p>
             <div className={DETAILS_CONTAINER}>
