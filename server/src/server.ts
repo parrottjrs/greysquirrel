@@ -841,7 +841,6 @@ io.on("connection", (socket) => {
   console.log(`User joined room ${docId}`);
   socket.join(`${docId}`);
   socket.on("message", (evt) => {
-    console.log(evt);
     io.to(`${docId}`).emit("message", evt);
   });
   socket.on("disconnect", () => {

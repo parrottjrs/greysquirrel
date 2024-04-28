@@ -79,15 +79,20 @@ export default function DocOptionsDropdown({
               setShow(false);
             }}
           >
-            <div className={DOC_OPTIONS_CONTAINER}>
-              <DropdownMenu.Item>
-                <button
-                  className={TRANSPARENT_BUTTON_NORMAL}
-                  onClick={handleShareModal}
-                >
-                  Share
-                </button>
-              </DropdownMenu.Item>
+            <div
+              className={`${DOC_OPTIONS_CONTAINER}
+            ${shared && "h-[24px]"}`}
+            >
+              {!shared && (
+                <DropdownMenu.Item>
+                  <button
+                    className={TRANSPARENT_BUTTON_NORMAL}
+                    onClick={handleShareModal}
+                  >
+                    Share
+                  </button>
+                </DropdownMenu.Item>
+              )}
 
               {/* TODO: Rename document function */}
 

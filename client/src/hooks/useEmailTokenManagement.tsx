@@ -87,12 +87,7 @@ export const useEmailTokenManagement = () => {
       verifyUser();
     }
   }, [params.verificationToken]);
-  console.log(
-    "emailToken:",
-    params.emailToken,
-    "passwordToken:",
-    params.verificationToken
-  );
+
   return {
     accountIsVerified,
     resetIsVerified,

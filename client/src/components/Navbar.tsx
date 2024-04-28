@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
 import BellDot from "./BellDot";
 import Bell from "./Bell";
 import AccountModal from "./AccountModal";
