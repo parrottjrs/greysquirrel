@@ -20,13 +20,13 @@ export const CANCEL_BUTTON = "border-0 bg-transparent text-vividViolet ";
 // share modal
 
 export const SHARE_BUTTON_TEXT =
-  "h-[45px] w-[171px] py-[9px] px-[19px] gap-[15px]  font-IBM text-[18px] font-medium border border-solid border-nero rounded-[14px] bg-transparent ";
+  "h-[45px] w-[171px] py-[9px] px-[19px] gap-[15px]  font-IBM text-[18px] text-center font-medium border border-solid border-nero rounded-[14px] bg-transparent ";
 
 export const SHARE_MODAL_CONTAINER =
-  "absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] h-[428px]   md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+  "fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] h-[428px]   md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_ATTEMPTED_CONTAINER =
-  "absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col  w-[358px] h-[240px]  md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+  "fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] h-[428px]   md:-top-24 md:right-36 md:max-h-60 md:w-96 gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_HEADER = "m-0 text-nero text-[24px] font-IBM font-normal";
 

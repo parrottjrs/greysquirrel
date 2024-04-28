@@ -2,13 +2,14 @@ import React from "react";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import squirrel from "../images/squirrel.png";
 import {
+  FLEX_COL_CENTER_MOBILE,
   GENERIC_PARAGRAPH,
   STYLIZED_ANCHOR_GREEN_MOBILE,
 } from "../styles/GeneralStyles";
 
 export default function HomeMobile() {
   return (
-    <div className="flex flex-col items-center mx-[32px] mt-[47px]">
+    <div className={FLEX_COL_CENTER_MOBILE}>
       <div className="w-full flex items-start">
         <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
       </div>

@@ -30,6 +30,7 @@ export default function Editor() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
+  const [userOwnsDoc, setUserOwnsDoc] = useState(null);
   const [authorizedUsers, setAuthorizedUsers] = useState<string[]>([]);
   const [authorization, setAuthorization] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -97,6 +98,7 @@ export default function Editor() {
       const { title, content } = json.document;
       setTitle(title ? title : "");
       setText(content ? content : "");
+      setUserOwnsDoc(json.userOwnsDoc);
     } catch (err) {
       console.error(err);
     }
@@ -121,7 +123,10 @@ export default function Editor() {
 
   useEffect(() => {
     fetchContent();
-    handleFetchAuthorizedUsers();
+    if (userOwnsDoc) {
+      handleFetchAuthorizedUsers();
+    }
+
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
       const newBinding = new QuillBinding(yText, quill);
@@ -186,6 +191,7 @@ export default function Editor() {
               onTextChange={handleTextChange}
               onTitleChange={handleTitleChange}
               handleShareModal={handleShareModal}
+              userOwnsDoc={userOwnsDoc}
             />
           </div>
         </div>

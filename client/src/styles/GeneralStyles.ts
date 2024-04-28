@@ -63,9 +63,9 @@ export const PARENT_CONTAINER =
 export const FLEX_COL_CENTER = "flex flex-col items-center";
 
 export const FLEX_COL_CENTER_MOBILE =
-  "flex flex-col items-center w-[358px] mx-[16px] my-[47px]";
+  "flex flex-col items-center w-[358px] mx-auto mb-[47px]";
 
-export const FLEX_COL_LEFT = "w-[358px] flex flex-col items-start";
+export const FLEX_COL_LEFT = "mx-auto w-[358px] flex flex-col items-start";
 
 export const ALERT_DIV =
   "mt-[8px] md:-mt-2 -mb-10 w-60 w-[358px] md: w-[404px] flex items-center";

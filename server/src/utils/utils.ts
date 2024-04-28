@@ -506,6 +506,7 @@ export const getDocument = async (pool: any, docId: number, userId: number) => {
       ? {
           success: true,
           message: "Document retrieved",
+          userOwnsDoc: false,
           doc: {
             docId: document[0].doc_id,
             title: document[0].title,
@@ -522,6 +523,7 @@ export const getDocument = async (pool: any, docId: number, userId: number) => {
       title: document[0].title,
       content: document[0].content,
     },
+    userOwnsDoc: true,
   };
 };
 

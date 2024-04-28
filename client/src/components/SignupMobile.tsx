@@ -4,6 +4,7 @@ import {
   ALERT_TEXT,
   FLEX_COL_CENTER,
   FLEX_COL_CENTER_MOBILE,
+  FLEX_COL_LEFT,
   FORM_INPUT_FIELD,
   GENERIC_HEADER,
   GREEN_BUTTON_STRETCH,
@@ -32,7 +33,7 @@ export default function SignupMobile() {
 
   return (
     <div className={FLEX_COL_CENTER_MOBILE}>
-      <div className="w-[358px] flex flex-col items-start">
+      <div className={FLEX_COL_LEFT}>
         <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
         <h1 className={GENERIC_HEADER}>Let's Get Started</h1>
         <p className={INSTRUCTIONS}>Join Greysquirrel by creating an account</p>

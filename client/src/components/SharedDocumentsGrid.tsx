@@ -51,13 +51,10 @@ export default function SharedDocumentsGrid({
               shared={true}
             />
           </div>
-          <a
-            className={FULLSIZE_INVIS_ANCHOR}
-            href={`#/editor/${doc_id}/shared`}
-          >
+          <a className={FULLSIZE_INVIS_ANCHOR} href={`#/editor/${doc_id}`}>
             <h2 className={DOC_HEADER}>{newTitle}</h2>
             <p className={DOC_PREVIEW}>{newContent}</p>
-            <p className={SHARED_TEXT}>Shared by: {owner_name}</p>{" "}
+            <p className={SHARED_TEXT}>Shared by: {owner_name}</p>
           </a>
         </div>
       </div>

@@ -44,6 +44,7 @@ export interface QuillProps {
   onTitleChange: (title: string) => void;
   authorizedUsers?: string[];
   handleShareModal: () => void;
+  userOwnsDoc: boolean | null;
 }
 
 export interface VerifyAccountProps {

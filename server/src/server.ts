@@ -433,6 +433,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
     }
 
     const { docId } = req.body;
+
     if (!docId) {
       const newDocument = await createDocument(pool, req.userId);
       if (!newDocument.success) {
@@ -446,7 +447,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
         docId: newDocument.docId,
       });
     }
-    const { success, message, doc } = await getDocument(
+    const { success, message, doc, userOwnsDoc } = await getDocument(
       pool,
       docId,
       req.userId
@@ -456,7 +457,7 @@ app.post("/api/create", authenticateToken, async (req: AuthRequest, res) => {
     }
     return res
       .status(200)
-      .json({ success: success, message: message, document: doc });
+      .json({ success: success, message: message, document: doc, userOwnsDoc });
   } catch (err) {
     console.error("Error creating document:", err);
     return res
@@ -820,13 +821,11 @@ app.get(
         if (!success) {
           return res.status(400).json({ success: success, message: message });
         }
-        return res
-          .status(200)
-          .json({
-            success: success,
-            message: message,
-            authorizedUsers: authorizedUsers,
-          });
+        return res.status(200).json({
+          success: success,
+          message: message,
+          authorizedUsers: authorizedUsers,
+        });
       }
     } catch (err) {
       console.error("Error retreiving authorized users:", err);

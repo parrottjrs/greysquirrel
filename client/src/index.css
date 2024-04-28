@@ -39,18 +39,25 @@ button {
   border: none !important;
 }
 
+.ql-size {
+  color: #1d1d1d !important;
+  width: 93px !important;
+}
+
 .ql-picker-label {
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 400;
   font-size: 18px;
   color: #1d1d1d;
+  margin-right: 15px !important;
 }
 
 .ql-toolbar {
-  background-color: #ececec;
-  border-radius: 14px;
+  background-color: #ececec !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
   border: none !important;
-  width: 26rem;
+  padding: 10px 15px !important;
 }
 
 @media (max-width: 390px) {
@@ -58,4 +65,12 @@ button {
     width: 358px !important;
     height: 46px !important;
   }
+}
+
+.ql-size {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #1d1d1d;
+  margin-right: 15px !important;
 }
