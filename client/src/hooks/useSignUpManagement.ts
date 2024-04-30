@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { SignupFormData } from "../utils/customTypes";
 
 export const useSignUpManagement = () => {
+  const [agree, setAgree] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordIsWeak, setPasswordIsWeak] = useState(false);
   const [userExists, setUserExists] = useState(false);
@@ -19,6 +20,7 @@ export const useSignUpManagement = () => {
       lastName: "",
       password: "",
       passCheck: "",
+      agree: false,
     },
   });
 
@@ -76,11 +78,17 @@ export const useSignUpManagement = () => {
   };
 
   const checkUserEntry = (
+    agree: boolean,
     emailOne: string,
     emailTwo: string,
     passwordOne: string,
     passwordTwo: string
   ) => {
+    if (!agree) {
+      setAgree(false);
+      return false;
+    }
+    setAgree(true);
     const emailsMatch = doEmailsMatch(emailOne, emailTwo);
     const strongPassword = checkPasswordRestrictions(passwordOne);
     const passwordsMatch = doPasswordsMatch(passwordOne, passwordTwo);
@@ -95,8 +103,15 @@ export const useSignUpManagement = () => {
   };
 
   const handleSignup = (data: SignupFormData) => {
-    const { email, emailCheck, password, passCheck } = data;
-    const userEntryOK = checkUserEntry(email, emailCheck, password, passCheck);
+    const { agree, email, emailCheck, password, passCheck } = data;
+
+    const userEntryOK = checkUserEntry(
+      agree,
+      email,
+      emailCheck,
+      password,
+      passCheck
+    );
 
     if (userEntryOK) {
       signup(data);
@@ -117,5 +132,6 @@ export const useSignUpManagement = () => {
     handleShowPassword,
     passwordIsWeak,
     passwordsMatch,
+    agree,
   };
 };

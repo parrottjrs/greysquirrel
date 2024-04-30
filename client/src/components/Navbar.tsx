@@ -5,12 +5,10 @@ import AccountModal from "./AccountModal";
 import { removeHasSignedUp } from "../utils/functions";
 import {
   BASIC_LINK,
-  LINK_CONTAINER,
-  NAVBAR_CHILD_CONTAINER,
-  NAVBAR_PARENT_CONTAINER,
-  NAVBAR_TITLE_TEXT,
+  LARGE_PARENT_CONTAINER,
+  SIGNIN_BUTTON,
 } from "../styles/NavbarStyles";
-import { STYLIZED_ANCHOR_GREEN } from "../styles/GeneralStyles";
+import { GENERIC_HEADER, STYLIZED_ANCHOR_GREEN } from "../styles/GeneralStyles";
 
 interface ChildProps {
   isLoggedIn?: boolean;
@@ -47,40 +45,36 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
   }, [pendingInvites]);
 
   return (
-    <header className={NAVBAR_PARENT_CONTAINER}>
-      <div className="w-full">
-        <nav className={NAVBAR_CHILD_CONTAINER} id="navbar">
-          <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
-          {!isLoggedIn ? (
-            <div className={LINK_CONTAINER}>
-              <a
-                href="#/"
-                className={BASIC_LINK}
-                onClick={() => {
-                  removeHasSignedUp();
-                }}
-              >
-                About
-              </a>
-              <a href="#/signin" className={STYLIZED_ANCHOR_GREEN}>
-                Sign in
-              </a>
-            </div>
-          ) : (
-            <div className={LINK_CONTAINER}>
-              <a href="#/documents" className={BASIC_LINK}>
-                Documents
-              </a>
-              <a aria-label="notifications" href="#/notifications">
-                {pendingInvites ? <BellDot /> : <Bell />}
-              </a>
-              <span className="cursor-pointer">
-                <AccountModal />
-              </span>
-            </div>
-          )}
+    <header className={LARGE_PARENT_CONTAINER}>
+      <h1 className={GENERIC_HEADER}>Greysquirrel</h1>
+      {!isLoggedIn ? (
+        <nav className="w-[254px] h-[45px] flex flex-row items-center justify-between">
+          <a
+            href="#/"
+            className={BASIC_LINK}
+            onClick={() => {
+              removeHasSignedUp();
+            }}
+          >
+            About
+          </a>
+          <a href="#/signin" className={SIGNIN_BUTTON}>
+            Sign in
+          </a>
         </nav>
-      </div>
+      ) : (
+        <nav className="w-[226px] h-[32px] flex flex-row items-center justify-between">
+          <a href="#/documents" className={BASIC_LINK}>
+            Documents
+          </a>
+          <a aria-label="notifications" href="#/notifications">
+            {pendingInvites ? <BellDot /> : <Bell />}
+          </a>
+          <span>
+            <AccountModal />
+          </span>
+        </nav>
+      )}
     </header>
   );
 }

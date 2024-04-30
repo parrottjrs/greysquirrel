@@ -69,6 +69,7 @@ export interface SignupFormData {
   lastName: string;
   password: string;
   passCheck: string;
+  agree: boolean;
 }
 
 export interface EmailFormData {

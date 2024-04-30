@@ -3,15 +3,18 @@ import { useSigninManagement } from "../hooks/useSigninManagement";
 import {
   ALERT_DIV,
   ALERT_TEXT,
+  FLEX_CENTER_LARGE,
   FLEX_COL_CENTER,
+  FLEX_ROW_CENTER,
+  FORM_INNER_CONTAINER,
   FORM_INPUT_FIELD,
   GREEN_BUTTON_STRETCH,
-  INPUT_FIELD_GAP,
   INPUT_FIELD_LABEL,
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
   SMALL_DIVIDER,
   SM_VIOLET_TEXT,
+  WELCOME_HEADER,
 } from "../styles/GeneralStyles";
 import ShowPassword from "./ShowPasword";
 import ExclamationMark from "./ExclamationMark";
@@ -28,21 +31,22 @@ export default function SigninDesktop() {
   } = useSigninManagement();
 
   return (
-    <div className="md:h-screen md:mt-18 flex flex-col items-center md:justify-center">
+    <>
       <Navbar />
-      <h1 className="mb-0 text-left text-nero text-xl font-IBM font-medium md:text-3xl">
-        Welcome Back!
-      </h1>
-      <p className={INSTRUCTIONS}>
-        Enter your credentials to access your account
-      </p>
-      <div>
+      <div className={FLEX_CENTER_LARGE}>
+        <div className={`${FLEX_COL_CENTER} gap-[11px]`}>
+          <h1 className={WELCOME_HEADER}>Welcome Back!</h1>
+          <p className={INSTRUCTIONS}>
+            Enter your credentials to access your account
+          </p>
+        </div>
+
         <form
-          className={FLEX_COL_CENTER}
+          className={`${FLEX_COL_CENTER} gap-[45px]`}
           onSubmit={handleSubmit(onSubmit)}
           tabIndex={0}
         >
-          <div className={INPUT_FIELD_GAP}>
+          <div className={FORM_INNER_CONTAINER}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"username"}>
               Username
             </label>
@@ -53,10 +57,11 @@ export default function SigninDesktop() {
               {...register("username")}
               autoComplete="off"
               required={true}
+              placeholder="Enter your username"
             />
           </div>
           <div>
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <div className="flex flex-row justify-between items-center">
                 <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
                   Password
@@ -73,6 +78,7 @@ export default function SigninDesktop() {
                 {...register("password")}
                 autoComplete="off"
                 required={true}
+                placeholder="Enter your password"
               />
             </div>
 
@@ -89,15 +95,15 @@ export default function SigninDesktop() {
               </div>
             )}
           </div>
-          <div className="w-full mt-16 flex flex-row items-center justify-left">
+          <div className="w-full flex flex-row items-center justify-left">
             <input
               id="remember"
               type="checkbox"
-              className="mr-2"
+              className="h-[16px] w-[16px] ml-0 mr-2"
               {...register("remember")}
             />
             <label
-              className="text-nero text-xs md: text-sm font-IBM font-medium"
+              className="text-nero text-[12px] font-IBM font-medium"
               htmlFor="remember"
             >
               Remember me for 30 days
@@ -107,16 +113,26 @@ export default function SigninDesktop() {
             Sign in
           </button>
         </form>
-        <div className={SMALL_DIVIDER} />
+        <div className={`${FLEX_ROW_CENTER} w-[404px]`}>
+          <div className={SMALL_DIVIDER} />
+
+          <span className="text-[12px] text-nero font-IBM font-medium mx-[2px]">
+            Or
+          </span>
+          <div className={SMALL_DIVIDER} />
+        </div>
+        <div className={FLEX_ROW_CENTER}>
+          <label
+            className="text-[14px] text-nero font-IBM font-medium"
+            aria-label="signup"
+          >
+            Don't have an account?
+          </label>
+          <a className={MD_VIOLET_TEXT} id="signup" href="#/signup">
+            Sign up
+          </a>
+        </div>
       </div>
-      <div>
-        <label className={INPUT_FIELD_LABEL} aria-label="signup">
-          Don't have an account?
-        </label>
-        <a className={MD_VIOLET_TEXT} id="signup" href="#/signup">
-          Sign up here!
-        </a>
-      </div>
-    </div>
+    </>
   );
 }

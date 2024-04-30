@@ -13,7 +13,7 @@ export default function HomeMobile() {
       <div className="w-full flex items-start">
         <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
       </div>
-      <img src={squirrel} className="ml-6 mb-10 mt-10 w-64 h-64" />
+      <img src={squirrel} className="ml-6 mb-10 mt-10 w-[247px] h-[247px]" />
       <a href="#/signup" className={STYLIZED_ANCHOR_GREEN_MOBILE}>
         Get started
       </a>

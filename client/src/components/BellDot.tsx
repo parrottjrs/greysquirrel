@@ -3,6 +3,7 @@ import React from "react";
 export default function BellDot() {
   return (
     <svg
+      className="cursor-pointer"
       width="23"
       height="28"
       viewBox="0 0 23 28"

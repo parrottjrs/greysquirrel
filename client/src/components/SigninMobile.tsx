@@ -10,6 +10,7 @@ import {
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
   SM_VIOLET_TEXT,
+  WELCOME_HEADER,
 } from "../styles/GeneralStyles";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import ShowPassword from "./ShowPasword";
@@ -29,9 +30,7 @@ export default function SigninMobile() {
     <div className={FLEX_COL_CENTER_MOBILE}>
       <div className="w-[358px] flex flex-col items-start">
         <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
-        <h1 className="mb-0 text-nero text-[32px] font-IBM font-medium">
-          Welcome Back!
-        </h1>
+        <h1 className={WELCOME_HEADER}>Welcome Back!</h1>
         <p className={INSTRUCTIONS}>
           Enter your credentials to access your account
         </p>

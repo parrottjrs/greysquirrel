@@ -10,6 +10,7 @@ import {
 } from "../styles/GeneralStyles";
 import ExclamationMark from "./ExclamationMark";
 import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
+import Navbar from "./Navbar";
 
 export default function VerifyAccountDesktop() {
   const {
@@ -22,6 +23,7 @@ export default function VerifyAccountDesktop() {
 
   return (
     <div className={"mt-32 flex flex-row items-center justify-center"}>
+      <Navbar />
       {!accountIsVerified ? (
         <div className={`${FLEX_COL_CENTER} w-96`}>
           <h1 className={GENERIC_HEADER}>Verify your account</h1>

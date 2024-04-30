@@ -3,6 +3,7 @@ import React from "react";
 export default function AccountCircle() {
   return (
     <svg
+      className="cursor-pointer"
       width="26"
       height="26"
       viewBox="0 0 20 20"
