@@ -8,7 +8,7 @@ export const STYLIZED_ANCHOR_GREEN_MOBILE =
 // buttons
 
 export const SMALL_GREEN_BUTTON =
-  "w-36 mt-8 mb-12 p-2 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
+  "w-[193px] h-[45px] text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[14px] border-0";
 
 export const FORM_SUBMIT =
   "mt-12 mb-12 w-full h-9 py-1 text-nero text-sm font-sans font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
@@ -64,20 +64,23 @@ export const PARENT_CONTAINER =
 export const FLEX_COL_CENTER = "mx-auto flex flex-col items-center";
 
 export const FLEX_CENTER_LARGE =
-  "mx-auto flex flex-col items-center my-[180px] w-[404px] lg:mt-[120px] gap-[36px]";
+  "flex flex-col items-center mx-auto mb-[47px] md:my-[160px] w-[358px] md:w-[404px] gap-[46px] md:gap-[36px]";
 
 export const FLEX_COL_CENTER_MOBILE =
-  "flex flex-col items-center w-[358px] mx-auto mb-[47px]";
+  "flex flex-col items-center mx-auto mb-[47px]";
 
-export const FLEX_COL_LEFT = "mx-auto w-[358px] flex flex-col items-start";
+export const FLEX_COL_LEFT =
+  "mx-auto w-[358px] md:w-[584px] flex flex-col items-start";
 
 export const FLEX_ROW_CENTER = "flex flex-row items-center justify-center";
 
 export const ALERT_DIV =
-  "flex flex-row justify-left items-center gap-[2px] -mb-10 w-[358px] md: w-[404px] ";
+  "flex flex-row justify-left items-center gap-[2px] -mb-10 w-[358px] md:w-[404px] ";
 
 export const SUCCESS_CONTAINER =
-  "flex flex-row items-center justify-center gap-[15px] box-border w-[358px] h-[45px] px-[19px] py-[9px] border-solid border-[1px] border-aeroBlue rounded-[14px]";
+  "flex flex-row items-center justify-center gap-[15px] box-border w-[358px] md:w-[404px] h-[45px] px-[19px] py-[9px] border-solid border-[1px] border-aeroBlue rounded-[14px]";
+
+export const FORM = "flex flex-col items-left gap-[44px] md:gap-[45px]";
 
 export const FORM_INNER_CONTAINER = "flex flex-col gap-[2px] items-start";
 // input field

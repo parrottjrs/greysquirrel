@@ -11,11 +11,12 @@ import {
   FORM_INPUT_FIELD,
   GENERIC_HEADER,
   INPUT_FIELD_LABEL,
-  INPUT_FIELD_GAP,
-  FLEX_COL_CENTER_MOBILE,
   FLEX_COL_LEFT,
   SUCCESS_CONTAINER,
   GREEN_BUTTON_STRETCH,
+  FORM_INNER_CONTAINER,
+  FLEX_CENTER_LARGE,
+  FORM,
 } from "../styles/GeneralStyles";
 import { useAccountManagement } from "../hooks/useAccountManagement";
 
@@ -35,12 +36,16 @@ export default function AccountManagement() {
   } = useAccountManagement();
   return (
     authorization && (
-      <div className={FLEX_COL_CENTER_MOBILE}>
+      <div className={FLEX_CENTER_LARGE}>
         {!isMobile ? <Navbar isLoggedIn={true} /> : <MobileNavbar />}
         <div className={FLEX_COL_LEFT}>
           <h1 className={GENERIC_HEADER}>My Account</h1>
-          <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <div className={INPUT_FIELD_GAP}>
+          <form
+            className={FORM}
+            onSubmit={handleSubmit(onSubmit)}
+            autoComplete="off"
+          >
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"firstName"}>
                 First Name
               </label>
@@ -51,7 +56,7 @@ export default function AccountManagement() {
                 autoComplete="off"
               />
             </div>
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"lastName"}>
                 Last Name
               </label>
@@ -62,7 +67,7 @@ export default function AccountManagement() {
                 autoComplete="off"
               />
             </div>
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"username"}>
                 Username
               </label>
@@ -83,7 +88,7 @@ export default function AccountManagement() {
               )}
             </div>
 
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"email"}>
                 Email
               </label>
@@ -96,7 +101,7 @@ export default function AccountManagement() {
               />
             </div>
 
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
                 Password
               </label>
@@ -127,7 +132,7 @@ export default function AccountManagement() {
               )}
             </div>
 
-            <div className={INPUT_FIELD_GAP}>
+            <div className={FORM_INNER_CONTAINER}>
               <label className={INPUT_FIELD_LABEL} htmlFor={"passCheck"}>
                 Confirm password
               </label>
@@ -138,7 +143,7 @@ export default function AccountManagement() {
                 {...register("passCheck")}
                 autoComplete="off"
               />
-              {passMatch && (
+              {!passMatch && (
                 <div className={ALERT_DIV}>
                   <span className="mr-2">
                     <ExclamationMark />
@@ -155,15 +160,15 @@ export default function AccountManagement() {
             >
               Update information
             </button>
+            {updateSuccess && (
+              <div className={SUCCESS_CONTAINER}>
+                <CheckMark />
+                <span className={`${BOLD_GRAY_TEXT} ml-[15px]`}>
+                  Your account has been updated
+                </span>
+              </div>
+            )}
           </form>
-          {updateSuccess && (
-            <div className={SUCCESS_CONTAINER}>
-              <CheckMark />
-              <span className={`${BOLD_GRAY_TEXT} ml-[15px]`}>
-                Your account has been updated
-              </span>
-            </div>
-          )}
         </div>
       </div>
     )

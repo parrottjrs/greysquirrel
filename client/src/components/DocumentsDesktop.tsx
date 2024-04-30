@@ -1,17 +1,23 @@
 import React from "react";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import {
+  FLEX_CENTER_LARGE,
   GENERIC_HEADER,
+  GENERIC_PARAGRAPH,
   PARENT_CONTAINER,
   SMALL_GREEN_BUTTON,
 } from "../styles/GeneralStyles";
 import {
+  DOCS_PARENT_LARGE,
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
 } from "../styles/DocPageStyles";
-import DocumentsGrid from "./DocumentsGrid";
-import SharedDocumentsGrid from "./SharedDocumentsGrid";
+import DocumentsGrid from "./DocsGridMobile";
+import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import Navbar from "./Navbar";
+import DocumentsGridDesktop from "./DocsGridDesktop";
+import DocsGridDesktop from "./DocsGridDesktop";
+import SharedDocsGridMobile from "./SharedDocsGridMobile";
 
 export default function DocumentsDesktop() {
   const {
@@ -28,7 +34,7 @@ export default function DocumentsDesktop() {
     authorization && (
       <>
         <Navbar isLoggedIn={true} />
-        <div className={PARENT_CONTAINER}>
+        <div className={DOCS_PARENT_LARGE}>
           <div className="flex flex-row items-center justify-between">
             <h1 className={`${GENERIC_HEADER} mb-10`}>Documents</h1>
             <button
@@ -38,14 +44,14 @@ export default function DocumentsDesktop() {
               New Document
             </button>
           </div>
-          <div>
+          <div className="flex flex-row gap-[26px]">
             <button
               className={
                 showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
               }
               onClick={() => setShowOwnedDocuments(true)}
             >
-              My Documents
+              My documents
             </button>
             <button
               className={
@@ -53,17 +59,23 @@ export default function DocumentsDesktop() {
               }
               onClick={() => setShowOwnedDocuments(false)}
             >
-              Shared Documents
+              Shared with me
             </button>
           </div>
-          {showOwnedDocuments ? (
-            <DocumentsGrid documents={documents} setDocuments={setDocuments} />
-          ) : (
-            <SharedDocumentsGrid
-              sharedDocuments={sharedDocuments}
-              setSharedDocuments={setSharedDocuments}
-            />
-          )}
+          <div className="flex flex-col gap-[17px]">
+            <span className={GENERIC_PARAGRAPH}>Files</span>{" "}
+            {showOwnedDocuments ? (
+              <DocsGridDesktop
+                documents={documents}
+                setDocuments={setDocuments}
+              />
+            ) : (
+              <SharedDocsGridMobile
+                sharedDocuments={sharedDocuments}
+                setSharedDocuments={setSharedDocuments}
+              />
+            )}
+          </div>
         </div>
       </>
     )

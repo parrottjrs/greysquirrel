@@ -15,7 +15,7 @@ import Page from "./Page";
 import { clipText } from "../utils/functions";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 
-export default function SharedDocumentsGrid({
+export default function SharedDocsGridMobile({
   sharedDocuments,
   setSharedDocuments,
 }: SharedDocumentsGridProps) {

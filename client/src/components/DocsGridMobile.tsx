@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
 import { clipText, formatDate } from "../utils/functions";
 import Page from "./Page";
@@ -16,13 +15,12 @@ import {
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
 
-export default function DocumentsGrid({
+export default function DocsGridMobile({
   documents,
   setDocuments,
 }: DocumentsGridProps) {
-  const { isMobile } = useBreakpoints();
+  const isMobile = true;
 
   return documents.map((document: UserDocument) => {
     const { title, doc_id, content, authorizedUsers, last_edit } = document;

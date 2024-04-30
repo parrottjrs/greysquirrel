@@ -1,10 +1,10 @@
 // for docs route
 
 export const DOCUMENTS_SWITCH_ON =
-  "w-[171px] h-[45px] px-[10px] py-[9px] text-white text-[18px] font-IBM font-medium bg-nero gap-2.5 rounded-[14px] border border-solid border-nero md: w-[168px]";
+  "w-[171px] h-[45px] px-[10px] py-[9px] text-white text-[18px] font-IBM font-medium bg-nero rounded-[14px] border border-solid border-nero";
 
 export const DOCUMENTS_SWITCH_OFF =
-  "box-border w-[171px] h-[45px] px-[10px] py-[9px] text-nero text-[18px] font-IBM font-medium bg-white rounded-xl border border-black border-solid md: w-[168px]";
+  "w-[171px] h-[45px] px-[10px] py-[9px] text-nero text-[18px] font-IBM font-medium bg-white rounded-[14px] border border-black border-solid";
 
 export const NEW_DOC_MOBILE =
   "w-[358px] h-[45px]  text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
@@ -19,10 +19,13 @@ export const OPTIONS_TEXT =
 
 // for user owned doc grid
 
-export const DOCUMENT_GRID_ITEM =
-  "box-border flex flex-row justify-between h-[297px]  p-[22px] w-[358px] md:w-[584px] lg:w-[828px] md:h-[273px] lg:h-[212px] border-solid border border-dustyGray rounded-[14px]";
+export const DOCS_PARENT_LARGE =
+  "flex flex-col justify-center  mx-auto my-[160px] gap-[54px] w-[584px] lg:w-[828px]";
 
-export const GRID_INTERIOR = "flex  flex-col items-left gap-[4px] md: flex-row";
+export const DOCUMENT_GRID_ITEM =
+  "box-border flex flex-row justify-between h-[297px] md:h-[293] lg:h-[212px] p-[22px] w-[358px] md:w-[584px] lg:w-[828px]  border-solid border border-dustyGray rounded-[14px]";
+
+export const GRID_INTERIOR = "flex flex-col items-left gap-[4px] md: flex-row";
 
 export const ICONS_CONTAINER =
   "h-[43px] flex flex-row justify-between items-center";
@@ -32,7 +35,7 @@ export const FULLSIZE_INVIS_ANCHOR = "no-underline text-nero w-full h-full";
 export const DOC_HEADER = "m-0 text-nero text-[24px] font-IBM font-medium";
 
 export const DOC_PREVIEW =
-  "w-[314px] h-[81px] text-left text-nero text-[18px] font-IBM break-words ";
+  "md:mt-0 w-[314px] md:w-[358px] h-[81px] md:h-[145px] text-left text-nero text-[18px] font-IBM break-words ";
 
 export const DETAILS_CONTAINER =
   "flex flex-col md:flex-row items-left md:justify-between  md:items-center w-full";

@@ -62,7 +62,7 @@ export default function SigninDesktop() {
           </div>
           <div>
             <div className={FORM_INNER_CONTAINER}>
-              <div className="flex flex-row justify-between items-center">
+              <div className="w-[404px] flex flex-row justify-between items-center">
                 <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
                   Password
                 </label>

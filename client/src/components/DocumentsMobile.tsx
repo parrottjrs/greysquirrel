@@ -9,10 +9,11 @@ import {
   DOCUMENTS_SWITCH_ON,
   NEW_DOC_MOBILE,
 } from "../styles/DocPageStyles";
-import DocumentsGrid from "./DocumentsGrid";
-import SharedDocumentsGrid from "./SharedDocumentsGrid";
+import DocumentsGrid from "./DocsGridMobile";
+import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import MobileNavbar from "./MobileNavbar";
+import DocumentsGridMobile from "./DocsGridMobile";
 
 export default function DocumentsMobile() {
   const {
@@ -38,14 +39,14 @@ export default function DocumentsMobile() {
           </button>
         </div>
 
-        <div className="flex flex row gap-[16px]">
+        <div className="flex flex-row gap-[16px]">
           <button
             className={
               showOwnedDocuments ? DOCUMENTS_SWITCH_ON : DOCUMENTS_SWITCH_OFF
             }
             onClick={() => setShowOwnedDocuments(true)}
           >
-            My Documents
+            My documents
           </button>
           <button
             className={
@@ -59,7 +60,10 @@ export default function DocumentsMobile() {
         <div className="flex flex-col gap-[17px]">
           <span className={GENERIC_PARAGRAPH}>Files</span>
           {showOwnedDocuments ? (
-            <DocumentsGrid documents={documents} setDocuments={setDocuments} />
+            <DocumentsGridMobile
+              documents={documents}
+              setDocuments={setDocuments}
+            />
           ) : (
             <SharedDocumentsGrid
               sharedDocuments={sharedDocuments}

@@ -2,6 +2,7 @@ import React from "react";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import squirrel from "../images/squirrel.png";
 import {
+  FLEX_COL_CENTER,
   FLEX_COL_CENTER_MOBILE,
   GENERIC_PARAGRAPH,
   STYLIZED_ANCHOR_GREEN_MOBILE,
@@ -9,8 +10,8 @@ import {
 
 export default function HomeMobile() {
   return (
-    <div className={FLEX_COL_CENTER_MOBILE}>
-      <div className="w-full flex items-start">
+    <div className={FLEX_COL_CENTER}>
+      <div className="w-[358px] flex flex-row items-start">
         <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
       </div>
       <img src={squirrel} className="ml-6 mb-10 mt-10 w-[247px] h-[247px]" />

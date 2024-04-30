@@ -9,6 +9,7 @@ import {
 } from "../utils/customTypes";
 import { DOC_OPTIONS_CONTAINER } from "../styles/DocPageStyles";
 import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 
 export default function DocOptionsDropdown({
   docId,
@@ -18,6 +19,7 @@ export default function DocOptionsDropdown({
   shared,
   authorizedUsers,
 }: DocumentOptionsProps) {
+  const { isMobile } = useBreakpoints();
   const [show, setShow] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const fetchDelete = async (id: any) => {
@@ -71,7 +73,7 @@ export default function DocOptionsDropdown({
     <>
       <DropdownMenu.Root open={show ? true : false}>
         <DropdownMenu.Trigger asChild onClick={() => setShow(true)}>
-          <MoreVertical size={43} />
+          <MoreVertical size={isMobile ? 43 : 64} />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content

@@ -4,8 +4,9 @@ interface PageProps {
   isMobile?: boolean;
 }
 export default function Page({ isMobile }: PageProps) {
-  const pageWidth = isMobile ? "40" : "60";
-  const pageHeight = isMobile ? "40" : "60";
+  const pageWidth = isMobile ? "40" : "96";
+  const pageHeight = isMobile ? "40" : "96";
+  console.log(pageWidth, pageHeight);
   return (
     <svg
       width={pageWidth}
