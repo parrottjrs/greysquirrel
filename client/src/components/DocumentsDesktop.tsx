@@ -17,7 +17,7 @@ import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import Navbar from "./Navbar";
 import DocumentsGridDesktop from "./DocsGridDesktop";
 import DocsGridDesktop from "./DocsGridDesktop";
-import SharedDocsGridMobile from "./SharedDocsGridMobile";
+import SharedDocsGridDesktop from "./SharedDocsGridDesktop";
 
 export default function DocumentsDesktop() {
   const {
@@ -70,7 +70,7 @@ export default function DocumentsDesktop() {
                 setDocuments={setDocuments}
               />
             ) : (
-              <SharedDocsGridMobile
+              <SharedDocsGridDesktop
                 sharedDocuments={sharedDocuments}
                 setSharedDocuments={setSharedDocuments}
               />

@@ -10,8 +10,6 @@ import {
   DOC_HEADER,
   DOC_PREVIEW,
   FULLSIZE_INVIS_ANCHOR,
-  GRID_INTERIOR,
-  ICONS_CONTAINER,
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
@@ -44,7 +42,7 @@ export default function DocsGridDesktop({
         </a>
 
         <a className={FULLSIZE_INVIS_ANCHOR} href={`#/edit/${doc_id}`}>
-          <div className="flex flex-col items-left gap-[12px]">
+          <div className="flex flex-col md:items-left gap-[12px]">
             <h2 className={DOC_HEADER}>{!title ? "Untitled" : newTitle}</h2>
             <p className={DOC_PREVIEW}>{newContent}</p>
             <div className={DETAILS_CONTAINER}>

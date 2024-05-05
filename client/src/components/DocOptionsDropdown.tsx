@@ -7,7 +7,7 @@ import {
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
-import { DOC_OPTIONS_CONTAINER } from "../styles/DocPageStyles";
+import { DOC_OPTIONS_FULL, DOC_OPTIONS_SMALL } from "../styles/DocPageStyles";
 import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 
@@ -81,10 +81,7 @@ export default function DocOptionsDropdown({
               setShow(false);
             }}
           >
-            <div
-              className={`${DOC_OPTIONS_CONTAINER}
-            ${shared && "h-[24px]"}`}
-            >
+            <div className={!shared ? DOC_OPTIONS_FULL : DOC_OPTIONS_SMALL}>
               {!shared && (
                 <DropdownMenu.Item>
                   <button

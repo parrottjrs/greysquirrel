@@ -11,8 +11,11 @@ export const NEW_DOC_MOBILE =
 
 // for  Document Options Dropdown
 
-export const DOC_OPTIONS_CONTAINER =
-  "border-box flex flex-col items-left gap-[24px] h-[84px] w-[96px] py-[24px] px-[13px] relative right-[18px] top-[8px] md:top-[0px] md:left-28 md:bottom-10 bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+export const DOC_OPTIONS_FULL =
+  "z-20 border-box flex flex-col items-left gap-[24px] h-[84px] w-[96px] py-[14px] px-[13px] fixed -right-[46px] -top-[72px] md:-right-[52px] md:-top-[94px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+
+export const DOC_OPTIONS_SMALL =
+  "z-20 border-box flex flex-col items-left gap-[24px] h-[24px] w-[96px] py-[14px] px-[13px] fixed -right-[46px] -top-[72px] md:-right-[52px] md:-top-[94px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const OPTIONS_TEXT =
   "p-0 bg-transparent border-none text-nero text-sm font-IBM md:text-lg no-underline";
@@ -23,7 +26,7 @@ export const DOCS_PARENT_LARGE =
   "flex flex-col justify-center  mx-auto my-[160px] gap-[54px] w-[584px] lg:w-[828px]";
 
 export const DOCUMENT_GRID_ITEM =
-  "box-border flex flex-row justify-between h-[297px] md:h-[293] lg:h-[212px] p-[22px] w-[358px] md:w-[584px] lg:w-[828px]  border-solid border border-dustyGray rounded-[14px]";
+  "box-border flex flex-row justify-between h-[297px] md:h-[293] lg:h-[212px] p-[22px] w-[358px] md:w-[584px] lg:w-[828px] border-solid border border-dustyGray rounded-[14px]";
 
 export const GRID_INTERIOR = "flex flex-col items-left gap-[4px] md: flex-row";
 
@@ -35,11 +38,11 @@ export const FULLSIZE_INVIS_ANCHOR = "no-underline text-nero w-full h-full";
 export const DOC_HEADER = "m-0 text-nero text-[24px] font-IBM font-medium";
 
 export const DOC_PREVIEW =
-  "md:mt-0 w-[314px] md:w-[358px] h-[81px] md:h-[145px] text-left text-nero text-[18px] font-IBM break-words ";
+  "md:mt-0 w-[314px] md:w-[358px] lg:w-[637px] h-[81px] md:h-[145px] lg:h-[81px] text-left text-nero text-[18px] font-IBM break-words ";
 
 export const DETAILS_CONTAINER =
   "flex flex-col md:flex-row items-left md:justify-between  md:items-center w-full";
 
 export const LAST_UPDATE_TEXT = "text-boulder text-[18px] font-IBM";
 
-export const SHARED_TEXT = "text-boulder text-[18px] font-IBM mr-2";
+export const SHARED_TEXT = "text-boulder text-[18px] font-IBM mr-2 lg:mt-0";

@@ -38,7 +38,7 @@ export default function ShareModal({
   open,
   setOpen,
 }: ShareModalProps) {
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit } = useForm({
     defaultValues: {
       recipientName: "",
     },
@@ -49,7 +49,6 @@ export default function ShareModal({
   const [doesNotExist, setDoesNotExist] = useState(false);
   const [alreadyShared, setAlreadyShared] = useState(false);
   const [inviteFailed, setInviteFailed] = useState(false);
-  const [shareInput, setShareInput] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
@@ -81,10 +80,6 @@ export default function ShareModal({
     }
   };
 
-  useEffect(() => {
-    setShareInput("");
-  }, [open]);
-
   const resetInviteStates = () => {
     setOpen(false);
     setShareAttempted(false);
@@ -92,21 +87,13 @@ export default function ShareModal({
     setDoesNotExist(false);
     setAlreadyShared(false);
     setInviteFailed(false);
-    setShareInput("");
-  };
-
-  const handleChange = (value: string) => {
-    setShareInput(value);
   };
 
   const handleInvite = async (data: ShareFormData) => {
     if (!data.recipientName) {
-      setShareInput("");
       return null;
     }
     await fetchInvite(docId, data.recipientName);
-    setShareInput("");
-    reset();
   };
 
   const inviteResponseText = () => {
@@ -147,7 +134,7 @@ export default function ShareModal({
         !shareAttempted ? SHARE_MODAL_CONTAINER : SHARE_ATTEMPTED_CONTAINER
       }
     >
-      <div className="flex flex-col items-left w-[296px] h-[362px] gap-[29px]">
+      <div className="z-20 flex flex-col items-left w-[296px] md:w-[404px] h-[362px] md:h-[301px] gap-[29px]">
         <h1 className={SHARE_HEADER}>
           Share "
           {title ? clipTitleForInvite(title, isMobile) : "Untitled Document"}"
@@ -169,19 +156,16 @@ export default function ShareModal({
                 placeholder="Share your file"
                 {...register("recipientName")}
                 autoComplete="off"
-                value={shareInput}
-                onChange={(e) => handleChange(e.target.value)}
               />
             </div>
             <div className="flex flex-col items-left gap-[10px]">
               <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
               <AuthorizedUsersList authorizedUsers={authorizedUsers} />
             </div>
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col md:flex-row gap-[16px] md:justify-between">
               <button className={SHARE_BUTTON_GREEN} type="submit">
                 Share
               </button>
-
               <button
                 className={SHARE_BUTTON_GREEN}
                 onClick={() => setOpen(false)}
@@ -191,7 +175,7 @@ export default function ShareModal({
             </div>
           </form>
         ) : (
-          <div className="flex flex-col gap-[10px]">
+          <div className="flex flex-col gap-[10px] md:gap-[29px]">
             <span className={GENERIC_PARAGRAPH}>{inviteResponseText()}</span>
             <button
               className={SHARE_BUTTON_GREEN}

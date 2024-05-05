@@ -8,14 +8,13 @@ import {
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import MobileNavTrigger from "./MobileNavTrigger";
 import { useLogout } from "../hooks/useLogout";
-import { TRANSPARENT_BUTTON_BOLD } from "../styles/GeneralStyles";
 
 export default function MobileNavbar() {
   const { handleLogout } = useLogout();
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-[358px] flex flex-row justify-between items-center">
+    <div className="w-[358px] flex flex-row justify-between items-center ">
       <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
       <DropdownMenu.Root open={open ? true : false}>
         <DropdownMenu.Trigger

@@ -21,12 +21,17 @@ export default function AccountModal() {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="relative p-2 pb-3 top-8 right-6 h-12 w-28 border-solid border rounded-lg"
+          className="z-20 flex flex-col justify-center items-start gap-[6px] relative px-[13px] py-[10px] top-[18px] right-[18px] h-[84px]  w-[96px]  bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]"
           onInteractOutside={() => {
             setOpen(false);
           }}
         >
-          <a href="#/account">Edit Profile</a>
+          <a
+            href="#/account"
+            className="text-nero text-[18px] font-IBM no-underline"
+          >
+            Edit Profile
+          </a>
           <button className={TRANSPARENT_BUTTON_NORMAL} onClick={handleLogout}>
             Sign out
           </button>

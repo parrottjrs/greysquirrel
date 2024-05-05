@@ -1,5 +1,5 @@
 export const LARGE_PARENT_CONTAINER =
-  "z-10 flex flex-row items-center justify-between mx-auto h-[101px] px-[23px] bg-white fixed inset-0 drop-shadow-sm";
+  "z-10 flex flex-row items-center justify-between mx-auto h-[101px] px-[23px] bg-white fixed inset-0  drop-shadow-[0_0px_2.5px_rgba(0,0,0,0.25)]";
 
 export const NAVBAR_CHILD_CONTAINER = "justify-between md:flex md:w-auto px-7";
 
