@@ -134,7 +134,7 @@ export default function ShareModal({
         !shareAttempted ? SHARE_MODAL_CONTAINER : SHARE_ATTEMPTED_CONTAINER
       }
     >
-      <div className="z-20 flex flex-col items-left w-[296px] md:w-[404px] h-[362px] md:h-[301px] gap-[29px]">
+      <div className="flex flex-col items-left w-[296px] md:w-[404px] h-[362px] md:h-[301px] gap-[29px]">
         <h1 className={SHARE_HEADER}>
           Share "
           {title ? clipTitleForInvite(title, isMobile) : "Untitled Document"}"
@@ -175,7 +175,7 @@ export default function ShareModal({
             </div>
           </form>
         ) : (
-          <div className="flex flex-col gap-[10px] md:gap-[29px]">
+          <>
             <span className={GENERIC_PARAGRAPH}>{inviteResponseText()}</span>
             <button
               className={SHARE_BUTTON_GREEN}
@@ -185,7 +185,7 @@ export default function ShareModal({
             >
               OK
             </button>
-          </div>
+          </>
         )}
       </div>
     </dialog>

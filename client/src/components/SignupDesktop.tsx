@@ -202,7 +202,7 @@ export default function SignupDesktop() {
                 className="text-nero text-[12px] font-IBM font-medium"
                 htmlFor="terms-of-use"
               >
-                I agree to the terms & policy
+                I agree with Greysquirrel's privacy policy
               </label>
             </div>
             {!agree && (
@@ -211,7 +211,7 @@ export default function SignupDesktop() {
                   <ExclamationMark />
                 </span>
                 <p className={ALERT_TEXT}>
-                  You must agree to our terms of usage
+                  You must agree with our privacy policy
                 </p>
               </div>
             )}

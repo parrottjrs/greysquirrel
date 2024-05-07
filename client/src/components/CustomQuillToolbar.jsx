@@ -19,7 +19,7 @@ export default function CustomQuillToolbar() {
 
   return (
     <div id="toolbar">
-      <div className="flex flex-row items-center justify-center gap-[10px]">
+      <div className="flex flex-row items-center md:justify-between  md:w-[405px] lg:w-[447px] gap-[8px] ">
         <select className="ql-size">
           <option value="small"></option>
           <option selected></option>

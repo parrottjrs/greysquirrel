@@ -11,8 +11,5 @@ export const useBreakpoints = () => {
     isMobile = false;
   }
 
-  console.log("isMobile:", isMobile);
-  console.log("isTablet:", isTablet);
-  console.log("isBigScreen:", isBigScreen);
   return { isMobile, isTablet, isBigScreen };
 };

@@ -20,7 +20,7 @@ export const TRANSPARENT_BUTTON_BOLD =
   "p-0 bg-transparent border-none text-nero text-[18px] w-[68px] h-[27px] font-IBM font-medium no-underline";
 
 export const GREEN_BUTTON_STRETCH =
-  "w-[358px] md:w-[403px] h-[45px] mt-[35px] md:mt-0 mb-8 md:mb-0 text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
+  "w-[358px] md:w-[403px] h-[45px] md:mt-0 mb-8 md:mb-0 text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
 
 export const SIGNUP_BUTTON =
   "mt-12 mb-12 px-20 md:px-44 py-1 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
@@ -34,6 +34,8 @@ export const INSTRUCTIONS =
   "mt-[15px] md:-mt-1 font-IBM text-nero text-[16px] font-medium";
 
 export const GENERIC_HEADER = "text-nero text-[42px] font-IBM font-medium";
+
+export const SMALLER_HEADER = "text-nero text-[32px] font-IBM font-medium";
 
 export const INPUT_FIELD_LABEL =
   "text-center text-nero text-[16px] font-IBM font-medium";
@@ -64,13 +66,13 @@ export const PARENT_CONTAINER =
 export const FLEX_COL_CENTER = "mx-auto flex flex-col items-center";
 
 export const FLEX_CENTER_LARGE =
-  "flex flex-col items-center mx-auto mb-[47px] md:my-[160px] w-[358px] md:w-[404px] gap-[46px] md:gap-[36px]";
+  "flex flex-col items-center  mx-auto mb-[47px] md:my-[160px] w-[358px] md:w-[404px] gap-[46px] md:gap-[36px]";
 
 export const FLEX_COL_CENTER_MOBILE =
   "flex flex-col items-center mx-auto mb-[47px]";
 
 export const FLEX_COL_LEFT =
-  "mx-auto w-[358px] md:w-[584px] flex flex-col items-start";
+  "mx-auto w-[358px] md:w-[584px] lg:w-[828px] flex flex-col items-start";
 
 export const FLEX_ROW_CENTER = "flex flex-row items-center justify-center";
 

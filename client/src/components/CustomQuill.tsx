@@ -29,7 +29,7 @@ export default function CustomQuill({
   };
 
   return (
-    <div className={`${FLEX_COL_LEFT} gap-[60px]`}>
+    <div className={`${FLEX_COL_LEFT} gap-[30px]`}>
       <a
         href="#/documents"
         className="text-[18px] text-nero font-medium no-underline"
@@ -38,7 +38,7 @@ export default function CustomQuill({
           <ArrowBack /> <span>Back to documents</span>
         </div>
       </a>
-      <div className="flex flex-col items-start gap-[30px]">
+      <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-[30px] md:gap-[50px]">
         <CustomQuillToolbar />
         {userOwnsDoc && (
           <button

@@ -108,9 +108,7 @@ export default function InvitesRecieved() {
           <span className="underline">{sender_name}</span> shared "{newTitle}"
           with you.
         </p>
-        <p className={`${SHARE_DATE_TEXT} m-0`}>
-          Date shared: {formattedShareDate}
-        </p>
+
         <div className="flex flex-row gap-[15px]">
           <button
             aria-label="accept-invitation"
@@ -129,6 +127,9 @@ export default function InvitesRecieved() {
             decline
           </button>
         </div>
+        <p className={`${SHARE_DATE_TEXT} m-0`}>
+          Date shared: {formattedShareDate}
+        </p>
       </div>
     );
   });

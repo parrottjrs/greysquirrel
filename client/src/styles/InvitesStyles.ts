@@ -15,7 +15,7 @@ export const SENT_PARENT_CONTAINER =
   "relative flex flex-col justify-between h-24 p-4 my-4 border-solid border border-dustyGray rounded-lg overflow-hidden";
 
 export const PENDING_INVITE =
-  "box-border flex flex-col h-[194px] items-start w-[358px] p-[22px] gap-[20px] md:w-[584px] lg:w-[828px] md:h-[273px] lg:h-[212px] border-solid border border-dustyGray rounded-[14px]";
+  "box-border flex flex-col h-[194px] md:h-[167px] items-start w-[358px] p-[22px] gap-[20px] md:w-[584px] lg:w-[828px]  border-solid border border-dustyGray rounded-[14px]";
 
 export const SHARE_DATE_TEXT = "text-boulder font-IBM text-[18px]";
 
@@ -25,7 +25,7 @@ export const RED_BUTTON =
 // share modal
 
 export const SHARE_BUTTON_TEXT =
-  "h-[45px] w-[171px] py-[9px] px-[19px] gap-[15px]  font-IBM text-[18px] text-center font-medium border border-solid border-nero rounded-[14px] bg-transparent ";
+  "h-[45px] w-[171px] md:w-[125px] py-[9px] px-[19px] gap-[15px]  font-IBM text-[18px] text-center font-medium border border-solid border-nero rounded-[14px] bg-transparent ";
 
 export const SHARE_MODAL_CONTAINER =
   "md:z-20 lg:mx-auto fixed top-[50%] left-[50%] lg:left-[0%] -translate-x-[50%] lg:-translate-x-[0%] -translate-y-[50%]  border-none flex flex-col justify-center items-center w-[358px] md:w-[466px] h-[428px] md:h-[367px] gap-[10px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";

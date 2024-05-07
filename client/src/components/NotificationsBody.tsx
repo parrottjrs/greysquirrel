@@ -5,6 +5,8 @@ import InvitesRecieved from "../components/InvitesReceived";
 import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 import {
+  FLEX_CENTER_LARGE,
+  FLEX_COL_CENTER,
   FLEX_COL_CENTER_MOBILE,
   FLEX_COL_LEFT,
   GENERIC_HEADER,
@@ -58,7 +60,7 @@ export const NotificationsBody = () => {
 
   return (
     authorization && (
-      <div className={FLEX_COL_CENTER_MOBILE}>
+      <div className={isMobile ? FLEX_COL_CENTER : ""}>
         {!isMobile ? (
           <Navbar isLoggedIn={true} page={"notifications"} />
         ) : (
@@ -88,7 +90,7 @@ export const NotificationsBody = () => {
               Pending invites
             </button>
           </div>
-          <div className="flex flex-col gap-[17px]">
+          <div className="flex flex-col gap-[35px]">
             {notifications === "shared" && <InvitesRecieved />}
             {notifications === "pending" && <InvitesSent />}
           </div>

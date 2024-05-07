@@ -29,6 +29,7 @@ export default function SignupMobile() {
     handleShowPassword,
     passwordIsWeak,
     passwordsMatch,
+    agree,
   } = useSignUpManagement();
 
   return (
@@ -185,7 +186,32 @@ export default function SignupMobile() {
               </div>
             )}
           </div>
-
+          <div className="mt-[36px] w-full flex flex-col gap-[2px] items-start ">
+            <div className="flex flex-row items-center">
+              <input
+                id="terms-of-use"
+                type="checkbox"
+                className="h-[16px] w-[16px] ml-[1px] mr-2"
+                {...register("agree")}
+              />
+              <label
+                className="text-nero text-[12px] font-IBM font-medium"
+                htmlFor="terms-of-use"
+              >
+                I agree with Greysquirrel's privacy policy
+              </label>
+            </div>
+            {!agree && (
+              <div className={ALERT_DIV}>
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
+                <p className={ALERT_TEXT}>
+                  You must agree with our privacy policy
+                </p>
+              </div>
+            )}
+          </div>
           <button className={GREEN_BUTTON_STRETCH} type="submit" value="submit">
             Sign up
           </button>

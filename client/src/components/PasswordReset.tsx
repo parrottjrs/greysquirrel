@@ -2,15 +2,18 @@ import {
   ALERT_DIV,
   ALERT_TEXT,
   BOLD_GRAY_TEXT,
+  FLEX_CENTER_LARGE,
   FLEX_COL_CENTER,
   FLEX_COL_CENTER_MOBILE,
   FLEX_COL_LEFT,
+  FORM_INNER_CONTAINER,
   FORM_INPUT_FIELD,
   GENERIC_HEADER,
   GREEN_BUTTON_STRETCH,
   INPUT_FIELD_GAP,
   INPUT_FIELD_LABEL,
   MD_VIOLET_TEXT,
+  SMALLER_HEADER,
   SUCCESS_CONTAINER,
 } from "../styles/GeneralStyles";
 import ShowPassword from "./ShowPasword";
@@ -36,14 +39,18 @@ export const PasswordReset = () => {
   } = usePasswordChangeManagement();
 
   return (
-    <div className={FLEX_COL_CENTER_MOBILE}>
+    <>
       {!isMobile && <Navbar />}
-      <div className={FLEX_COL_LEFT}>
+      <div className={isMobile ? FLEX_COL_LEFT : FLEX_CENTER_LARGE}>
         {isMobile && <h1 className={GENERIC_HEADER}>Greysquirrel</h1>}
-        <h1 className={GENERIC_HEADER}>Reset your password</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-          <div className={INPUT_FIELD_GAP}>
+        <form
+          className="flex flex-col md:items-center gap-[36px]"
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+        >
+          <h1 className={SMALLER_HEADER}>Reset your password</h1>
+          <div className={FORM_INNER_CONTAINER}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
               Password
             </label>
@@ -57,7 +64,7 @@ export const PasswordReset = () => {
             <ShowPassword onClick={handleShowPass} show={showPass} />
             {passIsWeak && (
               <div className={ALERT_DIV}>
-                <span className="mr-2 -mt-8">
+                <span className="mr-2 ">
                   <ExclamationMark />
                 </span>
                 <p className={ALERT_TEXT}>
@@ -73,7 +80,7 @@ export const PasswordReset = () => {
               </div>
             )}
           </div>
-          <div className={INPUT_FIELD_GAP}>
+          <div className={FORM_INNER_CONTAINER}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"passCheck"}>
               Confirm password
             </label>
@@ -122,6 +129,6 @@ export const PasswordReset = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };

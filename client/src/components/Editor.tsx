@@ -14,7 +14,11 @@ import * as Y from "yjs";
 import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
 import CustomQuill from "./CustomQuill";
-import { FLEX_COL_CENTER_MOBILE, MOUSEOUT_DIV } from "../styles/GeneralStyles";
+import {
+  FLEX_CENTER_LARGE,
+  FLEX_COL_CENTER_MOBILE,
+  MOUSEOUT_DIV,
+} from "../styles/GeneralStyles";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import MobileNavbar from "../components/MobileNavbar";
 import ShareModal from "../components/ShareModal";
@@ -179,7 +183,7 @@ export const Editor = () => {
   return (
     authorization && (
       <div className={MOUSEOUT_DIV} onMouseLeave={fetchSave}>
-        <div className={FLEX_COL_CENTER_MOBILE}>
+        <div className={isMobile ? FLEX_COL_CENTER_MOBILE : FLEX_CENTER_LARGE}>
           {isMobile ? <MobileNavbar /> : <Navbar isLoggedIn={true} />}
 
           <div onBlur={() => fetchSave()}>

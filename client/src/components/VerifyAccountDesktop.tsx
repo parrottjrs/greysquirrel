@@ -8,6 +8,7 @@ import {
   GENERIC_HEADER,
   GENERIC_PARAGRAPH,
   GREEN_BUTTON_STRETCH,
+  SMALLER_HEADER,
   SMALL_GREEN_BUTTON,
   WELCOME_HEADER,
 } from "../styles/GeneralStyles";
@@ -29,7 +30,7 @@ export default function VerifyAccountDesktop() {
       <Navbar />
       {!accountIsVerified ? (
         <div className={FLEX_CENTER_LARGE}>
-          <h1 className={WELCOME_HEADER}>Verify your account</h1>
+          <h1 className={SMALLER_HEADER}>Verify your account</h1>
           <p className="text-[18px] text-nero font-IBM">
             A confirmation was sent to your email on file and will arrive
             shortly. Please check your spam folder if you haven't received it.

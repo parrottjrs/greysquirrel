@@ -10,6 +10,7 @@ import {
   GREEN_BUTTON_STRETCH,
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
+  SMALLER_HEADER,
 } from "../styles/GeneralStyles";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import ExclamationMark from "./ExclamationMark";
@@ -28,7 +29,7 @@ export default function VerifyAccountMobile() {
       {!accountIsVerified ? (
         <div className={FLEX_COL_LEFT}>
           <h1 className={NAVBAR_TITLE_TEXT}>Greysquirrel</h1>
-          <h2 className={GENERIC_HEADER}>Verify your account</h2>
+          <h2 className={SMALLER_HEADER}>Verify your account</h2>
           <p className={GENERIC_PARAGRAPH}>
             A confirmation was sent to your email on file and will arrive
             shortly. Please check your spam folder if you haven't received it.

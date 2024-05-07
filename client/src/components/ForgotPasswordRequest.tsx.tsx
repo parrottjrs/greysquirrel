@@ -3,14 +3,13 @@ import { EmailFormData } from "../utils/customTypes";
 import { useForm } from "react-hook-form";
 import {
   BOLD_GRAY_TEXT,
-  FLEX_COL_CENTER_MOBILE,
+  FLEX_CENTER_LARGE,
   FLEX_COL_LEFT,
   FORM_INPUT_FIELD,
   GENERIC_HEADER,
-  GENERIC_PARAGRAPH,
   GREEN_BUTTON_STRETCH,
-  INPUT_FIELD_GAP,
   INPUT_FIELD_LABEL,
+  SMALLER_HEADER,
   SUCCESS_CONTAINER,
 } from "../styles/GeneralStyles";
 import CheckMark from "./CheckMark";
@@ -41,13 +40,17 @@ export const ForgotPasswordRequest = () => {
   };
 
   return (
-    <div className={`${FLEX_COL_CENTER_MOBILE} gap-[46px]`}>
+    <>
       {!isMobile && <Navbar />}
-      <div className={FLEX_COL_LEFT}>
+      <div className={isMobile ? FLEX_COL_LEFT : FLEX_CENTER_LARGE}>
         {isMobile && <h1 className={GENERIC_HEADER}>Greysquirrel</h1>}
-        <h1 className={GENERIC_HEADER}>Verify your account</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className={INPUT_FIELD_GAP}>
+
+        <form
+          className="flex flex-col md:items-center gap-[36px]"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <h1 className={SMALLER_HEADER}>Verify your account</h1>
+          <div>
             <label className={INPUT_FIELD_LABEL} htmlFor="email">
               Enter your email
             </label>
@@ -67,7 +70,7 @@ export const ForgotPasswordRequest = () => {
           </button>
         </form>
         {!emailSent ? (
-          <p className={GENERIC_PARAGRAPH}>
+          <p className="text-left text-nero text-[18px]">
             A secure link will be sent to your email so that you can reset your
             password.
           </p>
@@ -78,6 +81,6 @@ export const ForgotPasswordRequest = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
