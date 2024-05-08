@@ -16,25 +16,38 @@ import {
   GENERIC_PARAGRAPH,
   INPUT_FIELD_LABEL,
 } from "../styles/GeneralStyles";
+import RevokeX from "./RevokeX";
 
-const AuthorizedUsersList = ({ authorizedUsers }: any) => {
-  if (authorizedUsers) {
-    return authorizedUsers.map((user: string) => {
-      const key = authorizedUsers.indexOf(user);
-      return (
-        <div key={key} className="flex flex-row gap-[15px]">
+interface ListProps {
+  authorizedUsers: string[];
+  onDeleteUser: (userName: string) => void;
+}
+const AuthorizedUsersList = ({ authorizedUsers, onDeleteUser }: ListProps) => {
+  console.log("in list:", typeof onDeleteUser);
+  return authorizedUsers.map((user: string) => {
+    const key = authorizedUsers.indexOf(user);
+    return (
+      <div key={key} className="flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center gap-[15px]">
           <AccountCircle />
           <span className={GENERIC_PARAGRAPH}>{user}</span>
         </div>
-      );
-    });
-  }
+        <div key={key} className="flex flex-row items-center gap-[15px]">
+          <span className="text-[18px] text-dustyGray font-IBM">Remove</span>
+          <i className="mt-1" onClick={() => onDeleteUser(user)}>
+            <RevokeX />
+          </i>
+        </div>
+      </div>
+    );
+  });
 };
 
 export default function ShareModal({
   docId,
   title,
   authorizedUsers,
+  onDeleteUser,
   open,
   setOpen,
 }: ShareModalProps) {
@@ -43,6 +56,7 @@ export default function ShareModal({
       recipientName: "",
     },
   });
+  console.log("in modal:", typeof onDeleteUser);
   const { isMobile } = useBreakpoints();
   const [shareAttempted, setShareAttempted] = useState(false);
   const [sent, setSent] = useState(false);
@@ -158,10 +172,16 @@ export default function ShareModal({
                 autoComplete="off"
               />
             </div>
-            <div className="flex flex-col items-left gap-[10px]">
-              <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
-              <AuthorizedUsersList authorizedUsers={authorizedUsers} />
-            </div>
+            {authorizedUsers && authorizedUsers.length > 0 && (
+              <div className="flex flex-col items-left gap-[10px]">
+                <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
+                <AuthorizedUsersList
+                  authorizedUsers={authorizedUsers}
+                  onDeleteUser={onDeleteUser}
+                />
+              </div>
+            )}
+
             <div className="flex flex-col md:flex-row gap-[16px] md:justify-between">
               <button className={SHARE_BUTTON_GREEN} type="submit">
                 Share

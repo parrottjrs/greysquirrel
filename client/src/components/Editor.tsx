@@ -45,6 +45,22 @@ export const Editor = () => {
   const yDoc = new Y.Doc();
   const yText = yDoc.getText(text.toString());
 
+  const revokeSharedAccess = async (userName: string) => {
+    await fetch("api/shared-docs", {
+      method: "DELETE",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ docId: docId, authorizedUserName: userName }),
+    });
+  };
+
+  const handleRevokeSharedAccess = (userName: string) => {
+    revokeSharedAccess(userName);
+
+    setAuthorizedUsers((prevUsers: string[]) =>
+      prevUsers.filter((authorizedUser) => authorizedUser !== userName)
+    );
+  };
+
   useEffect(() => {
     currentUserIdRef.current = currentUserId;
   }, [currentUserId]);
@@ -204,6 +220,7 @@ export const Editor = () => {
             docId={docId}
             title={title}
             authorizedUsers={authorizedUsers}
+            onDeleteUser={handleRevokeSharedAccess}
             open={showShareModal}
             setOpen={setShowShareModal}
           />

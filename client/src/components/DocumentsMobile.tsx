@@ -14,6 +14,7 @@ import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import MobileNavbar from "./MobileNavbar";
 import DocumentsGridMobile from "./DocsGridMobile";
+import DocsGrid from "./DocsGrid";
 
 export default function DocumentsMobile() {
   const {
@@ -60,10 +61,7 @@ export default function DocumentsMobile() {
         <div className="flex flex-col gap-[17px]">
           <span className={GENERIC_PARAGRAPH}>Files</span>
           {showOwnedDocuments ? (
-            <DocumentsGridMobile
-              documents={documents}
-              setDocuments={setDocuments}
-            />
+            <DocsGrid documents={documents} setDocuments={setDocuments} />
           ) : (
             <SharedDocumentsGrid
               sharedDocuments={sharedDocuments}

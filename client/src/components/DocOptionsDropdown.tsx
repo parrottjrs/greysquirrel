@@ -18,10 +18,13 @@ export default function DocOptionsDropdown({
   handleDocs,
   shared,
   authorizedUsers,
+  onDeleteUser,
 }: DocumentOptionsProps) {
+  console.log("in dropdown:", typeof onDeleteUser);
   const { isMobile } = useBreakpoints();
   const [show, setShow] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+
   const fetchDelete = async (id: any) => {
     try {
       await fetch("api/documents", {
@@ -117,6 +120,7 @@ export default function DocOptionsDropdown({
           docId={docId}
           title={title}
           authorizedUsers={authorizedUsers}
+          onDeleteUser={onDeleteUser}
           open={showShareModal}
           setOpen={setShowShareModal}
         />

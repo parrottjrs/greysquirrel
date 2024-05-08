@@ -8,7 +8,7 @@ import {
   LARGE_PARENT_CONTAINER,
   SIGNIN_BUTTON,
 } from "../styles/NavbarStyles";
-import { GENERIC_HEADER, STYLIZED_ANCHOR_GREEN } from "../styles/GeneralStyles";
+import { GENERIC_HEADER } from "../styles/GeneralStyles";
 
 interface ChildProps {
   isLoggedIn?: boolean;

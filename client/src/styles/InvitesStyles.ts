@@ -31,7 +31,7 @@ export const SHARE_MODAL_CONTAINER =
   "md:z-20 lg:mx-auto fixed top-[50%] left-[50%] lg:left-[0%] -translate-x-[50%] lg:-translate-x-[0%] -translate-y-[50%]  border-none flex flex-col justify-center items-center w-[358px] md:w-[466px] h-[428px] md:h-[367px] gap-[10px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_ATTEMPTED_CONTAINER =
-  "md:z-20 lg:mx-auto fixed top-[50%] left-[50%]  lg:left-[0%] -translate-x-[50%] lg:-translate-x-[0%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] h-[228px] md:w-[466px] gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
+  "md:z-20 lg:mx-auto fixed top-[50%] left-[50%]  lg:left-[0%] -translate-x-[50%] lg:-translate-x-[0%] -translate-y-[50%] box-border border-none flex flex-col w-[358px] md:w-[466px] h-[228px] lg:h-[256px] gap-[10px] px-[31px] py-[33px] bg-white shadow-[0_4px_24.6px_rgba(196,196,196,1)] rounded-[14px]";
 
 export const SHARE_HEADER = "m-0 text-nero text-[24px] font-IBM font-normal";
 

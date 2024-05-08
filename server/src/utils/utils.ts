@@ -649,6 +649,7 @@ export const getAuthorizedUsers = async (
     authorizedUsers: authorizedUserList,
   };
 };
+
 const deleteSharedDoc = async (pool: any, docId: number, ownerId: number) => {
   const deleteSharedQuery = `
   DELETE FROM shared_docs

@@ -1,4 +1,3 @@
-import { fetchAuthorizedUsers } from "./functions";
 export interface UserDocument {
   doc_id?: number;
   title?: string;
@@ -33,6 +32,7 @@ export interface DocumentOptionsProps {
     | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
   shared?: boolean;
   authorizedUsers?: string[];
+  onDeleteUser: (userName: string) => void;
 }
 
 export interface QuillProps {
@@ -89,6 +89,7 @@ export interface ShareModalProps {
   title?: string;
   type?: string;
   authorizedUsers?: string[];
+  onDeleteUser: (userName: string) => void;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }

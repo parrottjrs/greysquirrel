@@ -15,9 +15,10 @@ import {
 import DocumentsGrid from "./DocsGridMobile";
 import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import Navbar from "./Navbar";
-import DocumentsGridDesktop from "./DocsGridDesktop";
-import DocsGridDesktop from "./DocsGridDesktop";
+import DocumentsGridDesktop from "./DocsGrid";
+import DocsGridDesktop from "./DocsGrid";
 import SharedDocsGridDesktop from "./SharedDocsGridDesktop";
+import DocsGrid from "./DocsGrid";
 
 export default function DocumentsDesktop() {
   const {
@@ -65,10 +66,7 @@ export default function DocumentsDesktop() {
           <div className="flex flex-col gap-[17px]">
             <span className={GENERIC_PARAGRAPH}>Files</span>{" "}
             {showOwnedDocuments ? (
-              <DocsGridDesktop
-                documents={documents}
-                setDocuments={setDocuments}
-              />
+              <DocsGrid documents={documents} setDocuments={setDocuments} />
             ) : (
               <SharedDocsGridDesktop
                 sharedDocuments={sharedDocuments}
