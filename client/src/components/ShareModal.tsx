@@ -12,18 +12,23 @@ import {
   SHARE_MODAL_CONTAINER,
 } from "../styles/InvitesStyles";
 import {
+  BOLD_GRAY_TEXT,
   BOLD_TEXT_BLACK,
   GENERIC_PARAGRAPH,
   INPUT_FIELD_LABEL,
+  SUCCESS_CONTAINER,
+  SUCCESS_CONTAINER_SMALL,
 } from "../styles/GeneralStyles";
 import RevokeX from "./RevokeX";
+import { useVerificationCheck } from "../hooks/useVerificationCheck";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
+import CheckMark from "./CheckMark";
 
 interface ListProps {
   authorizedUsers: string[];
   onDeleteUser: (userName: string) => void;
 }
 const AuthorizedUsersList = ({ authorizedUsers, onDeleteUser }: ListProps) => {
-  console.log("in list:", typeof onDeleteUser);
   return authorizedUsers.map((user: string) => {
     const key = authorizedUsers.indexOf(user);
     return (
@@ -51,19 +56,20 @@ export default function ShareModal({
   open,
   setOpen,
 }: ShareModalProps) {
+  const { sendNewEmailToken, sent } = useEmailTokenManagement();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       recipientName: "",
     },
   });
-  console.log("in modal:", typeof onDeleteUser);
   const { isMobile } = useBreakpoints();
   const [shareAttempted, setShareAttempted] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [inviteSent, setInviteSent] = useState(false);
   const [doesNotExist, setDoesNotExist] = useState(false);
   const [alreadyShared, setAlreadyShared] = useState(false);
   const [inviteFailed, setInviteFailed] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
+  const { verified } = useVerificationCheck();
 
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
     try {
@@ -76,7 +82,7 @@ export default function ShareModal({
       setShareAttempted(true);
       switch (message) {
         case "Invite sent":
-          return setSent(true);
+          return setInviteSent(true);
         case "Document has already been shared with user":
         case "A similar invite exists":
         case "User already has access":
@@ -97,7 +103,7 @@ export default function ShareModal({
   const resetInviteStates = () => {
     setOpen(false);
     setShareAttempted(false);
-    setSent(false);
+    setInviteSent(false);
     setDoesNotExist(false);
     setAlreadyShared(false);
     setInviteFailed(false);
@@ -111,7 +117,7 @@ export default function ShareModal({
   };
 
   const inviteResponseText = () => {
-    if (sent) {
+    if (inviteSent) {
       return "Invite successful!";
     }
     if (alreadyShared) {
@@ -153,7 +159,7 @@ export default function ShareModal({
           Share "
           {title ? clipTitleForInvite(title, isMobile) : "Untitled Document"}"
         </h1>
-        {!shareAttempted ? (
+        {!shareAttempted && verified ? (
           <form
             className="flex flex-col gap-[29px]"
             onSubmit={handleSubmit(handleInvite)}
@@ -172,7 +178,7 @@ export default function ShareModal({
                 autoComplete="off"
               />
             </div>
-            {authorizedUsers && authorizedUsers.length > 0 && (
+            {authorizedUsers && authorizedUsers.length > 0 && onDeleteUser && (
               <div className="flex flex-col items-left gap-[10px]">
                 <span className={BOLD_TEXT_BLACK}>Accounts with access</span>
                 <AuthorizedUsersList
@@ -196,15 +202,40 @@ export default function ShareModal({
           </form>
         ) : (
           <>
-            <span className={GENERIC_PARAGRAPH}>{inviteResponseText()}</span>
-            <button
-              className={SHARE_BUTTON_GREEN}
-              onClick={() => {
-                resetInviteStates();
-              }}
-            >
-              OK
-            </button>
+            <span className={GENERIC_PARAGRAPH}>
+              {!verified && "You must verify your account to use this feature"}
+              {inviteResponseText()}
+            </span>
+            <div className="flex flex-col md:flex-row gap-[16px] md:justify-between">
+              {!verified && (
+                <button
+                  className={SHARE_BUTTON_GREEN}
+                  onClick={() => {
+                    sendNewEmailToken();
+                  }}
+                >
+                  Send email
+                </button>
+              )}
+              <button
+                className={SHARE_BUTTON_GREEN}
+                onClick={() => {
+                  resetInviteStates();
+                }}
+              >
+                {!verified ? "Cancel" : "OK"}
+              </button>
+            </div>
+            {sent && (
+              <div
+                className={
+                  isMobile ? SUCCESS_CONTAINER_SMALL : SUCCESS_CONTAINER
+                }
+              >
+                <CheckMark />
+                <span className={BOLD_GRAY_TEXT}>Email sent</span>
+              </div>
+            )}
           </>
         )}
       </div>

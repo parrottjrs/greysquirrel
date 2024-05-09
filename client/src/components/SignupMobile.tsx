@@ -29,7 +29,7 @@ export default function SignupMobile() {
     handleShowPassword,
     passwordIsWeak,
     passwordsMatch,
-    agree,
+    userAgrees,
   } = useSignUpManagement();
 
   return (
@@ -66,7 +66,6 @@ export default function SignupMobile() {
               placeholder="Enter your last name"
               {...register("lastName")}
               autoComplete="off"
-              required={true}
             />
           </div>
           <div className={INPUT_FIELD_GAP}>
@@ -130,6 +129,19 @@ export default function SignupMobile() {
               </div>
             )}
           </div>
+          <label
+            className={`${INPUT_FIELD_LABEL} hidden`}
+            htmlFor="additional-info"
+          >
+            If you are human leave this field blank
+            <input
+              className={`${FORM_INPUT_FIELD} hidden`}
+              type="text"
+              id={"additional-info"}
+              {...register("additionalInfo")}
+              autoComplete="off"
+            />
+          </label>
 
           <div className={INPUT_FIELD_GAP}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"password"}>
@@ -201,7 +213,7 @@ export default function SignupMobile() {
                 I agree with Greysquirrel's privacy policy
               </label>
             </div>
-            {!agree && (
+            {!userAgrees && (
               <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />

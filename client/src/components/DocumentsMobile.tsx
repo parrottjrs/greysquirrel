@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  FLEX_COL_CENTER,
   FLEX_COL_CENTER_MOBILE,
   GENERIC_PARAGRAPH,
 } from "../styles/GeneralStyles";
@@ -9,12 +8,10 @@ import {
   DOCUMENTS_SWITCH_ON,
   NEW_DOC_MOBILE,
 } from "../styles/DocPageStyles";
-import DocumentsGrid from "./DocsGridMobile";
-import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import MobileNavbar from "./MobileNavbar";
-import DocumentsGridMobile from "./DocsGridMobile";
 import DocsGrid from "./DocsGrid";
+import SharedDocsGridMobile from "./SharedDocsGridMobile";
 
 export default function DocumentsMobile() {
   const {
@@ -63,7 +60,7 @@ export default function DocumentsMobile() {
           {showOwnedDocuments ? (
             <DocsGrid documents={documents} setDocuments={setDocuments} />
           ) : (
-            <SharedDocumentsGrid
+            <SharedDocsGridMobile
               sharedDocuments={sharedDocuments}
               setSharedDocuments={setSharedDocuments}
             />

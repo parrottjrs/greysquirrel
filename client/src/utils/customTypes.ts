@@ -18,7 +18,7 @@ export interface DocumentsGridProps {
   setDocuments: React.Dispatch<React.SetStateAction<UserDocument[]>>;
 }
 
-export interface SharedDocumentsGridProps {
+export interface SharedDocsGridProps {
   sharedDocuments: SharedDocument[];
   setSharedDocuments: React.Dispatch<React.SetStateAction<SharedDocument[]>>;
 }
@@ -32,7 +32,7 @@ export interface DocumentOptionsProps {
     | React.Dispatch<React.SetStateAction<SharedDocument[]>>;
   shared?: boolean;
   authorizedUsers?: string[];
-  onDeleteUser: (userName: string) => void;
+  onDeleteUser?: (userName: string) => void;
 }
 
 export interface QuillProps {
@@ -67,6 +67,7 @@ export interface SignupFormData {
   emailCheck: string;
   firstName: string;
   lastName: string;
+  additionalInfo: string | null;
   password: string;
   passCheck: string;
   agree: boolean;
@@ -89,7 +90,7 @@ export interface ShareModalProps {
   title?: string;
   type?: string;
   authorizedUsers?: string[];
-  onDeleteUser: (userName: string) => void;
+  onDeleteUser?: (userName: string) => void;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }

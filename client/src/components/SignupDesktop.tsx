@@ -30,7 +30,7 @@ export default function SignupDesktop() {
     handleShowPassword,
     passwordIsWeak,
     passwordsMatch,
-    agree,
+    userAgrees,
   } = useSignUpManagement();
 
   return (
@@ -70,7 +70,7 @@ export default function SignupDesktop() {
               id={"lastName"}
               {...register("lastName")}
               autoComplete="off"
-              required={true}
+              required={false}
               placeholder="Enter your last name"
             />
           </div>
@@ -96,7 +96,18 @@ export default function SignupDesktop() {
               </div>
             )}
           </div>
-
+          <label
+            className={`${INPUT_FIELD_LABEL} hidden`}
+            htmlFor="additional-info"
+          >
+            If you are human leave this field blank
+            <input
+              className={`${FORM_INPUT_FIELD} hidden`}
+              type="text"
+              id={"additional-info"}
+              {...register("additionalInfo")}
+            />
+          </label>
           <div className={FORM_INNER_CONTAINER}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"email"}>
               Email
@@ -205,7 +216,7 @@ export default function SignupDesktop() {
                 I agree with Greysquirrel's privacy policy
               </label>
             </div>
-            {!agree && (
+            {!userAgrees && (
               <div className={ALERT_DIV}>
                 <span className="mr-2">
                   <ExclamationMark />

@@ -19,6 +19,7 @@ export const useQuickAuth = () => {
           navigate("/signIn");
         }
       } catch (err) {
+        navigate("/signIn");
         console.error({
           message: "Error occured during authorization process",
         });

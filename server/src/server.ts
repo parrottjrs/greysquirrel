@@ -35,6 +35,7 @@ import {
   strongPassword,
   updateUserInfo,
   usernameExists,
+  verifyById,
   verifyEmailToken,
   verifyForgotPassword,
 } from "./utils/utils";
@@ -71,6 +72,12 @@ app.post("/api/signUp", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
     const username = req.body.data.username.toLowerCase();
+    if (!username || !email || !firstName || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required data",
+      });
+    }
     const usernames = await getUsernames(pool);
     if (usernames.includes(username)) {
       return res.status(400).json({
@@ -266,6 +273,28 @@ app.post(
       return res
         .status(500)
         .json({ success: false, message: "Cannot resend email verification" });
+    }
+  }
+);
+
+app.get(
+  "/api/check-verification-status",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const isVerified = await verifyById(pool, req.userId);
+      const statusCode = isVerified ? 200 : 403;
+      return res.status(statusCode).json({ success: isVerified });
+    } catch (err) {
+      console.error("Error fetching verification status:", err);
+      return res
+        .status(500)
+        .json({ message: "Error fetching verification status" });
     }
   }
 );
@@ -543,6 +572,10 @@ app.delete(
 app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   try {
     if (req.userId === undefined) {
+      return res.status(403).json({ message: "Authorization error" });
+    }
+    const isVerified = await verifyById(pool, req.userId);
+    if (!isVerified) {
       return res.status(403).json({ message: "Authorization error" });
     }
     const { docId, recipient } = req.body;

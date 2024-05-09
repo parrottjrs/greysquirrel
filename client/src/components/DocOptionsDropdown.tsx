@@ -20,7 +20,6 @@ export default function DocOptionsDropdown({
   authorizedUsers,
   onDeleteUser,
 }: DocumentOptionsProps) {
-  console.log("in dropdown:", typeof onDeleteUser);
   const { isMobile } = useBreakpoints();
   const [show, setShow] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);

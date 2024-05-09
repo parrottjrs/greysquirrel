@@ -1,6 +1,6 @@
 import React from "react";
 import sanitize from "sanitize-html";
-import { SharedDocument, SharedDocumentsGridProps } from "../utils/customTypes";
+import { SharedDocument, SharedDocsGridProps } from "../utils/customTypes";
 import {
   DETAILS_CONTAINER,
   DOCUMENT_GRID_ITEM,
@@ -17,7 +17,7 @@ import DocOptionsDropdown from "./DocOptionsDropdown";
 export default function SharedDocsGridDesktop({
   sharedDocuments,
   setSharedDocuments,
-}: SharedDocumentsGridProps) {
+}: SharedDocsGridProps) {
   const { isMobile } = useBreakpoints();
 
   return sharedDocuments.map((document: SharedDocument) => {

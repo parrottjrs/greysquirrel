@@ -88,7 +88,7 @@ export default function SigninMobile() {
                 </div>
               )}
             </div>
-            <div className="w-full mt-16 flex flex-row items-center justify-left">
+            <div className="w-full mt-16 flex flex-row items-center justify-left mb-[5px]">
               <input
                 id="remember"
                 type="checkbox"

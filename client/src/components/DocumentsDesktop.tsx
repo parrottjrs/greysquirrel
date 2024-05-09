@@ -1,10 +1,8 @@
 import React from "react";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import {
-  FLEX_CENTER_LARGE,
   GENERIC_HEADER,
   GENERIC_PARAGRAPH,
-  PARENT_CONTAINER,
   SMALL_GREEN_BUTTON,
 } from "../styles/GeneralStyles";
 import {
@@ -12,11 +10,7 @@ import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
 } from "../styles/DocPageStyles";
-import DocumentsGrid from "./DocsGridMobile";
-import SharedDocumentsGrid from "./SharedDocsGridMobile";
 import Navbar from "./Navbar";
-import DocumentsGridDesktop from "./DocsGrid";
-import DocsGridDesktop from "./DocsGrid";
 import SharedDocsGridDesktop from "./SharedDocsGridDesktop";
 import DocsGrid from "./DocsGrid";
 

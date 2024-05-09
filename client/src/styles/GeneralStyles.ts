@@ -20,7 +20,7 @@ export const TRANSPARENT_BUTTON_BOLD =
   "p-0 bg-transparent border-none text-nero text-[18px] w-[68px] h-[27px] font-IBM font-medium no-underline";
 
 export const GREEN_BUTTON_STRETCH =
-  "w-[358px] md:w-[403px] h-[45px] md:mt-0 mb-8 md:mb-0 text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
+  "w-[358px] md:w-[403px] h-[45px] mt-[36px] md:mt-0 mb-[36px] md:mb-0  text-nero text-[18px] font-IBM font-medium bg-aeroBlue rounded-[10px] border-0";
 
 export const SIGNUP_BUTTON =
   "mt-12 mb-12 px-20 md:px-44 py-1 text-nero text-sm font-IBM font-medium bg-aeroBlue gap-2.5 rounded-xl border-0";
@@ -81,6 +81,8 @@ export const ALERT_DIV =
 
 export const SUCCESS_CONTAINER =
   "flex flex-row items-center justify-center gap-[15px] box-border w-[358px] md:w-[404px] h-[45px] px-[19px] py-[9px] border-solid border-[1px] border-aeroBlue rounded-[14px]";
+export const SUCCESS_CONTAINER_SMALL =
+  "flex flex-row items-center justify-center gap-[15px] box-border w-[300px] md:w-[404px] h-[45px] px-[19px] py-[9px] border-solid border-[1px] border-aeroBlue rounded-[14px]";
 
 export const FORM = "flex flex-col items-left gap-[44px] md:gap-[45px]";
 

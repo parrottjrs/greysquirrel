@@ -1,7 +1,7 @@
 import React from "react";
 import sanitize from "sanitize-html";
 import DocumentOptionsDropdown from "./DocOptionsDropdown";
-import { SharedDocument, SharedDocumentsGridProps } from "../utils/customTypes";
+import { SharedDocument, SharedDocsGridProps } from "../utils/customTypes";
 import {
   DOCUMENT_GRID_ITEM,
   DOC_HEADER,
@@ -18,7 +18,7 @@ import { useBreakpoints } from "../hooks/useBreakpoints";
 export default function SharedDocsGridMobile({
   sharedDocuments,
   setSharedDocuments,
-}: SharedDocumentsGridProps) {
+}: SharedDocsGridProps) {
   const { isMobile } = useBreakpoints();
 
   return sharedDocuments.map((document: SharedDocument) => {
