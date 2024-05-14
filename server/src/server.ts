@@ -13,6 +13,7 @@ import {
   authenticateUser,
   AuthRequest,
   changePassword,
+  checkPassword,
   countInvites,
   createDocument,
   createUser,
@@ -206,6 +207,35 @@ app.get(
     } catch (err) {
       console.error("Error retreiving user info:", err);
       return res.status(500).json({ message: "Cannot retreive user info" });
+    }
+  }
+);
+
+app.post(
+  "/api/verify-acct-mgmt",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const password = req.body.password;
+      const { success, message } = await checkPassword(
+        req.userId,
+        password,
+        pool
+      );
+      const statusCode = success ? 200 : 403;
+      return res
+        .status(statusCode)
+        .json({ success: success, message: message });
+    } catch (err) {
+      console.error("error verifying user:", err);
+      return res
+        .status(500)
+        .json({ message: "Cannot verify user. Try again later." });
     }
   }
 );

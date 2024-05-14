@@ -65,6 +65,29 @@ const passwordSaltFromUserId = async (pool: any, userId: number) => {
     : { success: false };
 };
 
+export const checkPassword = async (
+  userId: number,
+  password: string,
+  pool: any
+) => {
+  const { success, currentPassword, currentSalt } =
+    await passwordSaltFromUserId(pool, userId);
+  if (!success) {
+    return { success: false, message: "Couldn't retreive user info" };
+  }
+  const attemptedPass = pbkdf2Sync(
+    password,
+    currentSalt,
+    10000,
+    64,
+    "sha512"
+  ).toString("base64");
+  if (attemptedPass !== currentPassword) {
+    return { success: false, message: "Password is incorrect" };
+  }
+  return { success: true, message: "Authentication successful" };
+};
+
 export const getId = async (pool: any, username: string) => {
   const query = `
   SELECT user_id FROM users 
