@@ -10,6 +10,7 @@ import Notifications from "./routes/Notifications";
 import ForgotPassword from "./routes/ForgotPassword";
 import VerifyAccount from "./routes/VerifyAccount";
 import Edit from "./routes/Edit";
+import Privacy from "./routes/Privacy";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           path="/forgot-password/:verificationToken?"
           element={<ForgotPassword />}
         />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </HashRouter>

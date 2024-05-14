@@ -13,6 +13,7 @@ import {
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
   SMALL_DIVIDER,
+  SM_VIOLET_TEXT,
   WELCOME_HEADER,
 } from "../styles/GeneralStyles";
 import ExclamationMark from "./ExclamationMark";
@@ -106,6 +107,7 @@ export default function SignupDesktop() {
               type="text"
               id={"additional-info"}
               {...register("additionalInfo")}
+              autoComplete="off"
             />
           </label>
           <div className={FORM_INNER_CONTAINER}>
@@ -213,7 +215,10 @@ export default function SignupDesktop() {
                 className="text-nero text-[12px] font-IBM font-medium"
                 htmlFor="terms-of-use"
               >
-                I agree with Greysquirrel's privacy policy
+                I agree with Greysquirrel's{" "}
+                <a className={SM_VIOLET_TEXT} href="#/privacy">
+                  privacy policy
+                </a>
               </label>
             </div>
             {!userAgrees && (
