@@ -1,17 +1,12 @@
-import React from "react";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import Navbar from "./Navbar";
 import {
-  FLEX_CENTER_LARGE,
   FLEX_COL_LEFT,
   GENERIC_HEADER,
   GENERIC_PARAGRAPH,
-  GREEN_BUTTON_STRETCH,
-  MD_VIOLET_TEXT,
   SMALLER_HEADER,
-  STYLIZED_ANCHOR_GREEN,
   STYLIZED_ANCHOR_GREEN_MOBILE,
 } from "../styles/GeneralStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import Navbar from "./Navbar";
 
 export default function PrivacyContents() {
   const { isMobile } = useBreakpoints();

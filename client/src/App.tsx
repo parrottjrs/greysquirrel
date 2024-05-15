@@ -1,4 +1,3 @@
-import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Signup from "./routes/Signup";
 import Documents from "./routes/Documents";

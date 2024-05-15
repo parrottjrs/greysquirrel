@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 import { QuillProps } from "../utils/customTypes";
 import CustomQuillToolbar from "./CustomQuillToolbar";
-
 import { ArrowBack, Link } from "@mui/icons-material";
 import { CLICKABLE_TITLE } from "../styles/CustomQuillEditorStyles";
 import { SHARE_BUTTON_TEXT } from "../styles/InvitesStyles";

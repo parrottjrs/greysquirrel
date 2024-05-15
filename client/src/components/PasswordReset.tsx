@@ -1,21 +1,3 @@
-import {
-  ALERT_DIV,
-  ALERT_TEXT,
-  BOLD_GRAY_TEXT,
-  FLEX_CENTER_LARGE,
-  FLEX_COL_CENTER,
-  FLEX_COL_CENTER_MOBILE,
-  FLEX_COL_LEFT,
-  FORM_INNER_CONTAINER,
-  FORM_INPUT_FIELD,
-  GENERIC_HEADER,
-  GREEN_BUTTON_STRETCH,
-  INPUT_FIELD_GAP,
-  INPUT_FIELD_LABEL,
-  MD_VIOLET_TEXT,
-  SMALLER_HEADER,
-  SUCCESS_CONTAINER,
-} from "../styles/GeneralStyles";
 import ShowPassword from "./ShowPasword";
 import ExclamationMark from "./ExclamationMark";
 import CheckMark from "./CheckMark";
@@ -23,6 +5,22 @@ import { RESET_FAILURE_CONTAINER } from "../styles/ForgotPasswordStyles";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import { usePasswordChangeManagement } from "../hooks/usePasswordChangeManagement";
 import Navbar from "./Navbar";
+import {
+  ALERT_DIV,
+  ALERT_TEXT,
+  BOLD_GRAY_TEXT,
+  FLEX_CENTER_LARGE,
+  FLEX_COL_CENTER,
+  FLEX_COL_LEFT,
+  FORM_INNER_CONTAINER,
+  FORM_INPUT_FIELD,
+  GENERIC_HEADER,
+  GREEN_BUTTON_STRETCH,
+  INPUT_FIELD_LABEL,
+  MD_VIOLET_TEXT,
+  SMALLER_HEADER,
+  SUCCESS_CONTAINER,
+} from "../styles/GeneralStyles";
 
 export const PasswordReset = () => {
   const { isMobile } = useBreakpoints();

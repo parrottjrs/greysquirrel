@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { EmailFormData } from "../utils/customTypes";
 import { useForm } from "react-hook-form";
+import CheckMark from "./CheckMark";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import Navbar from "./Navbar";
 import {
   BOLD_GRAY_TEXT,
   FLEX_CENTER_LARGE,
@@ -12,9 +15,6 @@ import {
   SMALLER_HEADER,
   SUCCESS_CONTAINER,
 } from "../styles/GeneralStyles";
-import CheckMark from "./CheckMark";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import Navbar from "./Navbar";
 
 export const ForgotPasswordRequest = () => {
   const { isMobile } = useBreakpoints();

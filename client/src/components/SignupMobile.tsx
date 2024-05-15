@@ -1,4 +1,7 @@
-import React from "react";
+import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
+import ExclamationMark from "./ExclamationMark";
+import ShowPassword from "./ShowPasword";
+import { useSignUpManagement } from "../hooks/useSignUpManagement";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -13,10 +16,6 @@ import {
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
 } from "../styles/GeneralStyles";
-import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
-import ExclamationMark from "./ExclamationMark";
-import ShowPassword from "./ShowPasword";
-import { useSignUpManagement } from "../hooks/useSignUpManagement";
 
 export default function SignupMobile() {
   const {

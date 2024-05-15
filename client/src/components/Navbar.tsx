@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BellDot from "./BellDot";
-import Bell from "./Bell";
 import AccountModal from "./AccountModal";
 import { removeHasSignedUp } from "../utils/functions";
+import { GENERIC_HEADER } from "../styles/GeneralStyles";
+import { Notifications } from "@mui/icons-material";
+import { NavbarProps } from "../utils/customTypes";
 import {
   BASIC_LINK,
   LARGE_PARENT_CONTAINER,
   SIGNIN_BUTTON,
 } from "../styles/NavbarStyles";
-import { GENERIC_HEADER } from "../styles/GeneralStyles";
 
-interface ChildProps {
-  isLoggedIn?: boolean;
-  page?: string;
-}
-
-export default function Navbar({ isLoggedIn, page }: ChildProps) {
+export default function Navbar({ isLoggedIn, page }: NavbarProps) {
   const invitesRefreshDelay = 900000;
   const [pendingInvites, setPendingInvites] = useState(false);
   const countInvites = async () => {
@@ -68,7 +64,13 @@ export default function Navbar({ isLoggedIn, page }: ChildProps) {
             Documents
           </a>
           <a aria-label="notifications" href="#/notifications">
-            {pendingInvites ? <BellDot /> : <Bell />}
+            {pendingInvites ? (
+              <BellDot />
+            ) : (
+              <div>
+                <Notifications sx={{ fontSize: 33, color: "black" }} />
+              </div>
+            )}
           </a>
           <span>
             <AccountModal />

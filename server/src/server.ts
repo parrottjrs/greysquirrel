@@ -1,7 +1,5 @@
 import express, { Response } from "express";
-
 import http from "http";
-// import WebSocket, { WebSocketServer } from "ws";\
 import { Server } from "socket.io";
 import mysql from "mysql2/promise";
 import cookieParser from "cookie-parser";
@@ -45,7 +43,6 @@ import {
   sendEmailVerification,
   sendForgotPasswordVerification,
 } from "./utils/mail";
-import { time } from "console";
 
 const app = express();
 const server = http.createServer(app);

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { UserDocument } from "../utils/customTypes";
+import { useState } from "react";
 import { clipText, formatDate } from "../utils/functions";
 import sanitize from "sanitize-html";
 import { useBreakpoints } from "../hooks/useBreakpoints";
+import CheckMark from "./CheckMark";
+import Page from "./Page";
+import DocOptionsDropdown from "./DocOptionsDropdown";
 import {
   DETAILS_CONTAINER,
   DOCUMENT_GRID_ITEM,
@@ -12,9 +14,6 @@ import {
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
-import CheckMark from "./CheckMark";
-import Page from "./Page";
-import DocOptionsDropdown from "./DocOptionsDropdown";
 
 export default function DocumentItem({ doc, setDocs }: any) {
   const { isMobile } = useBreakpoints();

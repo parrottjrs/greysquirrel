@@ -1,5 +1,4 @@
 import * as nodeMailer from "nodemailer";
-import { resolve } from "path";
 
 require("dotenv").config();
 const EMAIL = process.env.EMAIL;

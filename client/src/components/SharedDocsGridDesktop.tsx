@@ -1,18 +1,16 @@
-import React from "react";
+import Page from "./Page";
+import { clipText } from "../utils/functions";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import DocOptionsDropdown from "./DocOptionsDropdown";
 import sanitize from "sanitize-html";
 import { SharedDocument, SharedDocsGridProps } from "../utils/customTypes";
 import {
-  DETAILS_CONTAINER,
   DOCUMENT_GRID_ITEM,
   DOC_HEADER,
   DOC_PREVIEW,
   FULLSIZE_INVIS_ANCHOR,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
-import Page from "./Page";
-import { clipText } from "../utils/functions";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import DocOptionsDropdown from "./DocOptionsDropdown";
 
 export default function SharedDocsGridDesktop({
   sharedDocuments,

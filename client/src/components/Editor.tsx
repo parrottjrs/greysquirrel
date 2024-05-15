@@ -1,13 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  applyDeltaSafely,
-  authenticate,
-  fetchAuthorizedUsers,
-  refresh,
-} from "../utils/functions";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import MobileNavbar from "../components/MobileNavbar";
+import ShareModal from "../components/ShareModal";
 import Navbar from "../components/Navbar";
 import { Socket, io } from "socket.io-client";
 import * as Y from "yjs";
@@ -15,13 +11,16 @@ import ReactQuill from "react-quill";
 import { QuillBinding } from "y-quill";
 import CustomQuill from "./CustomQuill";
 import {
+  applyDeltaSafely,
+  authenticate,
+  fetchAuthorizedUsers,
+  refresh,
+} from "../utils/functions";
+import {
   FLEX_CENTER_LARGE,
   FLEX_COL_CENTER_MOBILE,
   MOUSEOUT_DIV,
 } from "../styles/GeneralStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import MobileNavbar from "../components/MobileNavbar";
-import ShareModal from "../components/ShareModal";
 
 export const Editor = () => {
   const { isMobile } = useBreakpoints();

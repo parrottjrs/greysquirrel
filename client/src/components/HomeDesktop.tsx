@@ -1,11 +1,9 @@
-import React from "react";
 import squirrel from "../images/squirrel.png";
+import Navbar from "./Navbar";
 import {
-  GENERIC_HEADER,
   GENERIC_PARAGRAPH,
   STYLIZED_ANCHOR_GREEN,
 } from "../styles/GeneralStyles";
-import Navbar from "./Navbar";
 
 export default function HomeDesktop() {
   return (

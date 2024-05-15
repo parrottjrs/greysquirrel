@@ -114,3 +114,12 @@ export interface Invite {
   share_date: string;
   recipient_name?: string;
 }
+
+export interface NavbarProps {
+  isLoggedIn?: boolean;
+  page?: string;
+}
+
+export interface PassFormProps {
+  handleVerified: React.Dispatch<React.SetStateAction<boolean>>;
+}

@@ -4,6 +4,8 @@ import InvitesSent from "../components/InvitesSent";
 import InvitesRecieved from "../components/InvitesReceived";
 import { authenticate, refresh } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import MobileNavbar from "./MobileNavbar";
 import {
   FLEX_CENTER_LARGE,
   FLEX_COL_CENTER,
@@ -15,8 +17,6 @@ import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
 } from "../styles/DocPageStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import MobileNavbar from "./MobileNavbar";
 
 export const NotificationsBody = () => {
   const { isMobile } = useBreakpoints();

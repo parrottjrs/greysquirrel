@@ -1,4 +1,6 @@
-import React from "react";
+import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
+import ExclamationMark from "./ExclamationMark";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -12,9 +14,6 @@ import {
   MD_VIOLET_TEXT,
   SMALLER_HEADER,
 } from "../styles/GeneralStyles";
-import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
-import ExclamationMark from "./ExclamationMark";
-import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
 
 export default function VerifyAccountMobile() {
   const {

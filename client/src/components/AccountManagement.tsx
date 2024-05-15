@@ -1,9 +1,10 @@
 import Navbar from "../components/Navbar";
 import ShowPassword from "../components/ShowPasword";
 import ExclamationMark from "../components/ExclamationMark";
-import CheckMark from "../components/CheckMark";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import MobileNavbar from "./MobileNavbar";
+import { useAccountManagement } from "../hooks/useAccountManagement";
+import { Check } from "@mui/icons-material";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -18,7 +19,6 @@ import {
   FLEX_CENTER_LARGE,
   FORM,
 } from "../styles/GeneralStyles";
-import { useAccountManagement } from "../hooks/useAccountManagement";
 
 export default function AccountManagement() {
   const { isMobile } = useBreakpoints();
@@ -162,7 +162,7 @@ export default function AccountManagement() {
             </button>
             {updateSuccess && (
               <div className={SUCCESS_CONTAINER}>
-                <CheckMark />
+                <Check sx={{ color: "#797777", fontSize: 32 }} />
                 <span className={`${BOLD_GRAY_TEXT} ml-[15px]`}>
                   Your account has been updated
                 </span>

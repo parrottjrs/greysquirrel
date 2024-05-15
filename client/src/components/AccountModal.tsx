@@ -1,8 +1,8 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import React, { useState } from "react";
-import AccountCircle from "./AccountCircle";
+import { useState } from "react";
 import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
 import { useLogout } from "../hooks/useLogout";
+import { AccountCircleRounded } from "@mui/icons-material";
 
 export default function AccountModal() {
   const { handleLogout } = useLogout();
@@ -16,7 +16,7 @@ export default function AccountModal() {
         }}
       >
         <div>
-          <AccountCircle />
+          <AccountCircleRounded sx={{ fontSize: 30 }} />
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>

@@ -1,4 +1,6 @@
-import React from "react";
+import Navbar from "./Navbar";
+import SharedDocsGridDesktop from "./SharedDocsGridDesktop";
+import DocsGrid from "./DocsGrid";
 import { useDocumentManagement } from "../hooks/useDocumentManagement";
 import {
   GENERIC_HEADER,
@@ -10,9 +12,6 @@ import {
   DOCUMENTS_SWITCH_OFF,
   DOCUMENTS_SWITCH_ON,
 } from "../styles/DocPageStyles";
-import Navbar from "./Navbar";
-import SharedDocsGridDesktop from "./SharedDocsGridDesktop";
-import DocsGrid from "./DocsGrid";
 
 export default function DocumentsDesktop() {
   const {

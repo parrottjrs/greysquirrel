@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { clipText, formatDate } from "../utils/functions";
+import { BOLD_TEXT_BLACK } from "../styles/GeneralStyles";
+import { Invite } from "../utils/customTypes";
 import {
   GREEN_BUTTON,
   PENDING_INVITE,
   RED_BUTTON,
   SHARE_DATE_TEXT,
 } from "../styles/InvitesStyles";
-import { BOLD_TEXT_BLACK } from "../styles/GeneralStyles";
-import { Invite } from "../utils/customTypes";
 
 export default function InvitesRecieved() {
   const [invites, setInvites] = useState<Invite[]>([]);

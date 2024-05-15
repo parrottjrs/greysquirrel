@@ -1,4 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import Navbar from "./Navbar";
+import MobileNavbar from "./MobileNavbar";
+import { useForm } from "react-hook-form";
+import ExclamationMark from "./ExclamationMark";
+import ShowPassword from "./ShowPasword";
+import { PassFormProps } from "../utils/customTypes";
 import {
   ALERT_DIV,
   ALERT_TEXT,
@@ -12,18 +19,8 @@ import {
   GREEN_BUTTON_STRETCH,
   INPUT_FIELD_LABEL,
 } from "../styles/GeneralStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
-import Navbar from "./Navbar";
-import MobileNavbar from "./MobileNavbar";
-import { useForm } from "react-hook-form";
-import ExclamationMark from "./ExclamationMark";
-import ShowPassword from "./ShowPasword";
 
-interface Props {
-  handleVerified: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export default function PasswordForm({ handleVerified }: Props) {
+export default function PasswordForm({ handleVerified }: PassFormProps) {
   const [showPassword, handleShowPassword] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const { register, handleSubmit } = useForm({

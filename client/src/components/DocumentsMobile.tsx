@@ -1,4 +1,7 @@
-import React from "react";
+import { useDocumentManagement } from "../hooks/useDocumentManagement";
+import MobileNavbar from "./MobileNavbar";
+import DocsGrid from "./DocsGrid";
+import SharedDocsGridMobile from "./SharedDocsGridMobile";
 import {
   FLEX_COL_CENTER_MOBILE,
   GENERIC_PARAGRAPH,
@@ -8,10 +11,6 @@ import {
   DOCUMENTS_SWITCH_ON,
   NEW_DOC_MOBILE,
 } from "../styles/DocPageStyles";
-import { useDocumentManagement } from "../hooks/useDocumentManagement";
-import MobileNavbar from "./MobileNavbar";
-import DocsGrid from "./DocsGrid";
-import SharedDocsGridMobile from "./SharedDocsGridMobile";
 
 export default function DocumentsMobile() {
   const {

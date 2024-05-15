@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { authenticate, refresh } from "../utils/functions";
 import { AccountChangeData } from "../utils/customTypes";
-import ShowPassword from "../components/ShowPasword";
 
 export const useAccountManagement = () => {
   const refreshTokenDelay = 540000; //nine minutes;

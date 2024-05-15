@@ -1,4 +1,6 @@
-import React from "react";
+import ShowPassword from "./ShowPasword";
+import ExclamationMark from "./ExclamationMark";
+import Navbar from "./Navbar";
 import { useSigninManagement } from "../hooks/useSigninManagement";
 import {
   ALERT_DIV,
@@ -16,9 +18,6 @@ import {
   SM_VIOLET_TEXT,
   WELCOME_HEADER,
 } from "../styles/GeneralStyles";
-import ShowPassword from "./ShowPasword";
-import ExclamationMark from "./ExclamationMark";
-import Navbar from "./Navbar";
 
 export default function SigninDesktop() {
   const {

@@ -1,4 +1,3 @@
-import React from "react";
 import { Quill } from "react-quill";
 import {
   FormatBold,
@@ -8,6 +7,7 @@ import {
   FormatUnderlined,
   Link,
 } from "@mui/icons-material";
+
 export default function CustomQuillToolbar() {
   const icons = Quill.import("ui/icons");
   icons["bold"] = null;

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import MobileNavTrigger from "./MobileNavTrigger";
+import { useLogout } from "../hooks/useLogout";
 import {
   MOBILE_LINK_CONTAINER,
   MOBILE_NAVBAR_ANCHOR,
   NAVBAR_BUTTON_BLACK,
   NAVBAR_TITLE_TEXT,
 } from "../styles/NavbarStyles";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import MobileNavTrigger from "./MobileNavTrigger";
-import { useLogout } from "../hooks/useLogout";
 
 export default function MobileNavbar() {
   const { handleLogout } = useLogout();

@@ -1,4 +1,6 @@
-import React from "react";
+import Page from "./Page";
+import { clipText } from "../utils/functions";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 import sanitize from "sanitize-html";
 import DocumentOptionsDropdown from "./DocOptionsDropdown";
 import { SharedDocument, SharedDocsGridProps } from "../utils/customTypes";
@@ -11,9 +13,6 @@ import {
   ICONS_CONTAINER,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
-import Page from "./Page";
-import { clipText } from "../utils/functions";
-import { useBreakpoints } from "../hooks/useBreakpoints";
 
 export default function SharedDocsGridMobile({
   sharedDocuments,

@@ -1,15 +1,15 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import ShareModal from "./ShareModal";
+import { DOC_OPTIONS_FULL, DOC_OPTIONS_SMALL } from "../styles/DocPageStyles";
+import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
+import { useBreakpoints } from "../hooks/useBreakpoints";
 import {
   DocumentOptionsProps,
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
-import { DOC_OPTIONS_FULL, DOC_OPTIONS_SMALL } from "../styles/DocPageStyles";
-import { TRANSPARENT_BUTTON_NORMAL } from "../styles/GeneralStyles";
-import { useBreakpoints } from "../hooks/useBreakpoints";
 
 export default function DocOptionsDropdown({
   docId,

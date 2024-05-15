@@ -1,4 +1,3 @@
-import React from "react";
 import { Eye, EyeOffIcon } from "lucide-react";
 
 type Params = {

@@ -1,20 +1,15 @@
-import React from "react";
+import ExclamationMark from "./ExclamationMark";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
+import Navbar from "./Navbar";
 import {
   ALERT_DIV,
   ALERT_TEXT,
   FLEX_CENTER_LARGE,
-  FLEX_COL_CENTER,
   FORM_INNER_CONTAINER,
-  GENERIC_HEADER,
-  GENERIC_PARAGRAPH,
   GREEN_BUTTON_STRETCH,
   SMALLER_HEADER,
-  SMALL_GREEN_BUTTON,
   WELCOME_HEADER,
 } from "../styles/GeneralStyles";
-import ExclamationMark from "./ExclamationMark";
-import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
-import Navbar from "./Navbar";
 
 export default function VerifyAccountDesktop() {
   const {

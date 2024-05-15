@@ -1,9 +1,7 @@
-import React from "react";
 import { NAVBAR_TITLE_TEXT } from "../styles/NavbarStyles";
 import squirrel from "../images/squirrel.png";
 import {
   FLEX_COL_CENTER,
-  FLEX_COL_CENTER_MOBILE,
   GENERIC_PARAGRAPH,
   STYLIZED_ANCHOR_GREEN_MOBILE,
 } from "../styles/GeneralStyles";

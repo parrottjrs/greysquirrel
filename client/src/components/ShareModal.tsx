@@ -2,8 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { clipTitleForInvite } from "../utils/functions";
 import { useBreakpoints } from "../hooks/useBreakpoints";
-import AccountCircle from "./AccountCircle";
 import { ShareFormData, ShareModalProps } from "../utils/customTypes";
+import RevokeX from "./RevokeX";
+import { useVerificationCheck } from "../hooks/useVerificationCheck";
+import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
+import CheckMark from "./CheckMark";
+import { AccountCircleRounded } from "@mui/icons-material";
 import {
   SHARE_ATTEMPTED_CONTAINER,
   SHARE_BUTTON_GREEN,
@@ -19,10 +23,6 @@ import {
   SUCCESS_CONTAINER,
   SUCCESS_CONTAINER_SMALL,
 } from "../styles/GeneralStyles";
-import RevokeX from "./RevokeX";
-import { useVerificationCheck } from "../hooks/useVerificationCheck";
-import { useEmailTokenManagement } from "../hooks/useEmailTokenManagement";
-import CheckMark from "./CheckMark";
 
 interface ListProps {
   authorizedUsers: string[];
@@ -34,7 +34,7 @@ const AuthorizedUsersList = ({ authorizedUsers, onDeleteUser }: ListProps) => {
     return (
       <div key={key} className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-[15px]">
-          <AccountCircle />
+          <AccountCircleRounded sx={{ fontSize: 30 }} />
           <span className={GENERIC_PARAGRAPH}>{user}</span>
         </div>
         <div key={key} className="flex flex-row items-center gap-[15px]">
