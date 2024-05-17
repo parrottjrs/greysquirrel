@@ -1,4 +1,5 @@
-import { app, pool } from "../utils/consts";
+import express from "express";
+import { pool } from "../utils/consts";
 import {
   AuthRequest,
   allDocuments,
@@ -9,8 +10,10 @@ import {
   saveDocument,
 } from "../utils/utils";
 
-app.post(
-  "/api/create-document",
+export const documentRouter = express.Router();
+
+documentRouter.post(
+  "/create-document",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -60,8 +63,8 @@ app.post(
   }
 );
 
-app.put(
-  "/api/save-document",
+documentRouter.put(
+  "/save-document",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -85,8 +88,8 @@ app.put(
   }
 );
 
-app.get(
-  "/api/get-documents",
+documentRouter.get(
+  "/documents",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -113,8 +116,8 @@ app.get(
   }
 );
 
-app.delete(
-  "/api/delete-documents",
+documentRouter.delete(
+  "/documents",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {

@@ -6,7 +6,7 @@ export const useLogout = () => {
   const logout = async () => {
     try {
       localStorage.clear();
-      await fetch("/api/logout");
+      await fetch("/api/logout", { method: "POST" });
       navigate("/#");
     } catch (err) {
       console.error({ message: "Error during logout. Try again later." });

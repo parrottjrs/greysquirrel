@@ -1,4 +1,6 @@
-import { app, pool } from "../utils/consts";
+import express from "express";
+import { AccessToken, RefreshToken } from "../utils/Token";
+import { TEN_MINUTES, pool } from "../utils/consts";
 import {
   AuthRequest,
   authenticateToken,
@@ -6,9 +8,61 @@ import {
   verifyById,
   verifyEmailToken,
 } from "../utils/utils";
+export const authRouter = express.Router();
+//INCLUDES:
+//Endpoints that handle token requests related to authentication or verification of user
 
-app.put(
-  "/api/verify-user",
+authRouter.get(
+  "/authenticate",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Authorized",
+        userId: req.userId,
+      });
+    } catch (err) {
+      console.error("Authentication error:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Authentication failed" });
+    }
+  }
+);
+
+authRouter.post("/refresh", async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
+    const verified = RefreshToken.verify(refreshToken);
+    if (!refreshToken || !verified) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Authorization error" });
+    }
+    const access = AccessToken.create(verified.userId);
+    return res
+      .cookie("accessToken", access, {
+        maxAge: TEN_MINUTES,
+        httpOnly: true,
+      })
+      .status(200)
+      .json({ success: true, message: "Authorized" });
+  } catch (err) {
+    console.error("Refresh token error", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Token refresh failed" });
+  }
+});
+
+authRouter.put(
+  "/verify-user",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -35,8 +89,8 @@ app.put(
   }
 );
 
-app.post(
-  "/api/verify-acct-mgmt",
+authRouter.post(
+  "/verify-acct-mgmt",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -64,8 +118,8 @@ app.post(
   }
 );
 
-app.get(
-  "/api/check-verification-status",
+authRouter.get(
+  "/verification-status",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {

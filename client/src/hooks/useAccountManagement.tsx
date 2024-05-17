@@ -30,7 +30,7 @@ export const useAccountManagement = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await fetch("/api/get-user-info");
+      const response = await fetch("/api/user");
       if (response.ok) {
         const json = await response.json();
         return json.userInfo;
@@ -50,7 +50,7 @@ export const useAccountManagement = () => {
       passCheck: data.passCheck.trim(),
     };
     try {
-      const response = await fetch("/api/update-user-info", {
+      const response = await fetch("/api/user", {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

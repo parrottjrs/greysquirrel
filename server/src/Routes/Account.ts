@@ -1,5 +1,7 @@
+import express from "express";
 import { AccessToken, RefreshToken } from "../utils/Token";
-import { ONE_DAY, TEN_MINUTES, THIRTY_DAYS, app, pool } from "../utils/consts";
+import { ONE_DAY, TEN_MINUTES, THIRTY_DAYS, pool } from "../utils/consts";
+
 import {
   sendEmailVerification,
   sendForgotPasswordVerification,
@@ -21,13 +23,13 @@ import {
   createVerificationToken,
   searchForEmail,
 } from "../utils/utils";
-
+export const accountRouter = express.Router();
 //INCLUDES:
-//Endpoints to do with form submission or data retreival with regards to
-//sign up, sign in, or changes to the user's info (ie password, username, email, etc).
+//Endpoints to do with form submission or data retreival such as
+//signUp, signIn, update-account (ie password, username, email, etc).
 //Find authentication and verification of user in their named files.
 
-app.post("/api/signUp", async (req, res) => {
+accountRouter.post("/signUp", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
     const username = req.body.data.username.toLowerCase();
@@ -79,8 +81,9 @@ app.post("/api/signUp", async (req, res) => {
   }
 });
 
-app.post("/api/signIn", async (req, res) => {
+accountRouter.post("/signIn", async (req, res) => {
   try {
+    console.log(req.body);
     const { username, password, remember } = req.body.data;
     const authenticated = await authenticateUser(username, password, pool);
     if (!authenticated) {
@@ -114,7 +117,7 @@ app.post("/api/signIn", async (req, res) => {
   }
 });
 
-app.get("/api/logout", async (req, res) => {
+accountRouter.post("/logout", async (req, res) => {
   try {
     return res
       .clearCookie("accessToken")
@@ -129,72 +132,61 @@ app.get("/api/logout", async (req, res) => {
   }
 });
 
-app.get(
-  "/api/get-user-info",
-  authenticateToken,
-  async (req: AuthRequest, res) => {
-    try {
-      if (req.userId === undefined) {
-        return res
-          .status(200)
-          .json({ success: false, message: "Authorization error" });
-      }
-      const { success, message, userInfo } = await getUserInfo(
-        pool,
-        req.userId
-      );
-      if (!success) {
-        return res.status(400).json({ success: success, message: message });
-      }
+accountRouter.get("/user", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    if (req.userId === undefined) {
       return res
         .status(200)
-        .json({ success: success, message: message, userInfo: userInfo });
-    } catch (err) {
-      console.error("Error retreiving user info:", err);
-      return res.status(500).json({ message: "Cannot retreive user info" });
+        .json({ success: false, message: "Authorization error" });
     }
-  }
-);
-
-app.put(
-  "/api/update-user-info",
-  authenticateToken,
-  async (req: AuthRequest, res) => {
-    try {
-      if (req.userId === undefined) {
-        return res
-          .status(200)
-          .json({ success: false, message: "Authorization error" });
-      }
-      const { firstName, lastName, username, email, password } = req.body.data;
-      const userNameInUse = await usernameExists(pool, req.userId, username);
-      if (userNameInUse) {
-        return res.status(200).json({
-          success: false,
-          message: "Username in use",
-        });
-      }
-      const { success, message } = await updateUserInfo(
-        pool,
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-        req.userId
-      );
-      if (!success) {
-        return res.status(400).json({ success: success, message: message });
-      }
-      return res.status(200).json({ success: success, message: message });
-    } catch (err) {
-      console.error("Error updating user info:", err);
-      res.status(500).json({ message: "Cannot update user info" });
+    const { success, message, userInfo } = await getUserInfo(pool, req.userId);
+    if (!success) {
+      return res.status(400).json({ success: success, message: message });
     }
+    return res
+      .status(200)
+      .json({ success: success, message: message, userInfo: userInfo });
+  } catch (err) {
+    console.error("Error retreiving user info:", err);
+    return res.status(500).json({ message: "Cannot retreive user info" });
   }
-);
+});
 
-app.post("/api/forgot-password", async (req, res) => {
+accountRouter.put("/user", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    if (req.userId === undefined) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Authorization error" });
+    }
+    const { firstName, lastName, username, email, password } = req.body.data;
+    const userNameInUse = await usernameExists(pool, req.userId, username);
+    if (userNameInUse) {
+      return res.status(200).json({
+        success: false,
+        message: "Username in use",
+      });
+    }
+    const { success, message } = await updateUserInfo(
+      pool,
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      req.userId
+    );
+    if (!success) {
+      return res.status(400).json({ success: success, message: message });
+    }
+    return res.status(200).json({ success: success, message: message });
+  } catch (err) {
+    console.error("Error updating user info:", err);
+    res.status(500).json({ message: "Cannot update user info" });
+  }
+});
+
+accountRouter.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
     const searchResult = await searchForEmail(pool, email);
@@ -227,7 +219,7 @@ app.post("/api/forgot-password", async (req, res) => {
   }
 });
 
-app.post("/api/verify-forgot-password", async (req, res) => {
+accountRouter.post("/verify-forgot-password", async (req, res) => {
   try {
     const verificationToken = req.body.verificationToken;
 
@@ -258,8 +250,8 @@ app.post("/api/verify-forgot-password", async (req, res) => {
   }
 });
 
-app.put(
-  "/api/change-password",
+accountRouter.put(
+  "/change-password",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {

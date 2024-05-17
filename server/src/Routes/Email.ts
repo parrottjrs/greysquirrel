@@ -1,8 +1,14 @@
-import { app, pool } from "../utils/consts";
+import express from "express";
+import { pool } from "../utils/consts";
 import { emailVerificationInfo, sendEmailVerification } from "../utils/mail";
 import { AuthRequest, authenticateToken } from "../utils/utils";
 
-app.post(
+//INCLUDES:
+//Enpoints that handle email related requests.
+
+export const emailRouter = express.Router();
+
+emailRouter.post(
   "/api/resend-verification-email",
   authenticateToken,
   async (req: AuthRequest, res) => {

@@ -1,3 +1,5 @@
+import { documentRouter } from "./Routes/Document";
+
 import express, { Response } from "express";
 import http from "http";
 import { Server } from "socket.io";
@@ -19,6 +21,9 @@ import {
 } from "./utils/utils";
 
 import { PORT, app, pool } from "./utils/consts";
+import { accountRouter } from "./Routes/Account";
+import { authRouter } from "./Routes/Auth";
+import { emailRouter } from "./Routes/Email";
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -29,8 +34,45 @@ const io = new Server(server);
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/api", accountRouter, authRouter, documentRouter, emailRouter);
 
 // app.use(express.static(absolutePath));
+
+// app.post("/api/signIn", async (req, res) => {
+//   try {
+//     console.log(req.body);
+//     const { username, password, remember } = req.body.data;
+//     const authenticated = await authenticateUser(username, password, pool);
+//     if (!authenticated) {
+//       return res.status(401).json({
+//         message: "Unauthorized: Invalid username and/or password",
+//       });
+//     }
+//     const refreshMaxAge = !remember ? ONE_DAY : THIRTY_DAYS;
+//     const id = await getId(pool, username);
+//     if (!id) {
+//       return res
+//         .status(404)
+//         .send({ message: "Bad request: user does not exist" });
+//     }
+//     const access = AccessToken.create(id);
+//     const refresh = RefreshToken.create(id);
+//     return res
+//       .cookie("accessToken", access, {
+//         maxAge: TEN_MINUTES,
+//         httpOnly: true,
+//       })
+//       .cookie("refreshToken", refresh, {
+//         maxAge: refreshMaxAge,
+//         httpOnly: true,
+//       })
+//       .status(200)
+//       .json({ message: "Access granted" });
+//   } catch (err) {
+//     console.error("Authorization error:", err);
+//     return res.status(500).json({ message: "Error when signing in" });
+//   }
+// });
 
 app.post("/api/invite", authenticateToken, async (req: AuthRequest, res) => {
   try {

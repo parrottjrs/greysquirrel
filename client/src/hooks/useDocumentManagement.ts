@@ -36,7 +36,7 @@ export const useDocumentManagement = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch("/api/get-documents");
+      const response = await fetch("/api/documents");
       const json = await response.json();
       if (json.success) {
         setDocuments(json.docs);
