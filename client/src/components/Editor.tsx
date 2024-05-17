@@ -91,7 +91,7 @@ export const Editor = () => {
 
   const fetchSave = async () => {
     try {
-      await fetch("/api/save", {
+      await fetch("/api/save-document", {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -105,7 +105,7 @@ export const Editor = () => {
 
   const fetchContent = async () => {
     try {
-      const response = await fetch("/api/create", {
+      const response = await fetch("/api/create-document", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId }),

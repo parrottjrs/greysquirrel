@@ -36,7 +36,7 @@ export const useDocumentManagement = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch("/api/documents");
+      const response = await fetch("/api/get-documents");
       const json = await response.json();
       if (json.success) {
         setDocuments(json.docs);
@@ -61,7 +61,7 @@ export const useDocumentManagement = () => {
   };
 
   const fetchCreate = async () => {
-    const response = await fetch("/api/create", {
+    const response = await fetch("/api/create-document", {
       method: "POST",
       headers: { "content-type": "application /json" },
     });

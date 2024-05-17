@@ -26,7 +26,7 @@ export default function DocOptionsDropdown({
 
   const fetchDelete = async (id: any) => {
     try {
-      await fetch("api/documents", {
+      await fetch("api/delete-documents", {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: id }),

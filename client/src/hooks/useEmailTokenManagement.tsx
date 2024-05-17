@@ -50,7 +50,7 @@ export const useEmailTokenManagement = () => {
   };
 
   const fetchCreate = async () => {
-    const response = await fetch("/api/create", {
+    const response = await fetch("/api/create-document", {
       method: "POST",
       headers: { "content-type": "application/json" },
     });

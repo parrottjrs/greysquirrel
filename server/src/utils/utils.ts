@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { AccessToken } from "../Token";
+import { AccessToken } from "./Token";
 import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
 //Custom types
 
-type Document = {
+interface Document {
   docId: number;
   lastEdit: Date;
   title: string;
   content: string;
-};
+}
 
 export interface AuthRequest extends Request {
   userId?: number;
@@ -1012,5 +1012,3 @@ export const revokeSharedAccess = async (
           "Failed to revoke access. Document is not currently being shared with user",
       };
 };
-
-export const changeUserInfo = async (pool: any) => {};
