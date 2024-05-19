@@ -19,7 +19,7 @@ export default function InvitesSent() {
 
   const fetchInvites = async () => {
     try {
-      const response = await fetch("/api/invites-sent");
+      const response = await fetch("/api/invites/pending/sent");
       const json = await response.json();
       if (json.success) {
         setSharedInvites(json.invites);
@@ -32,7 +32,7 @@ export default function InvitesSent() {
 
   const deleteInvite = async (id: number) => {
     try {
-      const response = await fetch("/api/invite", {
+      const response = await fetch("/api/invites/delete", {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ inviteId: id }),

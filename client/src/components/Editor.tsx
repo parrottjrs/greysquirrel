@@ -45,7 +45,7 @@ export const Editor = () => {
   const yText = yDoc.getText(text.toString());
 
   const revokeSharedAccess = async (userName: string) => {
-    await fetch("api/shared-docs", {
+    await fetch("api/documents/shared/revoke", {
       method: "DELETE",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: docId, authorizedUserName: userName }),
@@ -91,7 +91,7 @@ export const Editor = () => {
 
   const fetchSave = async () => {
     try {
-      await fetch("/api/save-document", {
+      await fetch("/api/documents/save", {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -105,7 +105,7 @@ export const Editor = () => {
 
   const fetchContent = async () => {
     try {
-      const response = await fetch("/api/create-document", {
+      const response = await fetch("/api/documents/create", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId }),

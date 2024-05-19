@@ -35,7 +35,7 @@ export const useSignUpManagement = () => {
       passCheck: data.passCheck.trim(),
     };
     try {
-      const response = await fetch("/api/signUp", {
+      const response = await fetch("/api/user/register", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

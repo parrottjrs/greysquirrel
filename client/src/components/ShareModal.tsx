@@ -73,7 +73,7 @@ export default function ShareModal({
 
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
     try {
-      const response = await fetch("/api/invite", {
+      const response = await fetch("/api/invites/send", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId, recipient: recipient }),

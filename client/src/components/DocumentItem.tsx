@@ -24,7 +24,7 @@ export default function DocumentItem({ doc, setDocs }: any) {
   const newTitle = title ? clipText(title, "title") : "Untitled";
 
   const revokeSharedAccess = async (userName: string) => {
-    await fetch("api/shared-docs", {
+    await fetch("api/documents/shared/revoke", {
       method: "DELETE",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: doc_id, authorizedUserName: userName }),

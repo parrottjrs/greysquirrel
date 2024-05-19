@@ -41,7 +41,7 @@ export const useSigninManagement = () => {
 
     data.username = data.username.toLowerCase();
     try {
-      const response = await fetch("/api/signIn", {
+      const response = await fetch("/api/user/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

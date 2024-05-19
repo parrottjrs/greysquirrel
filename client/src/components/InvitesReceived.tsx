@@ -20,7 +20,7 @@ export default function InvitesRecieved() {
 
   const fetchInvites = async () => {
     try {
-      const response = await fetch("/api/invites-received");
+      const response = await fetch("/api/invites/pending/received");
       const json = await response.json();
       if (json.success) {
         setInvites(json.invites);
@@ -33,7 +33,7 @@ export default function InvitesRecieved() {
 
   const deleteInvite = async (id: number) => {
     try {
-      const response = await fetch("/api/invite", {
+      const response = await fetch("/api/invites/delete", {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ inviteId: id }),
@@ -54,7 +54,7 @@ export default function InvitesRecieved() {
     recipientId: number
   ) => {
     try {
-      await fetch("/api/accept-invite", {
+      await fetch("/api/invites/accept", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

@@ -28,7 +28,7 @@ export default function PasswordForm({ handleVerified }: PassFormProps) {
   });
 
   const verifyPassword = async (password: string) => {
-    const response = await fetch("/api/verify-acct-mgmt", {
+    const response = await fetch("/api/user/account/authorization", {
       method: "POST",
       headers: {
         "content-type": "application/json",

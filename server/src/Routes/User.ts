@@ -1,8 +1,8 @@
 import express from "express";
 import { AccessToken, RefreshToken } from "../utils/Token";
 import { ONE_DAY, TEN_MINUTES, THIRTY_DAYS, pool } from "../utils/consts";
-
 import {
+  emailVerificationInfo,
   sendEmailVerification,
   sendForgotPasswordVerification,
 } from "../utils/mail";
@@ -22,14 +22,14 @@ import {
   forgotPasswordResponse,
   createVerificationToken,
   searchForEmail,
+  verifyEmailToken,
+  checkPassword,
+  verifyById,
 } from "../utils/utils";
-export const accountRouter = express.Router();
-//INCLUDES:
-//Endpoints to do with form submission or data retreival such as
-//signUp, signIn, update-account (ie password, username, email, etc).
-//Find authentication and verification of user in their named files.
 
-accountRouter.post("/signUp", async (req, res) => {
+export const userRouter = express.Router();
+
+userRouter.post("/register", async (req, res) => {
   try {
     const { email, firstName, lastName, password } = req.body.data;
     const username = req.body.data.username.toLowerCase();
@@ -81,7 +81,7 @@ accountRouter.post("/signUp", async (req, res) => {
   }
 });
 
-accountRouter.post("/signIn", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
   try {
     console.log(req.body);
     const { username, password, remember } = req.body.data;
@@ -117,7 +117,7 @@ accountRouter.post("/signIn", async (req, res) => {
   }
 });
 
-accountRouter.post("/logout", async (req, res) => {
+userRouter.post("/logout", async (req, res) => {
   try {
     return res
       .clearCookie("accessToken")
@@ -132,7 +132,7 @@ accountRouter.post("/logout", async (req, res) => {
   }
 });
 
-accountRouter.get("/user", authenticateToken, async (req: AuthRequest, res) => {
+userRouter.get("/account", authenticateToken, async (req: AuthRequest, res) => {
   try {
     if (req.userId === undefined) {
       return res
@@ -152,41 +152,45 @@ accountRouter.get("/user", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-accountRouter.put("/user", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    if (req.userId === undefined) {
-      return res
-        .status(200)
-        .json({ success: false, message: "Authorization error" });
+userRouter.put(
+  "/account/update",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { firstName, lastName, username, email, password } = req.body.data;
+      const userNameInUse = await usernameExists(pool, req.userId, username);
+      if (userNameInUse) {
+        return res.status(200).json({
+          success: false,
+          message: "Username in use",
+        });
+      }
+      const { success, message } = await updateUserInfo(
+        pool,
+        firstName,
+        lastName,
+        username,
+        email,
+        password,
+        req.userId
+      );
+      if (!success) {
+        return res.status(400).json({ success: success, message: message });
+      }
+      return res.status(200).json({ success: success, message: message });
+    } catch (err) {
+      console.error("Error updating user info:", err);
+      res.status(500).json({ message: "Cannot update user info" });
     }
-    const { firstName, lastName, username, email, password } = req.body.data;
-    const userNameInUse = await usernameExists(pool, req.userId, username);
-    if (userNameInUse) {
-      return res.status(200).json({
-        success: false,
-        message: "Username in use",
-      });
-    }
-    const { success, message } = await updateUserInfo(
-      pool,
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      req.userId
-    );
-    if (!success) {
-      return res.status(400).json({ success: success, message: message });
-    }
-    return res.status(200).json({ success: success, message: message });
-  } catch (err) {
-    console.error("Error updating user info:", err);
-    res.status(500).json({ message: "Cannot update user info" });
   }
-});
+);
 
-accountRouter.post("/forgot-password", async (req, res) => {
+userRouter.post("/forgot-password/request", async (req, res) => {
   try {
     const { email } = req.body;
     const searchResult = await searchForEmail(pool, email);
@@ -219,7 +223,7 @@ accountRouter.post("/forgot-password", async (req, res) => {
   }
 });
 
-accountRouter.post("/verify-forgot-password", async (req, res) => {
+userRouter.post("/forgot-password/verify-token", async (req, res) => {
   try {
     const verificationToken = req.body.verificationToken;
 
@@ -250,8 +254,8 @@ accountRouter.post("/verify-forgot-password", async (req, res) => {
   }
 });
 
-accountRouter.put(
-  "/change-password",
+userRouter.put(
+  "/forgot-password/update",
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
@@ -272,6 +276,114 @@ accountRouter.put(
     } catch (err) {
       console.error("Error changing password:", err);
       return res.status(500).json({ message: "internal server error" });
+    }
+  }
+);
+
+userRouter.post(
+  "/verification/resend",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization Error" });
+      }
+      const { username, email, emailToken } = await emailVerificationInfo(
+        pool,
+        req.userId
+      );
+      const { success, message } = await sendEmailVerification(
+        username,
+        email,
+        emailToken
+      );
+      return res.status(200).json({ success: success, message: message });
+    } catch (err) {
+      console.error("Error sending verification email:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Cannot resend email verification" });
+    }
+  }
+);
+
+userRouter.put(
+  "/register/verification",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const { emailToken } = req.body;
+      const { success, message } = await verifyEmailToken(
+        pool,
+        req.userId,
+        emailToken
+      );
+      const response = { success: success, message: message };
+      if (!success) {
+        return res.status(400).json(response);
+      }
+      return res.status(200).json(response);
+    } catch (err) {
+      console.error("Verification error:", err);
+      res.status(500).json({ message: "User verification failed" });
+    }
+  }
+);
+
+userRouter.post(
+  "/account/authorization",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const password = req.body.password;
+      const { success, message } = await checkPassword(
+        req.userId,
+        password,
+        pool
+      );
+      const statusCode = success ? 200 : 403;
+      return res
+        .status(statusCode)
+        .json({ success: success, message: message });
+    } catch (err) {
+      console.error("error verifying user:", err);
+      return res
+        .status(500)
+        .json({ message: "Cannot verify user. Try again later." });
+    }
+  }
+);
+
+userRouter.get(
+  "/verification/status",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      if (req.userId === undefined) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Authorization error" });
+      }
+      const isVerified = await verifyById(pool, req.userId);
+      const statusCode = isVerified ? 200 : 403;
+      return res.status(statusCode).json({ success: isVerified });
+    } catch (err) {
+      console.error("Error fetching verification status:", err);
+      return res
+        .status(500)
+        .json({ message: "Error fetching verification status" });
     }
   }
 );

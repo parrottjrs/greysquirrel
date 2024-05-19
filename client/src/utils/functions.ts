@@ -1,6 +1,6 @@
 export const refresh = async () => {
   try {
-    const response = await fetch("/api/refresh", {
+    const response = await fetch("/api/token/refresh", {
       method: "POST",
     });
     const json = await response.json();
@@ -29,7 +29,7 @@ const handleAuthenticate = async (message: any) => {
 
 export const authenticate = async () => {
   try {
-    const response = await fetch("/api/authenticate");
+    const response = await fetch("/api/token/authenticate");
     const { message, userId } = await response.json();
     const authenticated = await handleAuthenticate(message);
     return { success: authenticated, userId: userId };
@@ -104,7 +104,7 @@ export const fetchAuthorizedUsers = async (docId: any) => {
     return null;
   }
   try {
-    const response = await fetch(`/api/authorized-users?docId=${docId}`);
+    const response = await fetch(`/api/documents/shared/users?docId=${docId}`);
     const json = await response.json();
     if (!json.success) {
       return null;

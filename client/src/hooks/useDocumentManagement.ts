@@ -49,7 +49,7 @@ export const useDocumentManagement = () => {
 
   const fetchSharedDocuments = async () => {
     try {
-      const response = await fetch("/api/shared-docs");
+      const response = await fetch("/api/documents/shared");
       const json = await response.json();
       json.success === false
         ? setSharedDocuments([])
@@ -61,7 +61,7 @@ export const useDocumentManagement = () => {
   };
 
   const fetchCreate = async () => {
-    const response = await fetch("/api/create-document", {
+    const response = await fetch("/api/documents/create", {
       method: "POST",
       headers: { "content-type": "application /json" },
     });
