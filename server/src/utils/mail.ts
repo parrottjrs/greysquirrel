@@ -1,5 +1,9 @@
 import * as nodeMailer from "nodemailer";
-import { CLIENT_URL, EMAIL, EMAIL_PASS } from "./consts";
+
+require("dotenv").config();
+const EMAIL = process.env.EMAIL;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const CLIENT_URL = process.env.CLIENT_URL;
 
 const mailer = nodeMailer.createTransport({
   pool: true,
@@ -31,7 +35,7 @@ export const sendEmailVerification = async (
   emailToken?: string
 ) => {
   const mailOptions = {
-    from: `"Greysquirrel" <${EMAIL}>`,
+    from: `"Security Squirrel" <${EMAIL}>`,
     to: userEmail,
     subject: "Verify your email...",
     html: `<p>Hello 👋 ${userName}! Please verify your email by clicking the link below 👇</p> 
@@ -56,7 +60,7 @@ export const sendForgotPasswordVerification = async (
   verificationToken?: string
 ) => {
   const mailOptions = {
-    from: `"Greysquirrel" <${EMAIL}>`,
+    from: `"Security Squirrel" <${EMAIL}>`,
     to: userEmail,
     subject: "Confirm password change...",
     html: `<p>Are you trying to change your Greysquirrel password? If so, Please click the link below 👇</p> 

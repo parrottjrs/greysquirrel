@@ -271,6 +271,9 @@ userRouter.put(
         req.userId
       );
       const status = success ? 200 : 400;
+      console.log("status:", status);
+      console.log("success:", success);
+      console.log("message:", message);
       return res.status(status).json({ success: success, message: message });
     } catch (err) {
       console.error("Error changing password:", err);
@@ -289,6 +292,7 @@ userRouter.post(
           .status(200)
           .json({ success: false, message: "Authorization Error" });
       }
+
       const { username, email, emailToken } = await emailVerificationInfo(
         pool,
         req.userId

@@ -11,7 +11,7 @@ export const useEmailTokenManagement = () => {
   const [sent, setSent] = useState(false);
 
   const verification = async (emailToken: string | undefined) => {
-    const response = await fetch("/api/user/verification/check", {
+    const response = await fetch("/api/user/register/verification", {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -60,6 +60,7 @@ export const useEmailTokenManagement = () => {
 
   useEffect(() => {
     if (params.emailToken) {
+      console.log(params.emailToken);
       handleVerification();
     }
   }, [params.emailToken]);

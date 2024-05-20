@@ -45,7 +45,7 @@ export const usePasswordChangeManagement = () => {
     });
 
     if (!response.ok) {
-      setPassChangeFailed(true);
+      return setPassChangeFailed(true);
     }
     setPassChangeFailed(false);
     setUpdateSuccess(true);
