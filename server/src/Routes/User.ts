@@ -25,7 +25,7 @@ import {
   verifyEmailToken,
   checkPassword,
   verifyById,
-} from "../utils/utils";
+} from "../utils/userHelpers";
 
 export const userRouter = express.Router();
 
@@ -83,7 +83,6 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
   try {
-    console.log(req.body);
     const { username, password, remember } = req.body.data;
     const authenticated = await authenticateUser(username, password, pool);
     if (!authenticated) {

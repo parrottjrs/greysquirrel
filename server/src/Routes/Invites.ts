@@ -1,17 +1,19 @@
 import express from "express";
 import { pool } from "../utils/consts";
 import {
-  AuthRequest,
   acceptInvite,
-  authenticateToken,
   countInvites,
   deleteInviteByInviteId,
-  getId,
   getInvitesReceived,
   getInvitesSent,
   sendInvite,
+} from "../utils/invitesHelpers";
+import {
+  AuthRequest,
+  authenticateToken,
+  getId,
   verifyById,
-} from "../utils/utils";
+} from "../utils/userHelpers";
 
 export const invitesRouter = express.Router();
 

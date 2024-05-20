@@ -1,18 +1,16 @@
 import express, { Response } from "express";
 import { pool } from "../utils/consts";
 import {
-  AuthRequest,
   allDocuments,
-  authenticateToken,
   createDocument,
   deleteDocument,
   getAllSharedDocs,
   getAuthorizedUsers,
   getDocument,
-  getId,
   revokeSharedAccess,
   saveDocument,
-} from "../utils/utils";
+} from "../utils/documentsHelpers";
+import { AuthRequest, authenticateToken, getId } from "../utils/userHelpers";
 
 export const documentsRouter = express.Router();
 

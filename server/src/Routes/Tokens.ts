@@ -1,7 +1,7 @@
 import express from "express";
 import { AccessToken, RefreshToken } from "../utils/Token";
 import { TEN_MINUTES } from "../utils/consts";
-import { AuthRequest, authenticateToken } from "../utils/utils";
+import { AuthRequest, authenticateToken } from "../utils/userHelpers";
 
 export const tokenRouter = express.Router();
 

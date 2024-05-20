@@ -1,15 +1,16 @@
-import express, { Response } from "express";
+import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 
-import { PORT, app, pool } from "./utils/consts";
+import { PORT } from "./utils/consts";
 
 import { userRouter } from "./Routes/User";
 import { tokenRouter } from "./Routes/Tokens";
 import { documentsRouter } from "./Routes/Documents";
 import { invitesRouter } from "./Routes/Invites";
 
+export const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
