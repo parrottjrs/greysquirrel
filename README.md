@@ -12,8 +12,6 @@ Designs by [Joneil Escobar](https://www.joneilescobar.com)
 
 ## A lightweight live text-editing environment
 
-Greysquirrel started off as a practice server and eventually became a fully functional account-based web app.
-
 ### Main Features
 
 - User Registration
