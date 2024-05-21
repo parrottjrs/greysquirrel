@@ -73,6 +73,13 @@ export const sendInvite = async (
       message: "Document not found or unauthorized",
     };
   }
+  if (senderId === recipientId) {
+    return {
+      success: false,
+      message:
+        "Self love is important, but you can't share documents with yourself",
+    };
+  }
   //Make sure user isn't already authorized
   const alreadyAuthorized = await getSharedDoc(pool, docId, recipientId);
   if (alreadyAuthorized) {

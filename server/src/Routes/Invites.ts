@@ -27,7 +27,9 @@ invitesRouter.post(
       }
       const isVerified = await verifyById(pool, req.userId);
       if (!isVerified) {
-        return res.status(403).json({ message: "Authorization error" });
+        return res
+          .status(403)
+          .json({ message: "Authorization error: User is not verified" });
       }
       const { docId, recipient } = req.body;
       const recipientId: number = await getId(pool, recipient);
@@ -36,22 +38,16 @@ invitesRouter.post(
           .status(200)
           .json({ success: false, message: "Recipient does not exist" });
       }
-      if (req.userId === recipientId) {
-        return res.status(200).json({
-          success: false,
-          message: "User already has access",
-        });
-      }
       const { success, message } = await sendInvite(
         pool,
         docId,
         req.userId,
         recipientId
       );
-      if (!success) {
-        return res.status(200).json({ success: success, message: message });
-      }
-      return res.status(200).json({ success: success, message: message });
+      const responseCode = success ? 200 : 400;
+      return res
+        .status(responseCode)
+        .json({ success: success, message: message });
     } catch (err) {
       console.error("User invite error:", err);
       return res
