@@ -8,6 +8,7 @@ export const useSignUpManagement = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordIsWeak, setPasswordIsWeak] = useState(false);
   const [userExists, setUserExists] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [emailsMatch, setEmailsMatch] = useState(true);
   const navigate = useNavigate();
@@ -45,10 +46,14 @@ export const useSignUpManagement = () => {
         case "User already exists":
           setUserExists(true);
           break;
+        case "Email is already associated with an account":
+          setEmailExists(true);
+          break;
         case "User created":
           localStorage.setItem("hasSignedUp", "true");
           navigate(`/verify-account`);
           break;
+
         default:
           console.error("An unexpected error has occurred");
           break;
@@ -126,6 +131,8 @@ export const useSignUpManagement = () => {
   };
 
   const onSubmit = (data: SignupFormData) => {
+    setEmailExists(false);
+    setUserExists(false);
     handleSignup(data);
   };
 
@@ -134,6 +141,7 @@ export const useSignUpManagement = () => {
     onSubmit,
     register,
     userExists,
+    emailExists,
     emailsMatch,
     showPassword,
     handleShowPassword,

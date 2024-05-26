@@ -200,6 +200,15 @@ export const authenticateUser = async (
   return attemptedPass === truePass;
 };
 
+export const emailExistsInDatabase = async (pool: any, email: string) => {
+  const query = `
+  SELECT * FROM users
+  WHERE email = ?
+  `;
+  const [result, _] = await pool.query(query, [email]);
+  return result.length > 0 ? true : false;
+};
+
 export const createUser = async (
   pool: any,
   username: string,
@@ -208,6 +217,26 @@ export const createUser = async (
   lastName: string,
   password: string
 ) => {
+  const usernames = await getUsernames(pool);
+  const emailExists = await emailExistsInDatabase(pool, email);
+  if (usernames.includes(username)) {
+    return {
+      success: false,
+      message: "User already exists",
+    };
+  }
+  if (!strongPassword(password)) {
+    return {
+      success: false,
+      message: "Password does not meet site requirements. Please try again.",
+    };
+  }
+  if (emailExists) {
+    return {
+      success: false,
+      message: "Email is already associated with an account",
+    };
+  }
   const salt = randomBytes(64).toString("base64");
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"

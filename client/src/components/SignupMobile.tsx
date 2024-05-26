@@ -15,6 +15,7 @@ import {
   INPUT_FIELD_LABEL,
   INSTRUCTIONS,
   MD_VIOLET_TEXT,
+  SM_VIOLET_TEXT,
 } from "../styles/GeneralStyles";
 
 export default function SignupMobile() {
@@ -23,6 +24,7 @@ export default function SignupMobile() {
     onSubmit,
     register,
     userExists,
+    emailExists,
     emailsMatch,
     showPassword,
     handleShowPassword,
@@ -104,6 +106,19 @@ export default function SignupMobile() {
               autoComplete="off"
               required={true}
             />
+            {emailExists && (
+              <div className={ALERT_DIV}>
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
+                <p className={ALERT_TEXT}>
+                  This email has already been registered.{" "}
+                  <a href="#/forgot-password" className={SM_VIOLET_TEXT}>
+                    Forgot password?
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
           <div className={INPUT_FIELD_GAP}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"emailCheck"}>

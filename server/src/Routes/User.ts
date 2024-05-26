@@ -39,19 +39,7 @@ userRouter.post("/register", async (req, res) => {
         message: "Missing required data",
       });
     }
-    const usernames = await getUsernames(pool);
-    if (usernames.includes(username)) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
-    if (!strongPassword(password)) {
-      return res.status(400).json({
-        success: false,
-        message: "Password does not meet site requirements. Please try again.",
-      });
-    }
+
     const { success, message, emailToken } = await createUser(
       pool,
       username,
@@ -271,9 +259,6 @@ userRouter.put(
         req.userId
       );
       const status = success ? 200 : 400;
-      console.log("status:", status);
-      console.log("success:", success);
-      console.log("message:", message);
       return res.status(status).json({ success: success, message: message });
     } catch (err) {
       console.error("Error changing password:", err);

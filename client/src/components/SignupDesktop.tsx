@@ -25,6 +25,7 @@ export default function SignupDesktop() {
     onSubmit,
     register,
     userExists,
+    emailExists,
     emailsMatch,
     showPassword,
     handleShowPassword,
@@ -123,6 +124,19 @@ export default function SignupDesktop() {
               autoComplete="off"
               required={true}
             />
+            {emailExists && (
+              <div className={ALERT_DIV}>
+                <span className="mr-2">
+                  <ExclamationMark />
+                </span>
+                <p className={ALERT_TEXT}>
+                  This email has already been registered.{" "}
+                  <a href="#/forgot-password" className={SM_VIOLET_TEXT}>
+                    Forgot password?
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
           <div className={FORM_INNER_CONTAINER}>
             <label className={INPUT_FIELD_LABEL} htmlFor={"emailCheck"}>
