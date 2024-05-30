@@ -25,6 +25,8 @@ import {
   verifyEmailToken,
   checkPassword,
   verifyById,
+  createEmailToken,
+  fetchEmailAndUsername,
 } from "../utils/userHelpers";
 
 export const userRouter = express.Router();
@@ -40,7 +42,7 @@ userRouter.post("/register", async (req, res) => {
       });
     }
 
-    const { success, message, emailToken } = await createUser(
+    const { success, message } = await createUser(
       pool,
       username,
       email,
@@ -51,8 +53,11 @@ userRouter.post("/register", async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: success, message: message });
     }
-    await sendEmailVerification(username, email, emailToken);
     const id = await getId(pool, username);
+    const { emailToken } = await createEmailToken(pool, email, id);
+    if (emailToken) {
+      await sendEmailVerification(username, email, emailToken);
+    }
     const access = AccessToken.create(id);
     const refresh = RefreshToken.create(id);
     return res
@@ -246,7 +251,7 @@ userRouter.put(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      if (!req.userId) {
+      if (req.userId === undefined) {
         return res
           .status(401)
           .json({ success: false, message: "Authorization error" });
@@ -277,14 +282,26 @@ userRouter.post(
           .status(200)
           .json({ success: false, message: "Authorization Error" });
       }
-
-      const { username, email, emailToken } = await emailVerificationInfo(
+      const isVerified = await verifyById(pool, req.userId);
+      if (isVerified) {
+        return res
+          .status(200)
+          .json({ success: false, message: "User email is already verified" });
+      }
+      const emailFetchResponse = await fetchEmailAndUsername(pool, req.userId);
+      if (!emailFetchResponse.success) {
+        return res
+          .status(400)
+          .json({ success: false, message: emailFetchResponse.message });
+      }
+      const { emailToken } = await createEmailToken(
         pool,
-        req.userId
+        req.userId,
+        emailFetchResponse.email
       );
       const { success, message } = await sendEmailVerification(
-        username,
-        email,
+        emailFetchResponse.username,
+        emailFetchResponse.email,
         emailToken
       );
       return res.status(200).json({ success: success, message: message });
@@ -306,6 +323,12 @@ userRouter.put(
         return res
           .status(200)
           .json({ success: false, message: "Authorization error" });
+      }
+      const isVerified = await verifyById(pool, req.userId);
+      if (isVerified) {
+        return res
+          .status(200)
+          .json({ success: false, message: "User email is already verified" });
       }
       const { emailToken } = req.body;
       const { success, message } = await verifyEmailToken(

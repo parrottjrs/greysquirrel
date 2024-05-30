@@ -116,20 +116,6 @@ export const getUsernames = async (pool: any) => {
   });
 };
 
-const verifyByName = async (pool: any, userName: string) => {
-  const query = `
-    SELECT is_verified
-    FROM users
-    WHERE user_name = ?
-    `;
-  const [result, _] = await pool.query(query, [userName]);
-  const parsedResult = JSON.parse(JSON.stringify(result));
-  if (parsedResult[0].is_verified === 0) {
-    return false;
-  }
-  return true;
-};
-
 export const verifyById = async (pool: any, userId: number) => {
   const query = `
     SELECT is_verified
@@ -137,8 +123,7 @@ export const verifyById = async (pool: any, userId: number) => {
     WHERE user_id = ?
     `;
   const [result, _] = await pool.query(query, [userId]);
-  const parsedResult = JSON.parse(JSON.stringify(result));
-  if (parsedResult[0].is_verified === 0) {
+  if (result[0].is_verified === 0) {
     return false;
   }
   return true;
@@ -156,31 +141,61 @@ const getEmailToken = async (pool: any, userId: number) => {
   return emailToken;
 };
 
+const deleteEmailToken = async (pool: any, emailToken: string) => {
+  const query = `
+    DELETE FROM email_tokens
+    WHERE email_token = ?
+    `;
+  const [result, _] = await pool.query(query, [emailToken]);
+  return result.affectedrows === 0 ? false : true;
+};
+
 export const verifyEmailToken = async (
   pool: any,
   userId: number,
   emailToken: string
 ) => {
-  const existingEmailToken = await getEmailToken(pool, userId);
-
-  if (existingEmailToken === null || existingEmailToken === undefined) {
-    return { success: false, message: "Failed to retreive emailToken" };
-  }
-  if (existingEmailToken !== emailToken) {
-    return { success: false, message: "Tokens do not match." };
-  }
-  const values = [1, null, userId];
+  const values = [emailToken, userId];
   const query = `
-    UPDATE users
-    SET is_verified = ?,
-        email_token = ?
-    WHERE user_id = ?
+    SELECT expiration_date
+    FROM email_tokens 
+    WHERE email_token = ? AND user_id = ?
     `;
-  const [response, _] = await pool.query(query, values);
+  const [result, _] = await pool.query(query, values);
+  if (result.length === 0) {
+    return {
+      success: false,
+      message: "Email token does not exist. Please restart process.",
+    };
+  }
+  const deleted = await deleteEmailToken(pool, emailToken);
+  if (!deleted) {
+    return { success: false, message: "Error deleting email token" };
+  }
+  if (result[0].expiration_date < Date.now()) {
+    return {
+      success: false,
+      message: "Email token expired. Please restart process",
+    };
+  }
+  const verified = await setVerifiedToTrue(pool, userId);
+  return verified;
+};
 
-  return response.affectedRows > 0
-    ? { success: true, message: "verification successful" }
-    : { success: false, message: "verification unsuccessful" };
+const setVerifiedToTrue = async (pool: any, userId: number) => {
+  const values = [true, userId];
+  const query = `
+  UPDATE users
+  SET is_verified = ?
+  where user_id = ?
+  `;
+  const [result, _] = await pool.query(query, values);
+  return result.affectedRows > 0
+    ? { success: true, message: "User email has been verified" }
+    : {
+        success: false,
+        message: "User email verification failed. Please restart process.",
+      };
 };
 
 export const authenticateUser = async (
@@ -207,6 +222,48 @@ export const emailExistsInDatabase = async (pool: any, email: string) => {
   `;
   const [result, _] = await pool.query(query, [email]);
   return result.length > 0 ? true : false;
+};
+
+export const fetchEmailAndUsername = async (pool: any, userId: number) => {
+  const query = `
+  SELECT email, user_name 
+  FROM users
+  WHERE user_id = ?
+  `;
+  const [result, _] = await pool.query(query, [userId]);
+  return result.length < 0
+    ? {
+        success: false,
+        message: "Could not retrieve user email. Please try again.",
+      }
+    : {
+        success: true,
+        message: "User email retreived",
+        email: result[0].email,
+        username: result[0].user_name,
+      };
+};
+
+export const createEmailToken = async (
+  pool: any,
+  userId: number,
+  email: string
+) => {
+  const emailToken = randomUUID();
+  const expirationDateMs = Date.now() + 600000; /* 600000 ms = 10 minutes */
+  const values = [emailToken, email, expirationDateMs, userId];
+  const query = `
+      INSERT INTO email_tokens (email_token, email, expiration_date, user_id)
+      VALUES (?, ?, ?, ?)
+      `;
+  const [result, _] = await pool.query(query, values);
+
+  return result.affectedRows > 0
+    ? {
+        success: true,
+        emailToken: emailToken,
+      }
+    : { success: false, message: "Error creating email token" };
 };
 
 export const createUser = async (
@@ -241,17 +298,8 @@ export const createUser = async (
   const hash = pbkdf2Sync(password, salt, 10000, 64, "sha512").toString(
     "base64"
   );
-  const emailToken = randomUUID();
-  const values = [
-    username,
-    email,
-    firstName,
-    lastName,
-    hash,
-    salt,
-    false,
-    emailToken,
-  ];
+
+  const values = [username, email, firstName, lastName, hash, salt, false];
   const query = `
     INSERT INTO users (
       user_name, 
@@ -260,15 +308,14 @@ export const createUser = async (
       last_name, 
       password, 
       salt, 
-      is_verified,
-      email_token
+      is_verified
       ) 
     VALUES (
-    ?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?
     )`;
   const [result, _] = await pool.query(query, values);
   return result.affectedRows > 0
-    ? { success: true, message: "User created", emailToken: emailToken }
+    ? { success: true, message: "User created" }
     : { success: false, message: "Failed to create user" };
 };
 
