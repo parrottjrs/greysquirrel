@@ -2,7 +2,6 @@ import express from "express";
 import { AccessToken, RefreshToken } from "../utils/Token";
 import { ONE_DAY, TEN_MINUTES, THIRTY_DAYS, pool } from "../utils/consts";
 import {
-  emailVerificationInfo,
   sendEmailVerification,
   sendForgotPasswordVerification,
 } from "../utils/mail";
@@ -12,8 +11,6 @@ import {
   authenticateUser,
   createUser,
   getId,
-  getUsernames,
-  strongPassword,
   updateUserInfo,
   usernameExists,
   getUserInfo,
