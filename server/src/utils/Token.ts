@@ -1,17 +1,38 @@
-import * as fs from "fs";
 import { sign, verify } from "jsonwebtoken";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+
+require("dotenv").config();
+const BUCKET = process.env.BUCKET;
+const AWS_REGION = process.env.AWS_REGION;
+const PRIVATE_ACCESS_KEY_PATH = process.env.PRIVATE_ACCESS_KEY_PATH;
+const PUBLIC_ACCESS_KEY_PATH = process.env.PUBLIC_ACCESS_KEY_PATH;
+const PRIVATE_REFRESH_KEY_PATH = process.env.PRIVATE_REFRESH_KEY_PATH;
+const PUBLIC_REFRESH_KEY_PATH = process.env.PUBLIC_REFRESH_KEY_PATH;
+
+const client = new S3Client({ region: AWS_REGION });
+
+export const getKey = async (key: string) => {
+  const command = new GetObjectCommand({
+    Bucket: BUCKET,
+    Key: key,
+  });
+
+  try {
+    const response = await client.send(command);
+    const str = await response.Body?.transformToString();
+    return str;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 class Token {
-  privateKey: string;
-  publicKey: string;
+  privateKey: any;
+  publicKey: any;
   expiration: number;
-  constructor(
-    privateKeyPath: string,
-    publicKeyPath: string,
-    expirationMs: number = 600000
-  ) {
-    this.privateKey = fs.readFileSync(privateKeyPath, "utf8");
-    this.publicKey = fs.readFileSync(publicKeyPath, "utf8");
+  constructor(expirationMs: number = 600000) {
+    this.privateKey = "";
+    this.publicKey = "";
     this.expiration = expirationMs;
   }
 
@@ -30,6 +51,13 @@ class Token {
     return token;
   }
 
+  async pullKeys(privateKeyPath: any, publicKeyPath: any): Promise<void> {
+    let maybePrivateKey = await getKey(privateKeyPath);
+    let maybePublicKey = await getKey(publicKeyPath);
+    if (maybePrivateKey) this.privateKey = maybePrivateKey;
+    if (maybePublicKey) this.publicKey = maybePublicKey;
+  }
+
   verify(token: any) {
     if (!token) {
       return false;
@@ -38,12 +66,7 @@ class Token {
   }
 }
 
-export const AccessToken = new Token(
-  "../private-access.pem",
-  "../public-access.pem"
-);
-export const RefreshToken = new Token(
-  "../private-refresh.pem",
-  "../public-refresh.pem",
-  8.64e7
-);
+export const AccessToken = new Token();
+export const RefreshToken = new Token(8.64e7);
+AccessToken.pullKeys(PRIVATE_ACCESS_KEY_PATH, PUBLIC_ACCESS_KEY_PATH);
+RefreshToken.pullKeys(PRIVATE_REFRESH_KEY_PATH, PUBLIC_REFRESH_KEY_PATH);

@@ -3,3 +3,4 @@ private-access.pem
 public-access.pem
 private-refresh.pem
 public-refresh.pem
+.DS_Store

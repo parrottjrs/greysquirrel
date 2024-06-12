@@ -51,7 +51,7 @@ userRouter.post("/register", async (req, res) => {
       return res.status(400).json({ success: success, message: message });
     }
     const id = await getId(pool, username);
-    const { emailToken } = await createEmailToken(pool, email, id);
+    const { emailToken } = await createEmailToken(pool, id, email);
     if (emailToken) {
       await sendEmailVerification(username, email, emailToken);
     }

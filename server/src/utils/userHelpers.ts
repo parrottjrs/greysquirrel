@@ -29,7 +29,7 @@ export const usernameExists = async (
 
 const getPasswordFromUsername = async (pool: any, username: string) => {
   const query = `
-    SELECT password, salt FROM users
+    SELECT user_password, salt FROM users
     WHERE user_name = ?
     `;
   const [result, _] = await pool.query(query, [username]);
@@ -37,19 +37,19 @@ const getPasswordFromUsername = async (pool: any, username: string) => {
   if (!user[0]) {
     return { truePass: "", salt: "" };
   }
-  return { truePass: user[0].password, salt: user[0].salt };
+  return { truePass: user[0].user_password, salt: user[0].salt };
 };
 
 const passwordSaltFromUserId = async (pool: any, userId: number) => {
   const query = `
-    SELECT password, salt FROM users
+    SELECT user_password, salt FROM users
     WHERE user_id = ?
     `;
   const [result, _] = await pool.query(query, [userId]);
   return result.length > 0
     ? {
         success: true,
-        currentPassword: result[0].password,
+        currentPassword: result[0].user_password,
         currentSalt: result[0].salt,
       }
     : { success: false };
@@ -306,7 +306,7 @@ export const createUser = async (
       email, 
       first_name, 
       last_name, 
-      password, 
+      user_password, 
       salt, 
       is_verified
       ) 
@@ -400,7 +400,7 @@ export const updateUserInfo = async (
 
   const query = `
     UPDATE users
-    SET first_name = ?, last_name = ?, user_name = ?, email = ?, password = ?, salt = ?
+    SET first_name = ?, last_name = ?, user_name = ?, email = ?, user_password = ?, salt = ?
     WHERE user_id = ?
     `;
 
@@ -551,7 +551,7 @@ export const changePassword = async (
   const values = [newSalt, newHash, userId];
   const query = `
     UPDATE users
-    SET salt = ?, password = ?
+    SET salt = ?, user_password = ?
     WHERE user_id = ?
     `;
   const [result, _] = await pool.query(query, values);

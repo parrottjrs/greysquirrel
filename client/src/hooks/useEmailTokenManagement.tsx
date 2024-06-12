@@ -60,7 +60,6 @@ export const useEmailTokenManagement = () => {
 
   useEffect(() => {
     if (params.emailToken) {
-      console.log(params.emailToken);
       handleVerification();
     }
   }, [params.emailToken]);
