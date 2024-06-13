@@ -1,5 +1,5 @@
 import express from "express";
-import https from "https";
+import http from "http";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 
@@ -11,7 +11,7 @@ import { documentsRouter } from "./Routes/Documents";
 import { invitesRouter } from "./Routes/Invites";
 
 export const app = express();
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = new Server(server);
 
 // const path = require("path");
