@@ -21,12 +21,13 @@ import {
   FLEX_COL_CENTER_MOBILE,
   MOUSEOUT_DIV,
 } from "../styles/GeneralStyles";
+import { apiUrl, wsUrl } from "../utils/consts";
 
 export const Editor = () => {
   const { isMobile } = useBreakpoints();
   const params = useParams();
   const [docId] = useState(params.docId);
-  const WS_URL = "ws://192.168.2.102:3000";
+  const wss = wsUrl;
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export const Editor = () => {
   const yText = yDoc.getText(text.toString());
 
   const revokeSharedAccess = async (userName: string) => {
-    await fetch("api/documents/shared/revoke", {
+    await fetch(`${apiUrl}/api/documents/shared/revoke`, {
       method: "DELETE",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: docId, authorizedUserName: userName }),
@@ -91,7 +92,7 @@ export const Editor = () => {
 
   const fetchSave = async () => {
     try {
-      await fetch("/api/documents/save", {
+      await fetch(`${apiUrl}/api/documents/save`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -105,7 +106,7 @@ export const Editor = () => {
 
   const fetchContent = async () => {
     try {
-      const response = await fetch("/api/documents/create", {
+      const response = await fetch(`${apiUrl}/api/documents/create`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId }),
@@ -125,14 +126,16 @@ export const Editor = () => {
 
   useEffect(() => {
     authenticateUser();
-    const newSocket = io(WS_URL, { query: { docId: docId } });
-    setSocket(newSocket);
+    if (wss) {
+      const newSocket = io(wss, { query: { docId: docId } });
+      setSocket(newSocket);
 
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
+      return () => {
+        if (socket) {
+          socket.disconnect();
+        }
+      };
+    }
   }, []);
 
   const handleFetchAuthorizedUsers = async () => {

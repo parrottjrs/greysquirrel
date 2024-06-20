@@ -26,6 +26,28 @@ app.use("/api/documents", documentsRouter);
 app.use("/api/invites", invitesRouter);
 // app.use(express.static(absolutePath));
 
+app.get("/api/health", (req, res) => {
+  try {
+    const uptime = process.uptime();
+    if (uptime === 0) {
+      return res.status(503).json({
+        message: "Server is down",
+        timeStamp: Date.now(),
+      });
+    }
+    const healthcheck = {
+      uptime: uptime,
+      message: "OK",
+      timeStamp: Date.now(),
+    };
+    return res.status(200).json({ healthcheck: healthcheck });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Error running health check", error: err });
+  }
+});
+
 io.on("connection", (socket) => {
   const { docId } = socket.handshake.query;
   console.log(`User joined room ${docId}`);

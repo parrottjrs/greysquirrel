@@ -23,6 +23,7 @@ import {
   SUCCESS_CONTAINER,
   SUCCESS_CONTAINER_SMALL,
 } from "../styles/GeneralStyles";
+import { apiUrl } from "../utils/consts";
 
 interface ListProps {
   authorizedUsers: string[];
@@ -73,7 +74,7 @@ export default function ShareModal({
 
   const fetchInvite = async (docId: number | undefined, recipient: string) => {
     try {
-      const response = await fetch("/api/invites/send", {
+      const response = await fetch(`${apiUrl}/api/invites/send`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId, recipient: recipient }),

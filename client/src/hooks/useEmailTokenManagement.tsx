@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiUrl } from "../utils/consts";
 
 export const useEmailTokenManagement = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export const useEmailTokenManagement = () => {
   const [sent, setSent] = useState(false);
 
   const verification = async (emailToken: string | undefined) => {
-    const response = await fetch("/api/user/register/verification", {
+    const response = await fetch(`${apiUrl}/api/user/register/verification`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -35,7 +36,7 @@ export const useEmailTokenManagement = () => {
 
   const sendNewEmailToken = async () => {
     try {
-      const response = await fetch("/api/user/verification/resend", {
+      const response = await fetch(`${apiUrl}/api/user/verification/resend`, {
         method: "POST",
       });
       const json = await response.json();
@@ -50,7 +51,7 @@ export const useEmailTokenManagement = () => {
   };
 
   const fetchCreate = async () => {
-    const response = await fetch("/api/documents/create", {
+    const response = await fetch(`${apiUrl}/api/documents/create`, {
       method: "POST",
       headers: { "content-type": "application/json" },
     });
@@ -72,11 +73,16 @@ export const useEmailTokenManagement = () => {
   useEffect(() => {
     if (params.verificationToken) {
       const verifyUser = async () => {
-        const response = await fetch("/api/user/forgot-password/verify-token", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ verificationToken: params.verificationToken }),
-        });
+        const response = await fetch(
+          `${apiUrl}/api/user/forgot-password/verify-token`,
+          {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              verificationToken: params.verificationToken,
+            }),
+          }
+        );
         const json = await response.json();
 
         if (!json.success) {

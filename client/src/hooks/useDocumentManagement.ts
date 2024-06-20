@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SharedDocument, UserDocument } from "../utils/customTypes";
 import { useNavigate } from "react-router-dom";
 import { authenticate, refresh } from "../utils/functions";
+import { apiUrl } from "../utils/consts";
 
 export const useDocumentManagement = () => {
   const refreshTokenDelay = 540000; //nine minutes;
@@ -36,7 +37,7 @@ export const useDocumentManagement = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch("/api/documents");
+      const response = await fetch(`${apiUrl}/api/documents`);
       const json = await response.json();
       if (json.success) {
         setDocuments(json.docs);
@@ -49,7 +50,7 @@ export const useDocumentManagement = () => {
 
   const fetchSharedDocuments = async () => {
     try {
-      const response = await fetch("/api/documents/shared");
+      const response = await fetch(`${apiUrl}/api/documents/shared`);
       const json = await response.json();
       json.success === false
         ? setSharedDocuments([])
@@ -61,7 +62,7 @@ export const useDocumentManagement = () => {
   };
 
   const fetchCreate = async () => {
-    const response = await fetch("/api/documents/create", {
+    const response = await fetch(`${apiUrl}/api/documents/create`, {
       method: "POST",
       headers: { "content-type": "application /json" },
     });

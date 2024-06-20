@@ -10,6 +10,7 @@ import {
   SharedDocument,
   UserDocument,
 } from "../utils/customTypes";
+import { apiUrl } from "../utils/consts";
 
 export default function DocOptionsDropdown({
   docId,
@@ -26,7 +27,7 @@ export default function DocOptionsDropdown({
 
   const fetchDelete = async (id: any) => {
     try {
-      await fetch("api/documents/delete", {
+      await fetch(`${apiUrl}/api/documents/delete`, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: id }),
@@ -47,7 +48,7 @@ export default function DocOptionsDropdown({
 
   const fetchDeleteShared = async (docId: number, ownerId: number) => {
     try {
-      await fetch("api/documents/shared/revoke", {
+      await fetch(`${apiUrl}/api/documents/shared/revoke`, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId, ownerId: ownerId }),

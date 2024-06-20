@@ -5,6 +5,7 @@ import { authenticate, refresh } from "../utils/functions";
 import { AccountChangeData } from "../utils/customTypes";
 
 export const useAccountManagement = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
@@ -30,7 +31,7 @@ export const useAccountManagement = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await fetch("/api/user/account");
+      const response = await fetch(`${apiUrl}/api/user/account`);
       if (response.ok) {
         const json = await response.json();
         return json.userInfo;
@@ -50,7 +51,7 @@ export const useAccountManagement = () => {
       passCheck: data.passCheck.trim(),
     };
     try {
-      const response = await fetch("/api/user/account/update", {
+      const response = await fetch(`${apiUrl}/api/user/account/update`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

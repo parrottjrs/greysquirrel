@@ -10,13 +10,14 @@ import {
   LARGE_PARENT_CONTAINER,
   SIGNIN_BUTTON,
 } from "../styles/NavbarStyles";
+import { apiUrl } from "../utils/consts";
 
 export default function Navbar({ isLoggedIn, page }: NavbarProps) {
   const invitesRefreshDelay = 900000;
   const [pendingInvites, setPendingInvites] = useState(false);
   const countInvites = async () => {
     try {
-      const response = await fetch("/api/invites/count");
+      const response = await fetch(`${apiUrl}/api/invites/count`);
       const { success } = await response.json();
       success ? setPendingInvites(true) : setPendingInvites(false);
     } catch (err) {

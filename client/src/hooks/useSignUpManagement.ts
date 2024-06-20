@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { SignupFormData } from "../utils/customTypes";
+import { apiUrl } from "../utils/consts";
 
 export const useSignUpManagement = () => {
   const [userAgrees, setUserAgrees] = useState(true);
@@ -36,7 +37,7 @@ export const useSignUpManagement = () => {
       passCheck: data.passCheck.trim(),
     };
     try {
-      const response = await fetch("/api/user/register", {
+      const response = await fetch(`${apiUrl}/api/user/register`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

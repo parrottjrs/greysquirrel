@@ -19,6 +19,7 @@ import {
   GREEN_BUTTON_STRETCH,
   INPUT_FIELD_LABEL,
 } from "../styles/GeneralStyles";
+import { apiUrl } from "../utils/consts";
 
 export default function PasswordForm({ handleVerified }: PassFormProps) {
   const [showPassword, handleShowPassword] = useState(false);
@@ -28,7 +29,7 @@ export default function PasswordForm({ handleVerified }: PassFormProps) {
   });
 
   const verifyPassword = async (password: string) => {
-    const response = await fetch("/api/user/account/authorization", {
+    const response = await fetch(`${apiUrl}/api/user/account/authorization`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

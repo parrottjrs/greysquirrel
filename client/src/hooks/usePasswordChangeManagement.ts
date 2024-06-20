@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PasswordFormData } from "../utils/customTypes";
+import { apiUrl } from "../utils/consts";
 
 export const usePasswordChangeManagement = () => {
   const [showPass, setShowPass] = useState(false);
@@ -36,7 +37,7 @@ export const usePasswordChangeManagement = () => {
   };
 
   const fetchchangePassword = async (password: string) => {
-    const response = await fetch("/api/user/forgot-password/update", {
+    const response = await fetch(`${apiUrl}/api/user/forgot-password/update`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",

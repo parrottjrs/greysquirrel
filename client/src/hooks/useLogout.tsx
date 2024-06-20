@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../utils/consts";
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -6,7 +7,7 @@ export const useLogout = () => {
   const logout = async () => {
     try {
       localStorage.clear();
-      await fetch("/api/user/logout", { method: "POST" });
+      await fetch(`${apiUrl}/api/user/logout`, { method: "POST" });
       navigate("/#");
     } catch (err) {
       console.error({ message: "Error during logout. Try again later." });

@@ -5,6 +5,7 @@ import sanitize from "sanitize-html";
 import DocOptionsDropdown from "./DocOptionsDropdown";
 import CheckMark from "./CheckMark";
 import Page from "./Page";
+import { apiUrl } from "../utils/consts";
 import {
   DETAILS_CONTAINER,
   DOCUMENT_GRID_ITEM,
@@ -31,7 +32,7 @@ export default function DocItemMobile({ doc, setDocs }: any) {
   const newContent = content ? clipText(cleanContent, "content", isMobile) : "";
 
   const revokeSharedAccess = async (userName: string) => {
-    await fetch("api/documents/shared/revoke", {
+    await fetch(`${apiUrl}/api/documents/shared/revoke`, {
       method: "DELETE",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: doc_id, authorizedUserName: userName }),

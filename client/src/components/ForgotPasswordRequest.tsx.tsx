@@ -15,6 +15,7 @@ import {
   SMALLER_HEADER,
   SUCCESS_CONTAINER,
 } from "../styles/GeneralStyles";
+import { apiUrl } from "../utils/consts";
 
 export const ForgotPasswordRequest = () => {
   const { isMobile } = useBreakpoints();
@@ -26,7 +27,7 @@ export const ForgotPasswordRequest = () => {
   });
 
   const fetchForgotPassword = async (email: string) => {
-    await fetch("/api/user/forgot-password/request", {
+    await fetch(`${apiUrl}/api/user/forgot-password/request`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ email: email }),

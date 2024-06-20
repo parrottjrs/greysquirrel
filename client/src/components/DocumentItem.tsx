@@ -14,6 +14,7 @@ import {
   LAST_UPDATE_TEXT,
   SHARED_TEXT,
 } from "../styles/DocPageStyles";
+import { apiUrl } from "../utils/consts";
 
 export default function DocumentItem({ doc, setDocs }: any) {
   const { isMobile } = useBreakpoints();
@@ -24,7 +25,7 @@ export default function DocumentItem({ doc, setDocs }: any) {
   const newTitle = title ? clipText(title, "title") : "Untitled";
 
   const revokeSharedAccess = async (userName: string) => {
-    await fetch("api/documents/shared/revoke", {
+    await fetch(`${apiUrl}/api/documents/shared/revoke`, {
       method: "DELETE",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: doc_id, authorizedUserName: userName }),

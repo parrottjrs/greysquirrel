@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { authenticate } from "../utils/functions";
 import { SigninFormData } from "../utils/customTypes";
+import { apiUrl } from "../utils/consts";
 
 export const useSigninManagement = () => {
   const [showWarning, setShowWarning] = useState(false);
@@ -41,7 +42,7 @@ export const useSigninManagement = () => {
 
     data.username = data.username.toLowerCase();
     try {
-      const response = await fetch("/api/user/login", {
+      const response = await fetch(`${apiUrl}/api/user/login`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),

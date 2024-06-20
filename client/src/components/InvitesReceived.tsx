@@ -8,6 +8,7 @@ import {
   RED_BUTTON,
   SHARE_DATE_TEXT,
 } from "../styles/InvitesStyles";
+import { apiUrl } from "../utils/consts";
 
 export default function InvitesRecieved() {
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -20,7 +21,7 @@ export default function InvitesRecieved() {
 
   const fetchInvites = async () => {
     try {
-      const response = await fetch("/api/invites/pending/received");
+      const response = await fetch(`${apiUrl}/api/invites/pending/received`);
       const json = await response.json();
       if (json.success) {
         setInvites(json.invites);
@@ -33,7 +34,7 @@ export default function InvitesRecieved() {
 
   const deleteInvite = async (id: number) => {
     try {
-      const response = await fetch("/api/invites/delete", {
+      const response = await fetch(`${apiUrl}/api/invites/delete`, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ inviteId: id }),
@@ -54,7 +55,7 @@ export default function InvitesRecieved() {
     recipientId: number
   ) => {
     try {
-      await fetch("/api/invites/accept", {
+      await fetch(`${apiUrl}/api/invites/accept`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
