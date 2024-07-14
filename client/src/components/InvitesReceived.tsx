@@ -21,7 +21,9 @@ export default function InvitesRecieved() {
 
   const fetchInvites = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/invites/pending/received`);
+      const response = await fetch(`${apiUrl}/api/invites/pending/received`, {
+        credentials: "include",
+      });
       const json = await response.json();
       if (json.success) {
         setInvites(json.invites);
@@ -36,6 +38,7 @@ export default function InvitesRecieved() {
     try {
       const response = await fetch(`${apiUrl}/api/invites/delete`, {
         method: "DELETE",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ inviteId: id }),
       });
@@ -57,6 +60,7 @@ export default function InvitesRecieved() {
     try {
       await fetch(`${apiUrl}/api/invites/accept`, {
         method: "POST",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           inviteId: inviteId,

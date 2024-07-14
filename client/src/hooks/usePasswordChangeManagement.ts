@@ -39,6 +39,7 @@ export const usePasswordChangeManagement = () => {
   const fetchchangePassword = async (password: string) => {
     const response = await fetch(`${apiUrl}/api/user/forgot-password/update`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "content-type": "application/json",
       },

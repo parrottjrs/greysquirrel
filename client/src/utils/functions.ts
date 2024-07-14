@@ -4,8 +4,10 @@ export const refresh = async () => {
   try {
     const response = await fetch(`${apiUrl}/api/token/refresh`, {
       method: "POST",
+      credentials: "include",
     });
     const json = await response.json();
+    console.log(json);
     return json;
   } catch (err) {
     console.error(err);
@@ -31,7 +33,9 @@ const handleAuthenticate = async (message: any) => {
 
 export const authenticate = async () => {
   try {
-    const response = await fetch(`${apiUrl}/api/token/authenticate`);
+    const response = await fetch(`${apiUrl}/api/token/authenticate`, {
+      credentials: "include",
+    });
     const { message, userId } = await response.json();
     const authenticated = await handleAuthenticate(message);
     return { success: authenticated, userId: userId };
@@ -107,7 +111,8 @@ export const fetchAuthorizedUsers = async (docId: any) => {
   }
   try {
     const response = await fetch(
-      `${apiUrl}/api/documents/shared/users?docId=${docId}`
+      `${apiUrl}/api/documents/shared/users?docId=${docId}`,
+      { credentials: "include" }
     );
     const json = await response.json();
     if (!json.success) {

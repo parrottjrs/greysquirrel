@@ -39,6 +39,7 @@ export const useSignUpManagement = () => {
     try {
       const response = await fetch(`${apiUrl}/api/user/register`, {
         method: "POST",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),
       });

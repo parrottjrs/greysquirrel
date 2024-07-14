@@ -34,6 +34,7 @@ export default function DocItemMobile({ doc, setDocs }: any) {
   const revokeSharedAccess = async (userName: string) => {
     await fetch(`${apiUrl}/api/documents/shared/revoke`, {
       method: "DELETE",
+      credentials: "include",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: doc_id, authorizedUserName: userName }),
     });

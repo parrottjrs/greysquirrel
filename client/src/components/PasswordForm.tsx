@@ -31,6 +31,7 @@ export default function PasswordForm({ handleVerified }: PassFormProps) {
   const verifyPassword = async (password: string) => {
     const response = await fetch(`${apiUrl}/api/user/account/authorization`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "content-type": "application/json",
       },

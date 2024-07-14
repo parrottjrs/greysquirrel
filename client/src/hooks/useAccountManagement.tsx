@@ -21,6 +21,7 @@ export const useAccountManagement = () => {
   const refreshToken = async () => {
     try {
       const { success } = await refresh();
+      console.log(success);
       if (!success) {
         navigate("/signin");
       }
@@ -31,7 +32,9 @@ export const useAccountManagement = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/user/account`);
+      const response = await fetch(`${apiUrl}/api/user/account`, {
+        credentials: "include",
+      });
       if (response.ok) {
         const json = await response.json();
         return json.userInfo;
@@ -53,6 +56,7 @@ export const useAccountManagement = () => {
     try {
       const response = await fetch(`${apiUrl}/api/user/account/update`, {
         method: "PUT",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),
       });

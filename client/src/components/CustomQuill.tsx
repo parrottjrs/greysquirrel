@@ -48,7 +48,7 @@ export default function CustomQuill({
           </button>
         )}
       </div>
-      <div>
+      <div className="w-full">
         {editing || title === "" ? (
           <input
             className={`${FORM_INPUT_FIELD} mb-[29px]`}

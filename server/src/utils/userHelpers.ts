@@ -1,6 +1,6 @@
 import { pbkdf2Sync, randomBytes, randomUUID } from "crypto";
 import { NextFunction, Request, Response } from "express";
-import { AccessToken } from "./Token";
+import { AccessToken, EditingToken } from "./Token";
 
 export interface AuthRequest extends Request {
   userId?: number;
@@ -337,6 +337,15 @@ export const authenticateToken = (
   }
 };
 
+export const checkEditingToken = (token: string) => {
+  try {
+    const verified = EditingToken.verify(token);
+    return verified;
+  } catch (err) {
+    console.error("Token error:", err);
+    return false;
+  }
+};
 export const getUserInfo = async (pool: any, userId: number) => {
   const query = `
     SELECT first_name as firstName, last_name as lastName, user_name as username, email

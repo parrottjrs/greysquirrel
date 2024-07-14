@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import { pool } from "../utils/consts";
+import { FOUR_HOURS, pool } from "../utils/consts";
 import {
   allDocuments,
   createDocument,
@@ -11,6 +11,7 @@ import {
   saveDocument,
 } from "../utils/documentsHelpers";
 import { AuthRequest, authenticateToken, getId } from "../utils/userHelpers";
+import { EditingToken } from "../utils/Token";
 
 export const documentsRouter = express.Router();
 
@@ -26,7 +27,7 @@ documentsRouter.post(
       }
 
       const { docId } = req.body;
-
+      const userId = req.userId;
       if (!docId) {
         const newDocument = await createDocument(pool, req.userId);
         if (!newDocument.success) {
@@ -35,11 +36,20 @@ documentsRouter.post(
             message: newDocument.message,
           });
         }
-        return res.status(201).json({
-          success: newDocument.success,
-          message: newDocument.message,
-          docId: newDocument.docId,
-        });
+        const newDocId = newDocument.docId;
+        const editingToken = EditingToken.create(userId, newDocId);
+
+        return res
+          .cookie("editingToken", editingToken, {
+            maxAge: FOUR_HOURS,
+            httpOnly: true,
+          })
+          .status(201)
+          .json({
+            success: newDocument.success,
+            message: newDocument.message,
+            docId: newDocId,
+          });
       }
       const { success, message, doc, userOwnsDoc } = await getDocument(
         pool,
@@ -49,12 +59,19 @@ documentsRouter.post(
       if (!success) {
         return res.status(403).json({ success: success, message: message });
       }
-      return res.status(200).json({
-        success: success,
-        message: message,
-        document: doc,
-        userOwnsDoc,
-      });
+      const editingToken = EditingToken.create(userId, docId);
+      return res
+        .cookie("editingToken", editingToken, {
+          maxAge: FOUR_HOURS,
+          httpOnly: true,
+        })
+        .status(200)
+        .json({
+          success: success,
+          message: message,
+          document: doc,
+          userOwnsDoc,
+        });
     } catch (err) {
       console.error("Error creating document:", err);
       return res.status(500).json({

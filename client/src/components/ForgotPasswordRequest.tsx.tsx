@@ -29,6 +29,7 @@ export const ForgotPasswordRequest = () => {
   const fetchForgotPassword = async (email: string) => {
     await fetch(`${apiUrl}/api/user/forgot-password/request`, {
       method: "POST",
+      credentials: "include",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ email: email }),
     });

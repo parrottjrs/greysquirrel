@@ -37,7 +37,9 @@ export const useDocumentManagement = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/documents`);
+      const response = await fetch(`${apiUrl}/api/documents`, {
+        credentials: "include",
+      });
       const json = await response.json();
       if (json.success) {
         setDocuments(json.docs);
@@ -50,7 +52,9 @@ export const useDocumentManagement = () => {
 
   const fetchSharedDocuments = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/documents/shared`);
+      const response = await fetch(`${apiUrl}/api/documents/shared`, {
+        credentials: "include",
+      });
       const json = await response.json();
       json.success === false
         ? setSharedDocuments([])
@@ -64,6 +68,7 @@ export const useDocumentManagement = () => {
   const fetchCreate = async () => {
     const response = await fetch(`${apiUrl}/api/documents/create`, {
       method: "POST",
+      credentials: "include",
       headers: { "content-type": "application /json" },
     });
     const json = await response.json();

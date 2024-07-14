@@ -8,6 +8,8 @@ const PRIVATE_ACCESS_KEY_PATH = process.env.PRIVATE_ACCESS_KEY_PATH;
 const PUBLIC_ACCESS_KEY_PATH = process.env.PUBLIC_ACCESS_KEY_PATH;
 const PRIVATE_REFRESH_KEY_PATH = process.env.PRIVATE_REFRESH_KEY_PATH;
 const PUBLIC_REFRESH_KEY_PATH = process.env.PUBLIC_REFRESH_KEY_PATH;
+const PRIVATE_EDITING_KEY_PATH = process.env.PRIVATE_EDITING_KEY_PATH;
+const PUBLIC_EDITING_KEY_PATH = process.env.PUBLIC_EDITING_KEY_PATH;
 
 const client = new S3Client({ region: AWS_REGION });
 
@@ -36,14 +38,16 @@ class Token {
     this.expiration = expirationMs;
   }
 
-  create(userId: number) {
+  create(userId: number, docId?: number) {
     const expiration = Math.floor(Date.now()) + this.expiration;
+    const doc = docId ? docId : null;
     const header = {
       alg: "RS256",
       typ: "JWT",
     };
     const payload = {
       userId: userId,
+      docId: doc,
       iat: Date.now(),
       exp: expiration,
     };
@@ -68,5 +72,7 @@ class Token {
 
 export const AccessToken = new Token();
 export const RefreshToken = new Token(8.64e7);
+export const EditingToken = new Token(1.44e7);
 AccessToken.pullKeys(PRIVATE_ACCESS_KEY_PATH, PUBLIC_ACCESS_KEY_PATH);
 RefreshToken.pullKeys(PRIVATE_REFRESH_KEY_PATH, PUBLIC_REFRESH_KEY_PATH);
+EditingToken.pullKeys(PRIVATE_EDITING_KEY_PATH, PUBLIC_EDITING_KEY_PATH);

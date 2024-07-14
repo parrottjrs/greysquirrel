@@ -44,6 +44,7 @@ export const useSigninManagement = () => {
     try {
       const response = await fetch(`${apiUrl}/api/user/login`, {
         method: "POST",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ data: trimmedData }),
       });

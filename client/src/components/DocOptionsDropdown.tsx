@@ -29,6 +29,7 @@ export default function DocOptionsDropdown({
     try {
       await fetch(`${apiUrl}/api/documents/delete`, {
         method: "DELETE",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: id }),
       });
@@ -50,6 +51,7 @@ export default function DocOptionsDropdown({
     try {
       await fetch(`${apiUrl}/api/documents/shared/revoke`, {
         method: "DELETE",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId, ownerId: ownerId }),
       });

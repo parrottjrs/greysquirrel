@@ -4,7 +4,9 @@ import { apiUrl } from "../utils/consts";
 export const useVerificationCheck = () => {
   const [verified, setVerified] = useState(false);
   const checkUserVerification = async () => {
-    const response = await fetch(`${apiUrl}/api/user/verification/status`);
+    const response = await fetch(`${apiUrl}/api/user/verification/status`, {
+      credentials: "include",
+    });
     const { success } = await response.json();
     if (!success) {
       return false;

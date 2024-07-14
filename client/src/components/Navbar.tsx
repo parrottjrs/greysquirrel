@@ -17,7 +17,9 @@ export default function Navbar({ isLoggedIn, page }: NavbarProps) {
   const [pendingInvites, setPendingInvites] = useState(false);
   const countInvites = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/invites/count`);
+      const response = await fetch(`${apiUrl}/api/invites/count`, {
+        credentials: "include",
+      });
       const { success } = await response.json();
       success ? setPendingInvites(true) : setPendingInvites(false);
     } catch (err) {

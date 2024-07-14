@@ -14,6 +14,7 @@ export const useEmailTokenManagement = () => {
   const verification = async (emailToken: string | undefined) => {
     const response = await fetch(`${apiUrl}/api/user/register/verification`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "content-type": "application/json",
       },
@@ -38,6 +39,7 @@ export const useEmailTokenManagement = () => {
     try {
       const response = await fetch(`${apiUrl}/api/user/verification/resend`, {
         method: "POST",
+        credentials: "include",
       });
       const json = await response.json();
       if (json.success) {
@@ -53,6 +55,7 @@ export const useEmailTokenManagement = () => {
   const fetchCreate = async () => {
     const response = await fetch(`${apiUrl}/api/documents/create`, {
       method: "POST",
+      credentials: "include",
       headers: { "content-type": "application/json" },
     });
     const json = await response.json();
@@ -77,6 +80,7 @@ export const useEmailTokenManagement = () => {
           `${apiUrl}/api/user/forgot-password/verify-token`,
           {
             method: "POST",
+            credentials: "include",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
               verificationToken: params.verificationToken,

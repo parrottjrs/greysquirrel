@@ -111,6 +111,7 @@ userRouter.post("/logout", async (req, res) => {
     return res
       .clearCookie("accessToken")
       .clearCookie("refreshToken")
+      .clearCookie("editingToken")
       .status(200)
       .json({ success: true, message: "User logged out" });
   } catch (err) {

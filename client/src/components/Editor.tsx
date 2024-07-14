@@ -21,13 +21,12 @@ import {
   FLEX_COL_CENTER_MOBILE,
   MOUSEOUT_DIV,
 } from "../styles/GeneralStyles";
-import { apiUrl, wsUrl } from "../utils/consts";
+import { apiUrl } from "../utils/consts";
 
 export const Editor = () => {
   const { isMobile } = useBreakpoints();
   const params = useParams();
   const [docId] = useState(params.docId);
-  const wss = wsUrl;
   const autoSaveDelay = 5000;
   const refreshTokenDelay = 540000; //nine minutes;
   const navigate = useNavigate();
@@ -48,6 +47,7 @@ export const Editor = () => {
   const revokeSharedAccess = async (userName: string) => {
     await fetch(`${apiUrl}/api/documents/shared/revoke`, {
       method: "DELETE",
+      credentials: "include",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ docId: docId, authorizedUserName: userName }),
     });
@@ -94,6 +94,7 @@ export const Editor = () => {
     try {
       await fetch(`${apiUrl}/api/documents/save`, {
         method: "PUT",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           doc: { docId: docId, title: title, content: text },
@@ -108,6 +109,7 @@ export const Editor = () => {
     try {
       const response = await fetch(`${apiUrl}/api/documents/create`, {
         method: "POST",
+        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ docId: docId }),
       });
@@ -126,17 +128,23 @@ export const Editor = () => {
 
   useEffect(() => {
     authenticateUser();
-    if (wss) {
-      const newSocket = io(wss, { query: { docId: docId } });
+    if (apiUrl) {
+      const newSocket = io(apiUrl, {
+        withCredentials: true,
+        query: { docId: docId },
+      });
       setSocket(newSocket);
-
+      newSocket.on("disconnect", () => {
+        console.log("disconnected");
+      });
       return () => {
-        if (socket) {
-          socket.disconnect();
+        console.log("Component is unmounting, disconnecting socket...");
+        if (newSocket) {
+          newSocket.disconnect();
         }
       };
     }
-  }, []);
+  }, [apiUrl, docId]);
 
   const handleFetchAuthorizedUsers = async () => {
     const authorizedList = await fetchAuthorizedUsers(docId);
