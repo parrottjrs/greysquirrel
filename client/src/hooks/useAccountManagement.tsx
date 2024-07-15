@@ -21,7 +21,6 @@ export const useAccountManagement = () => {
   const refreshToken = async () => {
     try {
       const { success } = await refresh();
-      console.log(success);
       if (!success) {
         navigate("/signin");
       }

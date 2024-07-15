@@ -60,21 +60,15 @@ app.get("/api/health", (req, res) => {
   }
 });
 
-io.use((socket, next) => {
+io.on("connection", (socket) => {
+  const { docId } = socket.handshake.query;
   let cookies = socket.handshake.headers.cookie;
   let { editingToken } = ck.parse(cookies);
   let verified = checkEditingToken(editingToken);
-  console.log(verified);
-  if (!verified.userId) {
+  if (!verified.userId || verified.docId !== docId) {
     socket.disconnect();
     return;
   }
-  next();
-});
-
-io.on("connection", (socket) => {
-  const { docId } = socket.handshake.query;
-
   console.log(`User joined room ${docId}`);
   socket.join(`${docId}`);
 

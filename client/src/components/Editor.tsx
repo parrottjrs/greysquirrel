@@ -37,6 +37,7 @@ export const Editor = () => {
   const [authorizedUsers, setAuthorizedUsers] = useState<string[]>([]);
   const [authorization, setAuthorization] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [isTokenSet, setIsTokenSet] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   let binding = null;
   const currentUserIdRef = useRef(currentUserId);
@@ -121,30 +122,11 @@ export const Editor = () => {
       setTitle(title ? title : "");
       setText(content ? content : "");
       setUserOwnsDoc(json.userOwnsDoc);
+      setIsTokenSet(true);
     } catch (err) {
       console.error(err);
     }
   };
-
-  useEffect(() => {
-    authenticateUser();
-    if (apiUrl) {
-      const newSocket = io(apiUrl, {
-        withCredentials: true,
-        query: { docId: docId },
-      });
-      setSocket(newSocket);
-      newSocket.on("disconnect", () => {
-        console.log("disconnected");
-      });
-      return () => {
-        console.log("Component is unmounting, disconnecting socket...");
-        if (newSocket) {
-          newSocket.disconnect();
-        }
-      };
-    }
-  }, [apiUrl, docId]);
 
   const handleFetchAuthorizedUsers = async () => {
     const authorizedList = await fetchAuthorizedUsers(docId);
@@ -152,6 +134,7 @@ export const Editor = () => {
   };
 
   useEffect(() => {
+    authenticateUser();
     fetchContent();
     if (userOwnsDoc) {
       handleFetchAuthorizedUsers();
@@ -171,6 +154,25 @@ export const Editor = () => {
     let timer: any = setTimeout(() => fetchSave(), autoSaveDelay);
     return () => clearTimeout(timer);
   }, [text, title]);
+
+  useEffect(() => {
+    if (apiUrl && isTokenSet) {
+      const newSocket = io(apiUrl, {
+        withCredentials: true,
+        query: { docId: docId },
+      });
+      setSocket(newSocket);
+      newSocket.on("disconnect", () => {
+        console.log("disconnected");
+      });
+      return () => {
+        console.log("Editor is unmounting, disconnecting socket...");
+        if (newSocket) {
+          newSocket.disconnect();
+        }
+      };
+    }
+  }, [apiUrl, docId, isTokenSet]);
 
   const handleTextChange = async (text: string, delta: any, source: any) => {
     setText(text);
@@ -203,9 +205,11 @@ export const Editor = () => {
   const handleTitleChange = (title: string) => {
     setTitle(title);
   };
+
   const handleShareModal = () => {
     setShowShareModal(true);
   };
+
   return (
     authorization && (
       <div className={MOUSEOUT_DIV} onMouseLeave={fetchSave}>
